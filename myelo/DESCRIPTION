@@ -1,0 +1,16 @@
+Package: myelo
+Title: Models of myeloid hematopoiesis
+Version: 0.1.0
+Date: 2012-10-04
+Author: Tomas Radivoyevitch, 
+        Robert C. Jackson, 
+        Rainer K. Sachs
+Description: This package contains functions that compute
+             the right hand sides of systems of ODEs that
+             represent myeloid hematopoiesis.
+Maintainer: Tomas Radivoyevitch <txr24@case.edu>
+Depends: deSolve
+Suggests:  bbmle
+License: GPL-2
+LazyData: yes
+URL: http://epbi-radivot.cwru.edu/myelo/myelo.html
