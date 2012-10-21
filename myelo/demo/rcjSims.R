@@ -1,34 +1,30 @@
-\name{rcj12}
-\alias{rcj12}
-\title{Granulopoiesis model of Robert C. Jackson (2012)}
-\description{This function returns the right hand side of the ODEs of a model that Dr. Robert C. Jackson is 
-             actively developing. The intent is not to use this function directly, but rather to pass it as an argument to 
-        \code{ode()} of the \code{deSolve} package. }
-\usage{rcj12(Time, State, Pars)}
+library(myelo)   # load definition of function rcj12 (currently myeloN3)
+library(deSolve) # = Myeloid Cell Maturation and trafficking 14 Oct 2012
+#
+# state variables are capitalized
+# P   = progenitors (old CFU-GM)
+# Q   = quiescent progenitors
+# N   = Neutrophils
+#TN   = Tissue Neutrophils
+#AN   = Activated Neutrophils
+# D   = dead cell
+#GM   = GM-CSF   
+#NAP2 = neutrophil activating peptide-2 
+#RAC2 = G protein associated with increased ROS production
+#Mcl1 = mantle cell lymphoma 1 (antiapoptosis factor)
+#ROS  = reactive oxygen species
 
-\arguments{
-  \item{Time}{The parameters of this model do not depend on time: this argument exists
-              here as a dummy only because deSolve expects it to exist.  }
-  \item{State}{Vector of current states. The elements of this vector must be named because within this 
-              function's definition is \code{with(as.list(State,Pars), {XXX} )} 
-              and code in XXX presupposes that it can call named elements as variables with those names. }
-  \item{Pars}{Vector of parameter values with \emph{named} (see above) elements.  }
-}
+# Drugs used to manipulate the system
+#bu = Busulfan = DNA crosslinker  (1)  drop state variable P by 10^(2*bu/20)
+#mo = MOR103 = Ab blocker of GM   (2)
+#das= dasatinib                   (3)
+#sb = SB272844 = IL8 inhibitor    (4)
+#cn = CNDAC = sapacitabine becomes this = SSB producer = DSBs in S via HR  (5)
+#seli = seliciclib = cdk9 inhibitor, blocks transcription of Mcl-1 (6)
+#imab = imatinib = anti-TNF monoclonal antibody (7)
+#ifna = interferon alpha (8)
+#antiox = ascorbic acid, antoxidant (9)
 
-\details{This model is a work in progress. Its current form is depicted below as a graph.  
-\if{html}{\figure{rcj.svg}}
-\if{latex}{\figure{rcj.png}{options: width=5in}}
-}
-
-\value{A list of length 2 (as expected by deSolve) where the first list element is 
-       a vector of the derivatives (i.e. the right hand side of the ODEs), and
-       the second element of the list is a vector of auxiliary variables that one may wish to track over time. }
-
-\author{Robert C. Jackson (\email{bob@aol.com}) }
-\seealso{\code{\link{myelo-package}, \link{fokas91}} }
-\examples{
-\dontrun{
-library(myelo)
 pars=c(Vx.p=1.7e4, Kil3=1, Vp.p=.0203, Kgm=2, Kcn=100, Vp.n=.026, Kg=1, Kmo=1,
 		Vn.tn=.781, Kil8=396, Ksb=250, Vtn.x=.038, Kmcl1=2.438, Vtn.an=.001, Knap2=.1, 
 		Van.tn=.09, Vq.p=.53778, Kp=7e4, Vx.gm=2.007, Kn=5e5, Vgm.x=.05,
@@ -61,6 +57,7 @@ matplot(out[ , 1], out[ , 2:6], type = "l", xlab = "time", ylab = "count",
 		main = "Simulation 2: busulfan treatment", log="y", lwd = 2)
 legend(20,1e4, c("Progenitor Cells", "G0 Progenitor Cells","Blood Neutrophils","Tissue Neutrophils",
 				"activated Neutrophils"), col = 1:5, lty = 1:5,bty="n")
-} 
-}
-\keyword{IO}
+
+
+
+

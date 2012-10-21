@@ -1,35 +1,40 @@
 \name{fokas91}
 \alias{fokas91}
 \title{Granulopoiesis model of Fokas et al. 1991}
-\description{This function returns a list of length 2 expected by deSolve 
-             for the right hand side of the ODEs of Fokas et al 1991.}
+\description{This function returns the right hand side of an 
+             ordinary differential equation 
+             model of normal and CML granulopoiesis that was published
+             by Fokas, Keller and Clarkson in Cancer Research in 1991. 
+             The intended use of this function is as an argument to \code{ode()} of the \code{deSolve} package. 
+     }
 \usage{fokas91(Time, State, Pars)}
 
 \arguments{
-  \item{Time}{If the equations were time varying they would depend on this input. They are not. }
-  \item{State}{Vector of named current states. \code{with(as.list())} makes these available by name. }
-  \item{Pars}{Vector of named parameter values. \code{with(as.list())} makes these available by name. }
+  \item{Time}{The parameters of this model do not depend on time: this argument exists
+              here as a dummy only because deSolve expects it to exist.  }
+  \item{State}{Vector of current states. The elements of this vector must be named because within this 
+              function's definition is \code{with(as.list(State,Pars), {XXX} )} 
+              and code in XXX presupposes that it can call named elements as variables with those names. }
+  \item{Pars}{Vector of parameter values with \emph{named} (see above) elements.  }
 }
-\details{The paper offers normal and CML parameter values. Only the case of 7 actively dividing
- states and 7 parallel non-dividing maturation states was implemented. The extended model version that 
- includes stem cell dynamics was not implemented, nor was the model that considers 11 stages of each type. 
- The 7-7 model that was implemented is depicted below.  
+
+\details{
+ The extended version of this model that includes stem cell dynamics, and the extension that considers 11 stages of 
+ granulopoiesis, were not implemented. Implemented here then is only the case of 7 actively dividing
+ states/stages and 7 parallel non-dividing maturation states/stages.  This model is depicted below.  
 \if{html}{\figure{fokas.svg}}
 \if{latex}{\figure{fokas.png}{options: width=5in}}
 }
 
-\value{A list of length 2 as expected by deSolve. The first list element is 
-       the vector of derivatives comprised of the right hand side of the ODEs of Fokas et al 1991.
-       The second element is a vector of auxiliary variables that we also wish to track over time. }
+\value{A list of length 2 (as expected by deSolve) where the first list element is 
+       the vector of derivatives, i.e. the right hand side of the ODEs of Fokas et al 1991, and
+       the second element of the list is a vector of auxiliary variables that one may wish to track over time. }
 
-
-\note{ The intent is not to use this function directly, but rather to pass it as an argument to 
-        \code{ode()} of the \code{deSolve} package. 
-        This work was supported by the National Cancer Institute and Tufts Integrative 
+\note{  This work was supported by the National Cancer Institute and Tufts Integrative 
         Cancer Biology Program under U54CA149233-029689. }
 \references{
 A.S. Fokas, J.B. Keller and B.D. Clarkson, Mathematical Model of Granulocytopoiesis and
-Chronic Myelogeneous Leukemia, Cancer Research, 51, 2084-2091 (1991)}
+Chronic Myelogeneous Leukemia, \emph{Cancer Research}, \bold{51}, 2084-2091 (1991)}
         
 \author{Tom Radivoyevitch (\email{txr24@case.edu}) }
 \seealso{\code{\link{myelo-package}, \link{rcj12}} }

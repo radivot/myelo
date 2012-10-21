@@ -1,3 +1,4 @@
 This package aims to make analyses of models of myeloid hematopoiesis more readily reproducible.
 
-Version 0.1.0      First Draft containing fokas91 and RCJ12 10/4/2012
+Version 0.1.0      10/04/2012: First Draft containing fokas91 and RCJ12 
+Version 0.1.1      10/21/2012: RCJ12 updated to myeloN3 of 10/14/12; rcjSims.R added to demo directory
