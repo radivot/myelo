@@ -39,19 +39,20 @@ Identifiability and Observability Analysis for Experimental Design in Non-Linear
 \examples{
 \dontrun{
 library(myelo)
-dyn.load(file.path(system.file(paste("libs",Sys.getenv("R_ARCH"),sep=""), package = "myelo"),"myelo.dll"))
-#test DLL
-log10(c(2100,164,516))
-tpts=unique(epo$time)
-thetahat=c(Bmax = 2.809384, Epo0 = 3.338145,Kd= 2.583673, kde  = -1.871801,
-	kdi=-2.738496, ke= -1.195154, kex=-2.557234,kon=-4.066954,kt=-1.701394,scale= 2.191042)    
-p0=10^thetahat
-np=as.numeric(p0) # strip names
-yout <- ode(y = c(Epo=np[2],EpoR=np[1],EpoEpoR=0,EpoEpoRi=0,dEpoi=0,dEpoe=0), times = tpts, 
-		func = "derivsc", parms = p0, 
-		dllname = "myelo",initfunc = "parmsc",
-		nout = 3, outnames = c("y1", "y2","y3")) 
-yout  # checks out OK, so code in epo.c must be OK
+thetahat=c(Bmax = 2.821, Epo0 = 3.322,Kd= 2.583, kde  = -1.884,
+		kdi=-2.730, ke= -1.177, kex=-2.447,kon=-4.091,kt=-1.758,scale= 2.210)  # from Table 1 of Chaos 2010  
+(p0=10^thetahat) # Log10s used above to keep p0 positive.
+yout <- ode(y = c(Epo=2099,EpoR=662,EpoEpoR=0,EpoEpoRi=0,dEpoi=0,dEpoe=0), 
+        times = c(0, 5, 20, 60, 120, 180, 240, 300), 
+		func = raue10, parms = p0)
+yout  
+plot(yout)
+
+par(mfrow=c(1,1))
+with(epo,matplot(time,epo[,-1]))
+matlines(yout[,1],yout[,-(1:7)])  # Table 1 fits look good
+
+raue10  # see definition of system of ODEs
 }
 }
 \keyword{IO}
