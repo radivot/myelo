@@ -29,7 +29,7 @@ This model exists as both R and C code. The C code is included in the doc direct
 \note{  Coding of this model in C for R was supported by the National Cancer Institute and Tufts Integrative 
         Cancer Biology Program under U54CA149233-029689. }
 \references{
-Raue A, Becker V, Klingmüller U and Timmer J, 
+Raue A, Becker V, Klingmuller U and Timmer J, 
 Identifiability and Observability Analysis for Experimental Design in Non-Linear Dynamical Models.
  \emph{Chaos}, \bold{20}(4), 045105 (2010).
 }
