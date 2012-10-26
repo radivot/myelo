@@ -66,7 +66,7 @@ myplot=function(p) {
 	with(epo,matplot(time,epo[,-1]))
 	matlines(yout[,1],yout[,-(1:7)])
 }
-windows()
+
 myplot(ssolm$par) # the fit looks as good by eye as the Table 1 fit 
 c(fopt(thetahat,epo,tpts,Sig),fopt(ssolm$par,epo,tpts,Sig)) # but the Table 1 fit is actually better.
 
@@ -121,8 +121,6 @@ myplot(coef(s)[,1])  # fit looks great, but the std devs seem too tight given
 ## this takes ~900 seconds = 15 minutes = too long => use multicores
 ## it also gives a max step warning about Kd, but the Kd profile below was computed
 #plot(p2)
-#windows()
-#plot(p2,absVal=FALSE)
 #confint(p2) # CI still seem too tight, and indeed, they are relative to Table 1
 
 
