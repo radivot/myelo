@@ -3,15 +3,16 @@
 \title{Epo model of Raue et al. 2010}
 \description{This function returns the right hand side of an 
              ordinary differential equation 
-             model of Epo-EpoR internalization and degradation as analyzed by 
-             by Raue et al in Chaos in 2010.  
-             The intended use of this function is as a quoted argument to \code{ode()} of the \code{deSolve} package. 
+             model of Epo-EpoR internalization and degradation in 
+             Raue et al 2010.  
+             The intended use of this function is as an argument to \code{ode()} of \code{deSolve}.
+             For speed gains useful in parameter estimation a C coded version is also provided. 
      }
 \usage{raue10(Time, State, Pars)}
 
 \arguments{
   \item{Time}{The parameters of this model do not depend on time: this argument exists
-              here as a dummy only because deSolve expects it to exist.  }
+              only because deSolve expects it to.  }
   \item{State}{Vector of current states. The elements of this vector must be named because within this 
               function's definition is \code{with(as.list(State,Pars), {XXX} )} 
               and code in XXX presupposes that it can call named elements as variables with those names. }
@@ -19,14 +20,14 @@
 }
 
 \details{ A graph of the implemented model is shown below.  
-This model exists as both R and C code. The C code is included in the doc directory as documentation.  
+This model is provided in R and in C; examples that use the latter can be found in \code{epoDemo.R}.  
 \if{html}{\figure{raue.svg}}
 \if{latex}{\figure{raue.png}{options: width=5in}}
 }
 
 \value{The right hand side of the ODEs.  }
 
-\note{  Coding of this model in C for R was supported by the National Cancer Institute and Tufts Integrative 
+\note{  This coding was supported by the National Cancer Institute and Tufts Integrative 
         Cancer Biology Program under U54CA149233-029689. }
 \references{
 Raue A, Becker V, Klingmuller U and Timmer J, 
@@ -35,7 +36,7 @@ Identifiability and Observability Analysis for Experimental Design in Non-Linear
 }
         
 \author{Tom Radivoyevitch (\email{txr24@case.edu}) }
-\seealso{\code{\link{myelo-package}, \link{rcj12}, \link{fokas91} }}
+\seealso{\code{\link{myelo-package}, \link{rcj12}, \link{fokas91}, \link{epo} }}
 \examples{
 \dontrun{
 library(myelo)

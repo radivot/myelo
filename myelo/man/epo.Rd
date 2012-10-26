@@ -12,7 +12,7 @@
   A data frame with time in minutes and 3 variables.	
   \describe{
     \item{\code{time}}{The time point in minutes after Epo addition.}
-    \item{\code{epo.e}}{The counts per minute (cpm) of Epo external to the cell, degraded or intact, but free.}
+    \item{\code{epo.e}}{The counts per minute (cpm) of Epo external to the cell, degraded or intact, but free, see \link{raue10}.}
     \item{\code{epo.m}}{The cpm of Epo bound to the Epo Receptor (EpoR) on the cell's plasma membrane.}
     \item{\code{epo.i}}{The cpm of Epo internal to the cell, either on an internal EpoR or degraded and free.}
    }
@@ -27,6 +27,12 @@
   \bold{Applications} at 
   \url{http://www.fdmold.uni-freiburg.de/~araue/pmwiki.php/Main/Software}
 }
+
+\note{  This coding was supported by the National Cancer Institute and Tufts Integrative 
+        Cancer Biology Program under U54CA149233-029689. }
+
+\seealso{\code{\link{myelo-package}, \link{rcj12}, \link{fokas91}, \link{raue10} }}
+
 
 \references{ Becker, V., Schilling, M., Bachmann, J., Baumann, U., Raue, A., Maiwald,
 T., Timmer, J., and Klingmuller, U., Covering a broad dynamic range:
