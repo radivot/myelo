@@ -201,7 +201,7 @@ fit0 <- mle2(nLLHC,start=as.list(thetahatHC),
 #		kt    -1.6261053  0.0116032 -140.143 < 2.2e-16 ***
 #		scale  2.2073982  0.0011478 1923.220 < 2.2e-16 ***
 
-
+ 
 myplotHC=function(p) {
 	p0=10^p
 	yout <-ode(y = c(Epo=2100,EpoR=516,EpoEpoR=0,EpoEpoRi=0,dEpoi=0,dEpoe=0), 
