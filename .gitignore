@@ -1,6 +1,5 @@
 .Rproj.user
 .Rhistory
 .RData
-myelo/man/*.Rd
 myelo/src/*.dll
 myelo/src/*.o
