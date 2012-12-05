@@ -1,16 +1,21 @@
 library(myelo)
 thetahat=c(Bmax = 2.821, Epo0 = 3.322,Kd= 2.583, kde  = -1.884,
 		kdi=-2.730, ke= -1.177, kex=-2.447,kon=-4.091,kt=-1.758,scale= 2.210)  # from Table 1 in Chao 2010  
+# NOTE that in the Science 2010 supplement these values are given
+#log10(c(kt=0.03294, kon=0.10496e-3, koff=0.01721, ke=0.07483, kex=0.00994, kdi=0.003179, kde=0.01640, Epo=2030.19,
+#				konS=2.294e-6, koffS=0.006799, kexS=0.0110, S=999.293))
+#    kt       kon      koff        ke       kex       kdi       kde       Epo      konS     koffS      kexS         S 
+#-1.482276 -3.978976 -1.764219 -1.125924 -2.002614 -2.497709 -1.785156  3.307537 -5.639407 -2.167555 -1.958607  2.999693 
 (p0=10^thetahat) # in thetahat optimization, logs constrain p0 estimates to be positive. () echos result
 tpts=c(0, 5, 20, 60, 120, 180, 240, 300) # the time points at which we have data, i.e. tpts=unique(epo$time)
 system.time(for (i in 1:50) yout <-ode(y = c(Epo=2178,EpoR=645,EpoEpoR=0,EpoEpoRi=0,dEpoi=0,dEpoe=0), 
-				times = tpts, 
-				func = raue10, parms = p0))  # do it 50 times to make it take long enough to measure 
+					times = tpts, 
+					func = raue10, parms = p0))  # do it 50 times to make it take long enough to measure 
 with(epo,matplot(time,epo[,-1]))  # time is the first column, so all but this are plotted on the y
 matlines(yout[,1],yout[,-(1:7)])  # now plot the fits to epo.e, m and i, i.e. the auxillary variables y1, y2, y3
 
 (f=file.path(system.file(paste("libs",Sys.getenv("R_ARCH"),sep=""), package = "myelo"),
-		paste("myelo",.Platform$dynlib.ext,sep="")))
+					paste("myelo",.Platform$dynlib.ext,sep="")))
 dyn.load(f)
 system.time(for (i in 1:50) yout <-ode(y = c(Epo=2178,EpoR=645,EpoEpoR=0,EpoEpoRi=0,dEpoi=0,dEpoe=0), 
 					times = tpts, 
@@ -41,11 +46,11 @@ fopt<-function(p,d,ts,IW)   # p = parameters, d = data; Note that tpts and Sig a
 {	p0=10^p
 	np=as.numeric(p0) # strip names
 	yout <- ode(y = c(Epo=np[2],EpoR=np[1],EpoEpoR=0,EpoEpoRi=0,dEpoi=0,dEpoe=0), times = ts, 
-				          func = "derivsc", parms = p0, dllname = "myelo",initfunc = "parmsc",
-				          nout = 3, outnames = c("y1", "y2","y3")) 
-				  E=cbind(rep(yout[,8],each=3),rep(yout[,9],each=3),rep(yout[,10],each=3))
-				  res=(E-d[,2:4])/IW
-				  sum(res^2)+(np[2]-2100)^2/44100  # = Epo0 prior of 2100 with weight of 1 datapoint
+			func = "derivsc", parms = p0, dllname = "myelo",initfunc = "parmsc",
+			nout = 3, outnames = c("y1", "y2","y3")) 
+	E=cbind(rep(yout[,8],each=3),rep(yout[,9],each=3),rep(yout[,10],each=3))
+	res=(E-d[,2:4])/IW
+	sum(res^2)+(np[2]-2100)^2/44100  # = Epo0 prior of 2100 with weight of 1 datapoint
 }
 
 strt=c(Bmax=3,Epo0=3,Kd=3,kde=-3,kdi=-3,ke=-3,kex=-3,kon=-3,kt=-3,scale=3)
@@ -57,9 +62,9 @@ cbind(strt,thetahat,point=ssolm$par,lower=ssolm$par-1.96*sig,upper=ssolm$par+1.9
 # but it did not hit them dead on. What about the fit
 
 myplot=function(p) {
-		p0=10^p
-		np=as.numeric(p0) # strip names
-		yout <-ode(y = c(Epo=np[2],EpoR=np[1],EpoEpoR=0,EpoEpoRi=0,dEpoi=0,dEpoe=0), 
+	p0=10^p
+	np=as.numeric(p0) # strip names
+	yout <-ode(y = c(Epo=np[2],EpoR=np[1],EpoEpoR=0,EpoEpoRi=0,dEpoi=0,dEpoe=0), 
 			times = tpts, func = "derivsc", parms = p0, 
 			dllname = "myelo",initfunc = "parmsc",
 			nout = 3, outnames = c("y1", "y2","y3")) 
@@ -81,16 +86,16 @@ c(fopt(thetahat,epo,tpts,Sig),fopt(ssolm$par,epo,tpts,Sig)) # but the Table 1 fi
 # needed here is his likelihood profile method. 
 require(bbmle) 
 nLL<-function(Bmax,Epo0,Kd,kde,kdi,ke,kex,kon,kt,scale,d,ts,IW)  	# tpts and Sig still passed globablly
-			{	p0=10^c(Bmax,Epo0,Kd,kde,kdi,ke,kex,kon,kt,scale)
-				np=as.numeric(p0) # strip names for optimized IC parameters. Bmax is both a param and EpoR0
-				yout <- ode(y = c(Epo=np[2],EpoR=np[1],EpoEpoR=0,EpoEpoRi=0,dEpoi=0,dEpoe=0), times = ts, 
-						func = "derivsc", parms = p0, dllname = "myelo",initfunc = "parmsc",
-						nout = 3, outnames = c("y1", "y2","y3")) 
-				E=cbind(rep(yout[,8],each=3),rep(yout[,9],each=3),rep(yout[,10],each=3))
-				res=(E-d[,2:4])/IW
+{	p0=10^c(Bmax,Epo0,Kd,kde,kdi,ke,kex,kon,kt,scale)
+	np=as.numeric(p0) # strip names for optimized IC parameters. Bmax is both a param and EpoR0
+	yout <- ode(y = c(Epo=np[2],EpoR=np[1],EpoEpoR=0,EpoEpoRi=0,dEpoi=0,dEpoe=0), times = ts, 
+			func = "derivsc", parms = p0, dllname = "myelo",initfunc = "parmsc",
+			nout = 3, outnames = c("y1", "y2","y3")) 
+	E=cbind(rep(yout[,8],each=3),rep(yout[,9],each=3),rep(yout[,10],each=3))
+	res=(E-d[,2:4])/IW
 #				res[1:3,2]=0 # take out of sse since ic = zero => no headway
-				sum(res^2)+2*(np[2]-2100)^2/44100  # 44100=210^2  soft constraint = prior on Epo IC 
-				}
+	sum(res^2)+2*(np[2]-2100)^2/44100  # 44100=210^2  soft constraint = prior on Epo IC 
+}
 
 
 fit0 <- mle2(nLL,start=as.list(strt),control=list(maxit=1e4),
@@ -201,7 +206,7 @@ fit0 <- mle2(nLLHC,start=as.list(thetahatHC),
 #		kt    -1.6261053  0.0116032 -140.143 < 2.2e-16 ***
 #		scale  2.2073982  0.0011478 1923.220 < 2.2e-16 ***
 
- 
+
 myplotHC=function(p) {
 	p0=10^p
 	yout <-ode(y = c(Epo=2100,EpoR=516,EpoEpoR=0,EpoEpoRi=0,dEpoi=0,dEpoe=0), 
@@ -215,7 +220,7 @@ myplotHC(coef(s)[,1])  # fit still looks good
 #system.time(p2<-profile(fit0,alpha=0.05,maxsteps=20)) # and we're down to just 140 seconds now
 #plot(p2)
 #confint(p2) # 
-		
+
 #let's try with IC at neighboring whole integers
 thetahatHC=c(kde  = -2,kdi=-3, ke= -1, kex=-2,kon=-4,kt=-2,scale= 2)  
 fit0 <- mle2(nLLHC,start=as.list(thetahatHC), 
@@ -279,4 +284,5 @@ lapply(PL,plot)
 parLapply(cl, 1:20, get("+"), 3) # use get for symbol operators
 parSapply(cl, 1:20, get("+"), 3) 
 stopCluster(cl)
+
 
