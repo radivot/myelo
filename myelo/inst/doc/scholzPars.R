@@ -39,7 +39,7 @@ gPK=c(
 		VFD=1.156, # distribution volume  fitted
 		vGRAFmax=4.77, # Maximum of specific elimination  fitted
 		kGRAFm=22.4 #Michaelis-Menten constant of specific elimination  fitted
-)
+) # steady state natural g-csf = 0.02 ug/l = (.02ug/L)(nmol/20ug)= 1 pM
 
 pegPK=c(
 		kPsc=0.107, # subcutaneous absorption  fitted
