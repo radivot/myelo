@@ -42,9 +42,7 @@ NULL
 
 #'Model parameter values of Scholz et al. TBMM 2012
 #'
-#'This is a numeric vector of 127 parameter values of the model of Scholz et al. TBMM 2012. 
-#'
-#'The values involve a scale factor.
+#'This is a numeric vector of 128 parameter values of the model of Scholz et al. TBMM 2012. 
 #'
 #'@name scholzPars
 #'@docType data
@@ -58,7 +56,7 @@ NULL
 #'and M. Loeffler, Pharmacokinetic and -dynamic modelling of
 #'G-CSF derivatives in humans, \emph{Theoretical Biology and Medical Modelling} 
 #' \bold{9} 32 (2012).
-#'@source The parameter values were taken from the supplement PDF of the reference above. 
+#'@source The parameter values were taken from the supplement PDF of the TBMM 2012 paper. 
 #'@keywords datasets
 #'@examples
 #'

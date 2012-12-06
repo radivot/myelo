@@ -6,14 +6,11 @@
 See decription in comments in sholzPars.R of the doc folder. }}
 \source{
   The parameter values were taken from the supplement PDF
-  of the reference above.
+  of the TBMM 2012 paper.
 }
 \description{
-  This is a numeric vector of 127 parameter values of the
+  This is a numeric vector of 128 parameter values of the
   model of Scholz et al. TBMM 2012.
-}
-\details{
-  The values involve a scale factor.
 }
 \note{
   Coding supported by the National Cancer Institute and

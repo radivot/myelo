@@ -1,8 +1,9 @@
 # These values were all obtained from the TBMM 2012 supplement 
 
-cells=c(Snor= 1, # normal value of stem cells set
+cells=c(
+		Snor= 1, # normal value of stem cells set
 		TS=8, # duration of cell cycle  WL*
-		p=0.1, # self-renewal probability  WL
+		pdelta=0.1, # self-renewal probability  WL
 		aminS=0.01, # proliferative fraction under minimal stimulation  WL
 		anorS=0.15, # proliferative fraction under normal stimulation  WL
 		aintS=0.45, # proliferative fraction under intensified stimulation  WL
@@ -42,6 +43,7 @@ gPK=c(
 ) # steady state natural g-csf = 0.02 ug/l = (.02ug/L)(nmol/20ug)= 1 pM
 
 pegPK=c(
+		gref=0.02, # ug/l
 		kPsc=0.107, # subcutaneous absorption  fitted
 		kPm=5.5,# Michaelis-Menten constant of subcutaneous elimination  fitted
 		vPmax=16.5, # Maximum of subcutaneous elimination  fitted
@@ -131,8 +133,8 @@ pegPD=c(
 		TmaxG6P=4.17,# transition time in G6 under maximal stimulation  fitted
 		TbG6P=0.225, # sensitivity of transition time in G6  fitted
 		
-		dPgcsf=0.984, #Delay of Pegfilgrastim action  fitted
-		nPgcsf=4, # number of delay compartments  set
+		DPGCSF=0.984, #Delay of Pegfilgrastim action  fitted
+		NPGCSF=4, # number of delay compartments  set
 		wPmin=0, # minimum of weighting function set
 		wPnor=0.499, # value of weighting function for 1ug Pegfilgrastim  fitted
 		wPmax=1, # maximum of weighting function set

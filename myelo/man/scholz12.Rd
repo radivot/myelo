@@ -1,6 +1,6 @@
 \name{scholz12}
 \alias{scholz12}
-\title{PKPD G-CSF model of Scholz et al. TBMM 2012}
+\title{PKPD G-CSF model of Scholz et al. TBMM 2012, without pegfilgrastim or chemotoxicities}
 \usage{
   scholz12(Time, State, Pars)
 }
@@ -28,23 +28,20 @@
 \description{
   This function returns the right hand side of an ordinary
   differential equation model of G-CSF published by M.
-  Scholz, S. Schirm, M. Wetzler, C. Engel and M. Loeffler
-  in Theoretical Biology and Medical Modelling 2012, 9:32.
-  The intended use of this function is as an argument to
+  Scholz et al. in 2012 (in Theoretical Biology and Medical
+  Modelling). Subcutaneous injections are not modeled. The
+  intended use of this function is as an argument to
   \code{ode()} of the \code{deSolve} package.
 }
 \details{
-  This model is depicted below.
-  \if{html}{\figure{scholz.svg}}
-  \if{latex}{\figure{scholz.png}{options: width=5in}} Here
-  S = stem cells, CG = colony forming units of granulocytes
-  and macrophages, PGB = proliferating granulopoietic
-  blasts, MGB = maturing granulopoietic blasts subdivided
-  into metamyelocytes (G4),banded granulocytes (G5) and
-  segmented granulocytes (G6) and GRA = circulating
-  granulocytes. The system is regulated by feedback loops.
-  A major loop is mediated by G-CSF which is produced
-  endogenously but can also be applied subcutaneously.
+  The model is depicted below
+  \if{html}{\figure{scholz.png}}
+  \if{latex}{\figure{scholz.png}{options: width=5in}}
+
+  Here S = stem cells, CG = colony forming units of
+  granulocytes and macrophages, PGB = proliferating
+  granulopoietic blasts, MGB = maturing granulopoietic
+  blasts The system is regulated by G-CSF.
 }
 \note{
   This work was supported by the National Cancer Institute
@@ -54,13 +51,15 @@
 \examples{
 \dontrun{
 library(myelo)
-library(deSolve)
-pars=scholzPars
-
-X0=rep(0,14)
-names(X0)<-c(paste("A",1:7,sep=""),paste("M",1:7,sep=""))
-times <- seq(1, 3000, by = 1)
-out   <- ode(X0, times, scholz12, pars)
+X0=rep(1,24)
+G6nor=GRAnor=1
+PexoIV=0
+names(X0)<-c("g","g1","g2","g3","g4","S","CG","PGB",
+             "G4a","G4b","G4c","G4d","G4e",
+             "G5a","G5b","G5c","G5d","G5e",
+             "G6a","G6b","G6c","G6d","G6e","GRA")
+times <- seq(1, 30, by = 1)
+out   <- ode(X0, times, scholz12, scholzPars)
 tail(out)
 
 }
