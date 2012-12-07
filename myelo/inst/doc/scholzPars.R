@@ -160,3 +160,6 @@ length(scholzPars)
 length(unique(names(scholzPars)))
 save(scholzPars,file="scholzPars.rda")
 
+(auwera=read.csv("/Users/radivot/Downloads/myelo/myelo/inst/doc/auwera.csv"))
+save(auwera,file="auwera.rda")
+

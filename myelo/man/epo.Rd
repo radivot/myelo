@@ -9,7 +9,7 @@ degraded or intact, but free, see \link{raue10}.}
 \item{epo.m}{The
 cpm of Epo bound to the Epo Receptor (EpoR) on the cell's plasma membrane.}
 \item{epo.i}{The cpm of Epo internal to the cell, either on an
-internal EpoR or degraded and free.} }}
+internal EpoR or degraded and free.}  }}
 \source{
   The data were taken from the excel file in the zip
   download of Epo receptor model under \bold{Applications}
