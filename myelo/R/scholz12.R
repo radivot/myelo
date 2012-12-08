@@ -39,16 +39,13 @@
 #'
 #'\dontrun{
 #'library(myelo)
-#'X0=rep(1,24)
-#'G6nor=GRAnor=1
-#'PexoIV=0
-#'names(X0)<-c("g","g1","g2","g3","g4","S","CG","PGB",
-#'              "G4a","G4b","G4c","G4d","G4e",
-#'              "G5a","G5b","G5c","G5d","G5e",
-#'              "G6a","G6b","G6c","G6d","G6e","GRA")
-#'times <- seq(1, 30, by = 1)
-#'out   <- ode(X0, times, scholz12, scholzPars)
-#'tail(out)  
+#' X0=rep(1,24)
+#'names(X0)<-c("g","g1","g2","g3","g4","S","CG","PGB","G4a","G4b","G4c","G4d","G4e",
+#'		"G5a","G5b","G5c","G5d","G5e","G6a","G6b","G6c","G6d","G6e","GRA")
+#'# WARNING: the following is needed because the model is not completely specified! 
+#'APGBout=APGBin=ACGout=ACGin=GSS=G6nor=GRAnor=1
+#'out   <- ode(X0,1:300,scholz12, scholzPars)
+#'rbind(head(out),tail(out))  
 #'
 #'}
 #'
@@ -63,7 +60,7 @@ scholz12<-function(Time, State, Pars) {
 				arg=wG6*G6+wGRA*GRA/(wG6*G6nor+wGRA*GRAnor)
 	         Pendo=Pendomax - (Pendomax-Pendomin)*((Pendomax-Pendonor)/(Pendomax-Pendomin))^(arg^Pendob)
 				Pref= VFD*gref*(kFu+vGRAFmax/(kGRAFm+VFD*gref))
-				dg=Pref*Pendo+PexoIV-kFu*g-vGRAFmax*g*GRA/GRAnor/(kGRAFm+g)
+				dg=Pref*Pendo-kFu*g-vGRAFmax*g*GRA/GRAnor/(kGRAFm+g)
 				gCenRel=g/gref
 				dg1=gCenRel-DFGCSF*g1
 				dg2=DFGCSF*(g1-g2)
@@ -86,18 +83,18 @@ scholz12<-function(Time, State, Pars) {
 				dS = (2*p-1)*S*aS/TS  # - kS*psiCX*S  # skip tox
 				Sout=2*(1-p)*S*aS/TS	
 	
-				ACG=max - (AmaxCGF-AminCGF)*((AmaxCGF-AnorCGF)/(AmaxCGF-AminCGF))^(gCenRelDelay^AbCGF)
-				TCG=max - (TmaxCGF-TminCGF)*((TmaxCGF-TnorCGF)/(TmaxCGF-TminCGF))^(gCenRelDelay^AbCGF)
+				ACG=AmaxCGF - (AmaxCGF-AminCGF)*((AmaxCGF-AnorCGF)/(AmaxCGF-AminCGF))^(gCenRelDelay^AbCGF)
+				TCG=TmaxCGF - (TmaxCGF-TminCGF)*((TmaxCGF-TnorCGF)/(TmaxCGF-TminCGF))^(gCenRelDelay^AbCGF)
 				dCG = Sout*ACGin - CG*ACG/TCG # - kCG*psiCX*CG  # skip chemotox
 				CGout=ACGout*CG*ACG/TCG
 				
-				APGB=max - (AmaxPGBF-AminPGBF)*((AmaxPGBF-AnorPGBF)/(AmaxPGBF-AminPGBF))^(gCenRelDelay^AbPGBF)
-				TPGB=max - (TmaxPGBF-TminPGBF)*((TmaxPGBF-TnorPGBF)/(TmaxPGBF-TminPGBF))^(gCenRelDelay^AbPGBF)
+				APGB=AmaxPGBF - (AmaxPGBF-AminPGBF)*((AmaxPGBF-AnorPGBF)/(AmaxPGBF-AminPGBF))^(gCenRelDelay^AbPGBF)
+				TPGB=TmaxPGBF - (TmaxPGBF-TminPGBF)*((TmaxPGBF-TnorPGBF)/(TmaxPGBF-TminPGBF))^(gCenRelDelay^AbPGBF)
 				dPGB = CGout*APGBin - PGB*APGB/TPGB #- kPGB*psiCX*PGB
 				PGBout=APGBout*PGB*APGB/TPGB
 
 				AG4=AnorG4F
-				TG4=max - (TmaxG4F-TminG4F)*((TmaxG4F-TnorG4F)/(TmaxG4F-TminG4F))^(gCenRelDelay^AbG6F)
+				TG4=TmaxG4F - (TmaxG4F-TminG4F)*((TmaxG4F-TnorG4F)/(TmaxG4F-TminG4F))^(gCenRelDelay^AbG6F)
 				dG4a =PGBout - G4a*5/TG4 # - kMGB*psiCX*G4a
 				G4aout=G4a*5*AG4/TG4
 				dG4b =G4aout - G4b*5/TG4 #- kMGB*psiCX*G4b
@@ -110,7 +107,7 @@ scholz12<-function(Time, State, Pars) {
 				G4out=G4e*5*AG4/TG4
 
 				AG5=AnorG5F
-				TG5=max - (TmaxG5F-TminG5F)*((TmaxG5F-TnorG5F)/(TmaxG5F-TminG5F))^(gCenRelDelay^AbG6F)
+				TG5=TmaxG5F - (TmaxG5F-TminG5F)*((TmaxG5F-TnorG5F)/(TmaxG5F-TminG5F))^(gCenRelDelay^AbG6F)
 				dG5a =G4out - G5a*5/TG5 #- kMGB*psiCX*G5a
 				G5aout=G5a*5*AG5/TG5
 				dG5b =G5aout - G5b*5/TG5 #- kMGB*psiCX*G5b
@@ -122,8 +119,8 @@ scholz12<-function(Time, State, Pars) {
 				dG5e =G5dout - G5e*5/TG5 #- kMGB*psiCX*G5e
 				G5out=G5e*5*AG5/TG5
 
-				AG6=max - (AmaxG6F-AminG6F)*((AmaxG6F-AnorG6F)/(AmaxG6F-AminG6F))^(gCenRelDelay^AbG6F)
-				TG6=max - (TmaxG6F-TminG6F)*((TmaxG6F-TnorG6F)/(TmaxG6F-TminG6F))^(gCenRelDelay^AbG6F)
+				AG6=AmaxG6F - (AmaxG6F-AminG6F)*((AmaxG6F-AnorG6F)/(AmaxG6F-AminG6F))^(gCenRelDelay^AbG6F)
+				TG6=TmaxG6F - (TmaxG6F-TminG6F)*((TmaxG6F-TnorG6F)/(TmaxG6F-TminG6F))^(gCenRelDelay^AbG6F)
 				dG6a =G5out - G6a*5/TG6 #- kMGB*psiCX*G6a
 				G6aout=G6a*5*AG6/TG6
 				dG6b =G6aout - G6b*5/TG6 #- kMGB*psiCX*G6b

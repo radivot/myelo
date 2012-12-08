@@ -36,7 +36,7 @@ matplot(hours,auwera[,4:5],ylab="CD34")
 matplot(hours,auwera[,6:7],ylab="CFU-GM")
 matplot(hours,auwera[,8:9],ylab="ANC")}
 )
-title("1 = 5 ug/kg           2 = 10 ug/kg",outer=T)
+title("1 = 5 ug/kg           2 = 10 ug/kg",outer=TRUE)
 }
 \references{
   Phillippe van der Auwera, Erich Platzer, Z.-X. Xu, Rainer

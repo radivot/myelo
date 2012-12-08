@@ -52,15 +52,12 @@
 \dontrun{
 library(myelo)
 X0=rep(1,24)
-G6nor=GRAnor=1
-PexoIV=0
-names(X0)<-c("g","g1","g2","g3","g4","S","CG","PGB",
-             "G4a","G4b","G4c","G4d","G4e",
-             "G5a","G5b","G5c","G5d","G5e",
-             "G6a","G6b","G6c","G6d","G6e","GRA")
-times <- seq(1, 30, by = 1)
-out   <- ode(X0, times, scholz12, scholzPars)
-tail(out)
+names(X0)<-c("g","g1","g2","g3","g4","S","CG","PGB","G4a","G4b","G4c","G4d","G4e",
+		"G5a","G5b","G5c","G5d","G5e","G6a","G6b","G6c","G6d","G6e","GRA")
+# WARNING: the following is needed because the model is not completely specified!
+APGBout=APGBin=ACGout=ACGin=GSS=G6nor=GRAnor=1
+out   <- ode(X0,1:300,scholz12, scholzPars)
+rbind(head(out),tail(out))
 
 }
 }

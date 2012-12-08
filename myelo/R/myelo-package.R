@@ -79,7 +79,7 @@ NULL
 #'matplot(hours,auwera[,6:7],ylab="CFU-GM")
 #'matplot(hours,auwera[,8:9],ylab="ANC")}
 #')
-#'title("1 = 5 ug/kg           2 = 10 ug/kg",outer=T)
+#'title("1 = 5 ug/kg           2 = 10 ug/kg",outer=TRUE)
 #'
 NULL
 
