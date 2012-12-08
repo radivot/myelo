@@ -26,3 +26,21 @@ tail(out) # it hit steady state
 out   <- ode(X0, -20:600, scholz12, scholzPars,events = list(data = eventdat))
 plot(out)
 
+
+# Zhuge12
+library(myelo)
+zhugePars
+zhuge12N<-function(Time, State, Pars) {  # model with stem cells Q treated as constant
+	with(as.list(c(State, Pars)), {
+				An=exp(etaNP*tauNP-gam0*tauNM)
+				if (Time < 0) 
+					dN=-gamN*N + An*f0/(1+(Nss/the1)^s1)*Qss
+				else
+					dN=-gamN*N + An*f0/(1+(lagvalue(Time - tauN)/the1)^s1)*Qss
+				list(c(dN))
+			})
+}
+times <- c(-zhugePars[["tauN"]]:600)
+yout <- dede(c(N=zhugePars[["Nss"]]), times = times, func = zhuge12N,	parms = zhugePars)
+plot(yout)
+

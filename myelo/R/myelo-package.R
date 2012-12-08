@@ -1,5 +1,3 @@
-
-
 #'Erythropoietin (Epo) Dynamic Response Data of Becker et al. Science 2010
 #'
 #'This is the portion of the Becker et al. Science 2010 data that is used in
@@ -112,6 +110,30 @@ NULL
 #'
 NULL
 
+
+#'Model parameter values of Zhuge et al. JTB 2012
+#'
+#'This is a numeric vector that holds the parameter values of the model of Zhuge et al. JTB 2012. 
+#'
+#'@name zhugePars
+#'@docType data
+#'@format A vector of parameter values.  \describe{
+#'See decription in comments in zhugePars.R of the doc folder. }
+#'@note Coding supported by the National Cancer Institute and Tufts
+#'Integrative Cancer Biology Program U54CA149233-029689.
+#'@seealso \code{\link{myelo-package}, \link{rcj12}, \link{fokas91},\link{scholz12},
+#'\link{raue10} }
+#'@references  Changjing Zhuge, Jinzhi Lei, and Michael C. Mackey,
+#'Neutrophil dynamics in response to chemotherapy and G-CSF, \emph{Journal of Theoretical Biology} 
+#' \bold{293} 111–120 (2012).
+#'@source The parameter values were taken from Table 1 of the PDF of the JTB 2012 paper. 
+#'@keywords datasets
+#'@examples
+#'
+#'library(myelo)
+#'zhugePars
+#'
+NULL
 
 
 

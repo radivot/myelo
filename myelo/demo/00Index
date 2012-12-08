@@ -1,5 +1,5 @@
 fokasCML	Compare fokas91 normal parameters to fokas91 with CML parameters
-rcjSims 	Simulations of The MYELO_N Model of Myeloid Cell Kinetics: Production and trafficking of neutrophils
-epoDemo 	Simulate Epo model of Raue et al. Chaos 2010 and find profile likelihoods using 1 or 2 cpus
-gcsfDemo  Shows Scholz's Z-function has a simpler equivalent form.
+rcjSims		Simulations of The MYELO_N Model of Myeloid Cell Kinetics: Production and trafficking of neutrophils
+epoDemo		Simulate Epo model of Raue et al. Chaos 2010 and find profile likelihoods using 1 or 2 cpus
+gcsfDemo	Scholz TBMM 2012
 
