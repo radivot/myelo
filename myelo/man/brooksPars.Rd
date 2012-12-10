@@ -1,16 +1,16 @@
 \docType{data}
-\name{zhugePars}
-\alias{zhugePars}
-\title{Model parameter values of Zhuge et al. JTB 2012}
+\name{brooksPars}
+\alias{brooksPars}
+\title{Model parameter values of Brooks et al. JTB 2012}
 \format{A vector of parameter values.  \describe{
-See description in comments in zhugePars.R of the doc folder. }}
+See description in comments in brooksPars.R of the doc folder. }}
 \source{
   The parameter values were taken from Table 1 of the PDF
   of the JTB 2012 paper.
 }
 \description{
   This is a numeric vector that holds the parameter values
-  of the model of Zhuge et al. JTB 2012.
+  of the model of Brooks et al. JTB 2012.
 }
 \note{
   Coding supported by the National Cancer Institute and
@@ -19,18 +19,19 @@ See description in comments in zhugePars.R of the doc folder. }}
 }
 \examples{
 library(myelo)
-zhugePars
+brooksPars
 }
 \references{
-  Changjing Zhuge, Jinzhi Lei, and Michael C. Mackey,
-  Neutrophil dynamics in response to chemotherapy and
-  G-CSF, \emph{Journal of Theoretical Biology} \bold{293}
-  111–120 (2012).
+  Grace Brooks, Gabriel Provencher, Jinzhi Lei, and Michael
+  C. Mackey, Neutrophil dynamics after chemotherapy and
+  G-CSF: The role of pharmacokinetics in shaping the
+  response, \emph{Journal of Theoretical Biology}
+  \bold{315} 97–109 (2012).
 }
 \seealso{
   \code{\link{myelo-package}, \link{rcj12},
   \link{fokas91},\link{scholz12},
-  \link{brooksPars12},\link{raue10} }
+  \link{zhugePars},\link{raue10} }
 }
 \keyword{datasets}
 

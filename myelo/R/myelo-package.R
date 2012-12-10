@@ -92,7 +92,7 @@ NULL
 #'@name scholzPars
 #'@docType data
 #'@format A vector of parameter values.  \describe{
-#'See decription in comments in sholzPars.R of the doc folder. }
+#'See description in comments in sholzPars.R of the doc folder. }
 #'@note Coding supported by the National Cancer Institute and Tufts
 #'Integrative Cancer Biology Program U54CA149233-029689.
 #'@seealso \code{\link{myelo-package}, \link{rcj12}, \link{fokas91},\link{scholz12},
@@ -118,11 +118,11 @@ NULL
 #'@name zhugePars
 #'@docType data
 #'@format A vector of parameter values.  \describe{
-#'See decription in comments in zhugePars.R of the doc folder. }
+#'See description in comments in zhugePars.R of the doc folder. }
 #'@note Coding supported by the National Cancer Institute and Tufts
 #'Integrative Cancer Biology Program U54CA149233-029689.
 #'@seealso \code{\link{myelo-package}, \link{rcj12}, \link{fokas91},\link{scholz12},
-#'\link{raue10} }
+#'\link{brooksPars12},\link{raue10} }
 #'@references  Changjing Zhuge, Jinzhi Lei, and Michael C. Mackey,
 #'Neutrophil dynamics in response to chemotherapy and G-CSF, \emph{Journal of Theoretical Biology} 
 #' \bold{293} 111–120 (2012).
@@ -134,6 +134,32 @@ NULL
 #'zhugePars
 #'
 NULL
+
+#'Model parameter values of Brooks et al. JTB 2012
+#'
+#'This is a numeric vector that holds the parameter values of the model of Brooks et al. JTB 2012. 
+#'
+#'@name brooksPars
+#'@docType data
+#'@format A vector of parameter values.  \describe{
+#'See description in comments in brooksPars.R of the doc folder. }
+#'@note Coding supported by the National Cancer Institute and Tufts
+#'Integrative Cancer Biology Program U54CA149233-029689.
+#'@seealso \code{\link{myelo-package}, \link{rcj12}, \link{fokas91},\link{scholz12},
+#'\link{zhugePars},\link{raue10} }
+#'@references  Grace Brooks, Gabriel Provencher,  Jinzhi Lei, and Michael C. Mackey,
+#'Neutrophil dynamics after chemotherapy and G-CSF: The role
+#'of pharmacokinetics in shaping the response, \emph{Journal of Theoretical Biology} 
+#'\bold{315} 97–109 (2012).
+#'@source The parameter values were taken from Table 1 of the PDF of the JTB 2012 paper. 
+#'@keywords datasets
+#'@examples
+#'
+#'library(myelo)
+#'brooksPars
+#'
+NULL
+
 
 
 
