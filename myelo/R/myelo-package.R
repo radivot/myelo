@@ -122,10 +122,10 @@ NULL
 #'@note Coding supported by the National Cancer Institute and Tufts
 #'Integrative Cancer Biology Program U54CA149233-029689.
 #'@seealso \code{\link{myelo-package}, \link{rcj12}, \link{fokas91},\link{scholz12},
-#'\link{brooksPars12},\link{raue10} }
+#'\link{brooksPars},\link{raue10} }
 #'@references  Changjing Zhuge, Jinzhi Lei, and Michael C. Mackey,
 #'Neutrophil dynamics in response to chemotherapy and G-CSF, \emph{Journal of Theoretical Biology} 
-#' \bold{293} 111–120 (2012).
+#' \bold{293} 111?120 (2012).
 #'@source The parameter values were taken from Table 1 of the PDF of the JTB 2012 paper. 
 #'@keywords datasets
 #'@examples
@@ -150,7 +150,7 @@ NULL
 #'@references  Grace Brooks, Gabriel Provencher,  Jinzhi Lei, and Michael C. Mackey,
 #'Neutrophil dynamics after chemotherapy and G-CSF: The role
 #'of pharmacokinetics in shaping the response, \emph{Journal of Theoretical Biology} 
-#'\bold{315} 97–109 (2012).
+#'\bold{315} 97?109 (2012).
 #'@source The parameter values were taken from Table 1 of the PDF of the JTB 2012 paper. 
 #'@keywords datasets
 #'@examples

@@ -26,7 +26,7 @@ brooksPars
   C. Mackey, Neutrophil dynamics after chemotherapy and
   G-CSF: The role of pharmacokinetics in shaping the
   response, \emph{Journal of Theoretical Biology}
-  \bold{315} 97–109 (2012).
+  \bold{315} 97?109 (2012).
 }
 \seealso{
   \code{\link{myelo-package}, \link{rcj12},

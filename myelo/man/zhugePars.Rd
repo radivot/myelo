@@ -25,12 +25,12 @@ zhugePars
   Changjing Zhuge, Jinzhi Lei, and Michael C. Mackey,
   Neutrophil dynamics in response to chemotherapy and
   G-CSF, \emph{Journal of Theoretical Biology} \bold{293}
-  111–120 (2012).
+  111?120 (2012).
 }
 \seealso{
   \code{\link{myelo-package}, \link{rcj12},
   \link{fokas91},\link{scholz12},
-  \link{brooksPars12},\link{raue10} }
+  \link{brooksPars},\link{raue10} }
 }
 \keyword{datasets}
 
