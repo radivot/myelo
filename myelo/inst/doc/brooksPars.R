@@ -14,9 +14,9 @@ brooksPars=c(
 		s2=2,
 		Nss=5.59e8, # cells/kg
 		gamN=2.4, # 1/day
-bn=0.05, # mg/ml    # not indented = param not in Zhuge et al
+bn=0.05, # mg/ml =b0   # not indented = param not in Zhuge et al
 		tauNP=5.9, # days       Note: many values changed
-		tauNM=3.8, # days
+		tauNMmax=3.8, # days
 		tauN=9.7, # days
 bv=0.001, # ug/ml 
 Vmax=3.8,
@@ -38,7 +38,8 @@ kT=1.68, # 1/days
 kB=6.4,# 1/days
 sig=0.72,# kg/day
 gamG=4.36,# days
-k=10, #(ug/ml)^2   #Chemotherapy
+kG=10, #(ug/ml)^2   
+#Chemotherapy
 del=100, # 1/days
 phi=32.07, #1/days
 hS=0.0702, #kg/(mgxday)
