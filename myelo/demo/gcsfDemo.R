@@ -145,22 +145,12 @@ tail(yout)
 
 # Now confirm for the full blown implementation of the model, i.e. brooks12
 times <- seq(-20,200,by=.5)
-brooksPars["cycles"]=1  # single chemo
-#brooksPars["Delc"]=1/24  # chemo infusion of 1 hour for Fig 3A
-brooksPars["Delc"]=1  # chemo infusion over 1 day should be ~the same
-brooksPars["Dc"]=135 #135  # chemo dose of 135 mg/kg for Fig 3A
-brooksPars["T"]=21  # single chemo
-brooksPars["T1"]=14  # GCSF never comes
-brooksPars["bS"]=0.01  # parameter in pdat of C++ but not in pdf 
-brooksPars["cn"]=0.085  # parameter in pdat of C++ but not in pdf 
-brooksPars["Delg"]=1/(24*5)  # gcsf injection in 12 minutes = 0.0083 days
-brooksPars["Delg"]=1  # 1 day
-brooksPars["Dg"]=0  
 brooksPars["hS"]=0  
-brooksPars["hNP"]=0  
+brooksPars["hNP"]=0 
+
 yout <- dede(c(Q=brooksPars[["Qss"]],N=brooksPars[["Nss"]],EtaNP=0,Gam0=0,GamS=0,G=0,X=0,C=0),
 		times = times, func = brooks12,	parms = brooksPars)
-tail(yout[,1:4])   # validates steady state 
+tail(yout[,1:3])   # validates steady state 
 
 # The following code chunk is also on the brook12 help page
 brooksPars["hS"]=0.0702 
@@ -176,16 +166,107 @@ plot(yout) # This shows what a lot of other variables are doing
 
 
 # Now take an initial stab at Figure 5
-brooksPars["kdel"]=0.0134 # default value used in Figure 5A
 brooksPars["cycles"]=3  # three cycles
 times <- c(-20:-1,seq(-.1,1,by=0.02),2:14,seq(14.01,15,by=0.02),16:300)
-youtA <- dede(c(Q=brooksPars[["Qss"]],N=brooksPars[["Nss"]],EtaNP=0,Gam0=0,GamS=0,G=0,X=0,C=0),
-		times = times, func = brooks12,	parms = brooksPars)
+system.time({
+brooksPars["kdel"]=0.0134 # default value used in Figure 5A
+			youtA <- dede(c(Q=brooksPars[["Qss"]],N=brooksPars[["Nss"]],EtaNP=0,Gam0=0,GamS=0,G=0,X=0,C=0),
+					times = times, func = brooks12,	parms = brooksPars)
+			brooksPars["kdel"]=0.145 # value used in Figure 5B
+			youtB <- dede(c(Q=brooksPars[["Qss"]],N=brooksPars[["Nss"]],EtaNP=0,Gam0=0,GamS=0,G=0,X=0,C=0),
+					times = times, func = brooks12,	parms = brooksPars)
+		}
+		)
+#Comment: We saved ~0.5 seconds, 10.8 -> 10.3, by changing lagvalue(Time - tauNv)[3] to lagvalue(Time - tauNv,3)
+#in brooks12, and saved ~0.8 seconds by making only 3 lagvalue calls by using this block upfront.
+#lagM<-lagvalue(Time - tauNMv)
+#lagN<-lagvalue(Time - tauNv)
+#lagS<-lagvalue(Time - tauS)  
+# similar gains are obtained with fewer sample times via e.g. by=0.02 -> by=0.10
+		
+windows(width=8,height=4)
+par(mfrow=c(1,2),mar=c(4.7,6,3.3,1),oma=c(0,0,0,0),lwd=3,cex.lab=1.8,cex.axis=1.7,cex.main=1.8)
+plot(times,youtA[,3]/1e8,type="l",xlab="days",ylab="Neutrophils")
+plot(times,youtB[,3]/1e8,type="l",xlab="days",ylab="Neutrophils") # ringing heavier but damped
 
-brooksPars["kdel"]=0.145 # value used in Figure 5B
-youtB <- dede(c(Q=brooksPars[["Qss"]],N=brooksPars[["Nss"]],EtaNP=0,Gam0=0,GamS=0,G=0,X=0,C=0),
-		times = times, func = brooks12,	parms = brooksPars)
+# The following forcing function version of brooks12 gives 
+# the user more work setting up interpolation functions & is slower, so this was 
+# not promoted to be the brooks12() default.   
 
+brooks12f<-function(Time, State, Pars,I0c,I0g) {
+	with(as.list(c(State, Pars)), {
+				gamSChemo=gamS+hS*C
+				etaNPChemo=etaNP-hNP*C
+				gamSv=gamMinS+(gamSChemo-gamMinS)*bS/(bS+G)
+				gam0v=gamMin0+(gam0-gamMin0)*bn/(bn+G)
+				etaNPv=etaNPChemo+(etaMaxNP-etaNPChemo)*G/(cn+G)
+				tauNMv=tauNMmax/(1+(Vmax-1)*G/(bv+G))
+				tauNv=tauNMv+tauNP
+				if (Time < 0) {
+					delEtaNP=etaNP*tauNP
+					delGam0=gam0*tauNMmax
+					delGamS=gamS*tauS
+					An=exp(delEtaNP - delGam0)
+					Aq=2*exp(-delGamS)
+					dQ=-(k0/(1+(Q/the2)^s2) + f0/(1+(N/the1)^s1)+kdel)*Q + Aq*k0/(1+(Qss/the2)^s2)*Qss
+					dN=-gamN*N + An*f0/(1+(Nss/the1)^s1)*Qss
+					dC=0;	dX=0;	dG=0; trt=FALSE
+				}	else {
+					lagM<-lagvalue(Time - tauNMv)
+					lagN<-lagvalue(Time - tauNv)
+					lagS<-lagvalue(Time - tauS)
+					delEtaNP=lagM[3]-lagN[3]
+					delGam0=Gam0 -lagM[4]
+					delGamS=GamS -lagS[5]
+					An=exp(delEtaNP - delGam0)
+					Aq=2*exp(-delGamS)
+					Qts=lagS[1]
+					Qtn=lagN[1]
+					Ntn=lagN[2]
+					dQ=-(k0/(1+(Q/the2)^s2) + f0/(1+(N/the1)^s1)+kdel)*Q + Aq*k0/(1+(Qts/the2)^s2)*Qts
+					dN=-gamN*N + An*f0/(1+(Ntn/the1)^s1)*Qtn
+					dC= I0c(Time)/phi - del*C
+					dX= I0g(Time) + kT*VB*G -kB*X  
+					dG= Gprod - kT*G + kB*X/VB -gamG*G - sig*N*G^2/(kG+G^2)
+				}
+				dEtaNP=etaNPv
+				dGam0=gam0v
+				dGamS=gamSv
+				list(c(dQ,dN,dEtaNP,dGam0,dGamS,dG,dX,dC),
+						c(delEtaNP=delEtaNP,delGam0=delGam0,delGamS=delGamS,
+						etaNPv=etaNPv,gam0v=gam0v,gamSv=gamSv,tauNMv=tauNMv,tauNv=tauNv,An=An,Aq=Aq))
+			})
+}
+
+
+ftimes=seq(-10,300,0.1)
+gtab=ctab= as.data.frame(list(times = ftimes,
+				import = rep(0, length(ftimes))))
+ctab$import[(ctab$times>= 0)&(ctab$times%/%brooksPars["T"]<brooksPars["cycles"])&
+				(ctab$times%%brooksPars["T"] < brooksPars["Delc"])] <- brooksPars["Dc"]/brooksPars["Delc"]
+# the following isn't needed here since G-CSF=0 but would be needed in general
+gtab$import[(gtab$times>= 0)&(gtab$times%/%brooksPars["T"]<brooksPars["cycles"])&
+				(gtab$times%%brooksPars["T"] > brooksPars["T1"])&
+				(gtab$times%%brooksPars["T"] < brooksPars["T1"]+brooksPars["Delg"])] <- brooksPars["Dg"]/brooksPars["Delg"]
+
+cimp <- approxfun(ctab$times, ctab$import, rule = 2)
+gimp <- approxfun(gtab$times, gtab$import, rule = 2)
+windows(width=10,height=4)
+par(mfrow=c(1,3),mar=c(4.7,6,3.3,1),oma=c(0,0,0,0),lwd=3,cex.lab=1.8,cex.axis=1.7,cex.main=1.8)
+plot(ftimes,cimp(ftimes),type="l")
+plot(ftimes,cimp(ftimes),type="l",xlim=c(-2,23))
+plot(ftimes,gimp(ftimes),type="l",xlim=c(-2,23))
+
+system.time({
+			brooksPars["kdel"]=0.0134 # default value used in Figure 5A
+			youtA <- dede(c(Q=brooksPars[["Qss"]],N=brooksPars[["Nss"]],EtaNP=0,Gam0=0,GamS=0,G=0,X=0,C=0),
+					times = times, func = brooks12f,	parms = brooksPars,I0c=cimp,I0g=gimp)
+			brooksPars["kdel"]=0.145 # value used in Figure 5B
+			youtB <- dede(c(Q=brooksPars[["Qss"]],N=brooksPars[["Nss"]],EtaNP=0,Gam0=0,GamS=0,G=0,X=0,C=0),
+					times = times, func = brooks12f,	parms = brooksPars,I0c=cimp,I0g=gimp)
+		}
+)
+# slower at 11.5 secs. The same plots are produced 
 windows(width=8,height=4)
 par(mfrow=c(1,2),mar=c(4.7,6,3.3,1),oma=c(0,0,0,0),lwd=3,cex.lab=1.8,cex.axis=1.7,cex.main=1.8)
 plot(times,youtA[,3]/1e8,type="l",xlab="days",ylab="Neutrophils")

@@ -63,16 +63,19 @@ brooks12<-function(Time, State, Pars) {
 					dC=0;	dX=0;	dG=0; trt=FALSE
 				}	else {
 					trt=(Time%/%T  < cycles)
-					if (!is.na(T)&&trt&&(Time%%T < Delc)) I0c=Dc/Delc # in chemo infusion period
-					if ( !is.na(T1)&&trt&&(Time%%T -T1 > 0)&&(Time%%T -T1 < Delg) ) I0g=Dg/Delg #in G-CSF injection period
-					delEtaNP=lagvalue(Time - tauNMv)[3]-lagvalue(Time - tauNv)[3]
-					delGam0=Gam0 -lagvalue(Time - tauNMv)[4]
-					delGamS=GamS -lagvalue(Time - tauS)[5]
+					if (trt&&(Time%%T < Delc)) I0c=Dc/Delc # in chemo infusion period
+					if (trt&&(Time%%T > T1)&&(Time%%T < T1+Delg) ) I0g=Dg/Delg #in G-CSF injection period
+					lagM<-lagvalue(Time - tauNMv)
+					lagN<-lagvalue(Time - tauNv)
+					lagS<-lagvalue(Time - tauS)
+					delEtaNP=lagM[3]-lagN[3]
+					delGam0=Gam0 -lagM[4]
+					delGamS=GamS -lagS[5]
 					An=exp(delEtaNP - delGam0)
 					Aq=2*exp(-delGamS)
-					Qts=lagvalue(Time - tauS)[1]
-					Qtn=lagvalue(Time - tauNv)[1]
-					Ntn=lagvalue(Time - tauNv)[2]
+					Qts=lagS[1]
+					Qtn=lagN[1]
+					Ntn=lagN[2]
 					dQ=-(k0/(1+(Q/the2)^s2) + f0/(1+(N/the1)^s1)+kdel)*Q + Aq*k0/(1+(Qts/the2)^s2)*Qts
 					dN=-gamN*N + An*f0/(1+(Ntn/the1)^s1)*Qtn
 					dC= I0c/phi - del*C
