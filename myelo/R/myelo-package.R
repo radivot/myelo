@@ -47,8 +47,8 @@ NULL
 #'\item{hours}{Time points in hours after subcutanteous filgrastim injection.}
 #'\item{gcsf5}{GCSF time course after a 5 ug/kg injection.} 
 #'\item{gcsf10}{GCSF time course after a 10 ug/kg injection.} 
-#'\item{cd34p5}{The number of CD34+ cells per cubic mm after a 5 ug/kg injection.}
-#'\item{cd34p10}{The number of CD34+ cells per cubic mm after a 10 ug/kg injection.}
+#'\item{cd34p5}{The number of CD34+ cells per cubic mm after 7 daily 5 ug/kg injection.}
+#'\item{cd34p10}{The number of CD34+ cells per cubic mm after 7 daily 10 ug/kg injection.}
 #'\item{cfugm5}{The number of CFUGM per 10^5 cells after 7 daily 5 ug/kg injections.}
 #'\item{cfugm10}{The number of CFUGM per 10^5 cells after 7 daily 10 ug/kg injections.}
 #'\item{anc5}{Absolute Neutrophil Count (ANC) time course after a 5 ug/kg injection.} 
