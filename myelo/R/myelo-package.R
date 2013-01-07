@@ -45,14 +45,14 @@ NULL
 #'@docType data
 #'@format A data frame that includes time in hours and 8 variables.  \describe{
 #'\item{hours}{Time points in hours after subcutanteous filgrastim injection.}
-#'\item{gcsf5}{GCSF time course after a 5 ug/kg injection.} 
-#'\item{gcsf10}{GCSF time course after a 10 ug/kg injection.} 
+#'\item{gcsf5}{GCSF time course in ng/mL after a 5 ug/kg injection.} 
+#'\item{gcsf10}{GCSF time course in ng/mL after a 10 ug/kg injection.} 
 #'\item{cd34p5}{The number of CD34+ cells per cubic mm after 7 daily 5 ug/kg injection.}
 #'\item{cd34p10}{The number of CD34+ cells per cubic mm after 7 daily 10 ug/kg injection.}
 #'\item{cfugm5}{The number of CFUGM per 10^5 cells after 7 daily 5 ug/kg injections.}
 #'\item{cfugm10}{The number of CFUGM per 10^5 cells after 7 daily 10 ug/kg injections.}
-#'\item{anc5}{Absolute Neutrophil Count (ANC) time course after a 5 ug/kg injection.} 
-#'\item{anc10}{ANC time course after a 10 ug/kg injection.} }
+#'\item{anc5}{Absolute Neutrophil Count (ANC) per cubic mm time course after a 5 ug/kg injection.} 
+#'\item{anc10}{ANC per cubic mm time course after a 10 ug/kg injection.} }
 #'
 #'@note Coding supported by the National Cancer Institute and Tufts
 #'Integrative Cancer Biology Program U54CA149233-029689.
