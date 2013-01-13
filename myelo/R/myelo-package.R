@@ -36,7 +36,7 @@
 NULL
 
 
-#'G-CSF Dynamic Response Data of Van Der Auwera 2001
+#'G-CSF Dynamic Response Data of van der Auwera et al. 2001
 #'
 #'In addition to the single injection data used in Scholz 2012 this data.frame
 #'includes CFU-GM and CD34 cells counts in response to 7 daily filgrastim injections.

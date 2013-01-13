@@ -8,13 +8,13 @@ static double parms[7];
 #define kt    parms[5]
 #define scale parms[6]
 
-void parmscHC(void (* odeparms)(int *, double *))
+void parmsEpoHC(void (* odeparms)(int *, double *))
 {   int N=7;
     odeparms(&N, parms);
 }
 
 
-void derivscHC(int *neq, double *t, double *y, double *ydot, double *yout, int *ip)
+void derivsEpoHC(int *neq, double *t, double *y, double *ydot, double *yout, int *ip)
 {
 	double v1,v2,v3,v4,v5,v6,v7,v8;
 	double Epo,EpoR,EpoEpoR,EpoEpoRi,dEpoi,dEpoe;

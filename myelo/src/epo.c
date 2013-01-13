@@ -11,13 +11,13 @@ static double parms[10];
 #define kt    parms[8]
 #define scale parms[9]
 
-void parmsc(void (* odeparms)(int *, double *))
+void parmsEpo(void (* odeparms)(int *, double *))
 {   int N=10;
     odeparms(&N, parms);
 }
 
 
-void derivsc(int *neq, double *t, double *y, double *ydot, double *yout, int *ip)
+void derivsEpo(int *neq, double *t, double *y, double *ydot, double *yout, int *ip)
 {
 	double v1,v2,v3,v4,v5,v6,v7,v8;
 	double Epo,EpoR,EpoEpoR,EpoEpoRi,dEpoi,dEpoe;

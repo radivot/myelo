@@ -19,8 +19,8 @@ matlines(yout[,1],yout[,-(1:7)])  # now plot the fits to epo.e, m and i, i.e. th
 dyn.load(f)
 system.time(for (i in 1:50) yout <-ode(y = c(Epo=2178,EpoR=645,EpoEpoR=0,EpoEpoRi=0,dEpoi=0,dEpoe=0), 
 					times = tpts, 
-					func = "derivsc", parms = p0, 
-					dllname = "myelo",initfunc = "parmsc",
+					func = "derivsEpo", parms = p0, 
+					dllname = "myelo",initfunc = "parmsEpo",
 					nout = 3, outnames = c("y1", "y2","y3")) )
 with(epo,matplot(time,epo[,-1]))
 matlines(yout[,1],yout[,-(1:7)])
@@ -46,7 +46,7 @@ fopt<-function(p,d,ts,IW)   # p = parameters, d = data; Note that tpts and Sig a
 {	p0=10^p
 	np=as.numeric(p0) # strip names
 	yout <- ode(y = c(Epo=np[2],EpoR=np[1],EpoEpoR=0,EpoEpoRi=0,dEpoi=0,dEpoe=0), times = ts, 
-			func = "derivsc", parms = p0, dllname = "myelo",initfunc = "parmsc",
+			func = "derivsEpo", parms = p0, dllname = "myelo",initfunc = "parmsEpo",
 			nout = 3, outnames = c("y1", "y2","y3")) 
 	E=cbind(rep(yout[,8],each=3),rep(yout[,9],each=3),rep(yout[,10],each=3))
 	res=(E-d[,2:4])/IW
@@ -65,8 +65,8 @@ myplot=function(p) {
 	p0=10^p
 	np=as.numeric(p0) # strip names
 	yout <-ode(y = c(Epo=np[2],EpoR=np[1],EpoEpoR=0,EpoEpoRi=0,dEpoi=0,dEpoe=0), 
-			times = tpts, func = "derivsc", parms = p0, 
-			dllname = "myelo",initfunc = "parmsc",
+			times = tpts, func = "derivsEpo", parms = p0, 
+			dllname = "myelo",initfunc = "parmsEpo",
 			nout = 3, outnames = c("y1", "y2","y3")) 
 	with(epo,matplot(time,epo[,-1]))
 	matlines(yout[,1],yout[,-(1:7)])
@@ -89,7 +89,7 @@ nLL<-function(Bmax,Epo0,Kd,kde,kdi,ke,kex,kon,kt,scale,d,ts,IW)  	# tpts and Sig
 {	p0=10^c(Bmax,Epo0,Kd,kde,kdi,ke,kex,kon,kt,scale)
 	np=as.numeric(p0) # strip names for optimized IC parameters. Bmax is both a param and EpoR0
 	yout <- ode(y = c(Epo=np[2],EpoR=np[1],EpoEpoR=0,EpoEpoRi=0,dEpoi=0,dEpoe=0), times = ts, 
-			func = "derivsc", parms = p0, dllname = "myelo",initfunc = "parmsc",
+			func = "derivsEpo", parms = p0, dllname = "myelo",initfunc = "parmsEpo",
 			nout = 3, outnames = c("y1", "y2","y3")) 
 	E=cbind(rep(yout[,8],each=3),rep(yout[,9],each=3),rep(yout[,10],each=3))
 	res=(E-d[,2:4])/IW
@@ -185,7 +185,7 @@ c(Epo0=2100,Kd=164,Bmax=516)  #From the Excel data file of Raue et al 2010.
 nLLHC<-function(kde,kdi,ke,kex,kon,kt,scale,d,ts,IW)  	
 {	p0=10^c(kde,kdi,ke,kex,kon,kt,scale)
 	yout <- ode(y = c(Epo=2100,EpoR=516,EpoEpoR=0,EpoEpoRi=0,dEpoi=0,dEpoe=0), times = ts, 
-			func = "derivscHC", parms = p0, dllname = "myelo",initfunc = "parmscHC",
+			func = "derivsEpoHC", parms = p0, dllname = "myelo",initfunc = "parmsEpoHC",
 			nout = 3, outnames = c("y1", "y2","y3")) 
 	E=cbind(rep(yout[,8],each=3),rep(yout[,9],each=3),rep(yout[,10],each=3))
 	res=(E-d[,2:4])/IW
@@ -210,8 +210,8 @@ fit0 <- mle2(nLLHC,start=as.list(thetahatHC),
 myplotHC=function(p) {
 	p0=10^p
 	yout <-ode(y = c(Epo=2100,EpoR=516,EpoEpoR=0,EpoEpoRi=0,dEpoi=0,dEpoe=0), 
-			times = tpts, func = "derivscHC", parms = p0, 
-			dllname = "myelo",initfunc = "parmscHC",
+			times = tpts, func = "derivsEpoHC", parms = p0, 
+			dllname = "myelo",initfunc = "parmsEpoHC",
 			nout = 3, outnames = c("y1", "y2","y3")) 
 	with(epo,matplot(time,epo[,-1]))
 	matlines(yout[,1],yout[,-(1:7)])
