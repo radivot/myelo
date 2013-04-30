@@ -1,6 +1,6 @@
 \name{rcj12}
 \alias{rcj12}
-\title{Granulopoiesis model of Robert C. Jackson (2012)}
+\title{Robert C. Jackson's Granulopoiesis Model}
 \usage{
   rcj12(Time, State, Pars)
 }
@@ -27,15 +27,17 @@
 }
 \description{
   This function returns the right hand side of the ODEs of
-  a model that Dr. Robert C. Jackson is actively
-  developing. The intent is not to use this function
-  directly, but rather to pass it as an argument to
-  \code{ode()} of the \code{deSolve} package.
+  a model that Dr. Robert C. Jackson developed in 2012 and
+  published in BioDiscovery in March 2013. The intent is
+  not to use this function directly, but to pass it as an
+  argument to \code{ode()} of the \code{deSolve} package.
 }
 \details{
-  This model is a work in progress. Its current form is
-  depicted below as a graph. \if{html}{\figure{rcj.svg}}
-  \if{latex}{\figure{rcj.png}{options: width=5in}}
+  The topology of the model can be gleaned from the
+  following two graphs. \if{html}{\figure{BioDiscFig1.png}}
+  \if{latex}{\figure{BioDiscFig1.png}{options: width=5in}}
+  \if{html}{\figure{BioDiscFig2.png}}
+  \if{latex}{\figure{BioDiscFig2.png}{options: width=5in}}
 }
 \examples{
 \dontrun{
@@ -76,6 +78,12 @@ legend(20,1e4, c("Progenitor Cells", "G0 Progenitor Cells","Blood Neutrophils","
 }
 \author{
   Robert C. Jackson (\email{bob@aol.com})
+}
+\references{
+  R. C. Jackson and T. Radivoyevith, Modelling c-Abl
+  Signalling in Activated Neutrophils: the
+  Anti-inflammatory Effect of Seliciclib,
+  \emph{BioDiscovery}, \bold{7}, 4 (2013)
 }
 \seealso{
   \code{\link{myelo-package}, \link{fokas91}}

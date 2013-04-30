@@ -10,7 +10,7 @@
 #'Implemented here then is only the case of 7 actively dividing states/stages
 #'and 7 parallel non-dividing maturation states/stages.  This model is depicted
 #'below.  
-#'\if{html}{\figure{fokas.svg}} \if{latex}{\figure{fokas.png}{options: width=5in}}
+#'\if{html}{\figure{fokas.png}} \if{latex}{\figure{fokas.png}{options: width=5in}}
 
 #'
 #'@param Time The parameters of this model do not depend on time: this argument

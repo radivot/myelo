@@ -1,13 +1,36 @@
-This package aims to make analyses of models of myeloid hematopoiesis more readily reproducible.
+CHANGES IN VERSION 2013.5.0
+------------------------
 
-Version 0.1.0   10/04/2012: First Draft containing fokas91 and RCJ12 
-Version 0.1.1   10/21/2012: RCJ12 updated to myeloN3 
-                10/21/2012: rcjSims.R added to demo
-                10/23/2012: Added Epo-EpoR model of Raue et al.
-                10/25/2012: Added epoDemo.R to demo
-                11/1/2012:  Help moved to use roxygen2
-Version 0.1.2   12/10/2012: Added Scholz12 and Michor05 
-                12/12/2012: Added Zhuge12 
-                12/13/2012: Added Brooks12 
-                    
-                   
+NEW FEATURES
+
+    o Switch to year month version system  
+
+    o Upgraded rcj12 to match Biodiscovery paper of 2013  
+
+
+SIGNIFICANT USER-LEVEL CHANGES
+
+    o None
+
+
+CHANGES IN VERSION 0.1.2
+------------------------
+
+NEW FEATURES
+
+    o Added Zhuge12, Brooks12, Scholz12 and Michor05
+
+
+
+
+CHANGES IN VERSION 0.1.1 
+-------------------------
+
+
+NEW FEATURES
+
+    o First Draft containing fokas91, raue10, and RCJ12 
+
+Notes
+
+    o Help pages are being made by roxygen2

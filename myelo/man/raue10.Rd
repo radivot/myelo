@@ -33,7 +33,7 @@
   A graph of the implemented model is shown below.  This
   model is provided in R and in C; examples that use the
   latter can be found in \code{epoDemo.R}.
-  \if{html}{\figure{raue.svg}}
+  \if{html}{\figure{raue.png}}
   \if{latex}{\figure{raue.png}{options: width=5in}}
 }
 \note{

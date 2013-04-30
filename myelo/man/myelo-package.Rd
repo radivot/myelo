@@ -3,9 +3,10 @@
 \alias{myelo-package}
 \title{Models of myeloid hematopoiesis}
 \description{
-  This package contains functions that compute the right
-  hand sides of ODEs of models relevant to myeloid
-  hematopoiesis.
+  This package aims to make analyses of models of myeloid
+  hematopoiesis more readily reproducible. In the case of
+  ODE models it provides functions that compute the right
+  hand sides of systems of ODEs.
 }
 \details{
   \tabular{ll}{ Package: \tab \pkg{myelo}\cr Type: \tab

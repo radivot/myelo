@@ -1,5 +1,7 @@
 .Rproj.user
 .Rhistory
 .RData
+*.zip
+*.gz
 myelo/src/*.dll
 myelo/src/*.o

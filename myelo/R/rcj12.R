@@ -25,30 +25,36 @@
 
 
 
-#'Granulopoiesis model of Robert C. Jackson (2012)
+#'Robert C. Jackson's Granulopoiesis Model 
 #'
-#'This function returns the right hand side of the ODEs of a model that Dr.
-#'Robert C. Jackson is actively developing. The intent is not to use this
-#'function directly, but rather to pass it as an argument to \code{ode()} of
-#'the \code{deSolve} package.
+#'This function returns the right hand side of the ODEs of a model that Dr. 
+#'Robert C. Jackson developed in 2012 and published in BioDiscovery in March
+#'2013. The intent is not to use this function directly, but to pass it
+#'as an argument to \code{ode()} of the \code{deSolve} package.
 #'
-#'This model is a work in progress. Its current form is depicted below as a
-#'graph.  
-#'\if{html}{\figure{rcj.svg}} \if{latex}{\figure{rcj.png}{options: width=5in}}
+#'The topology of the model can be gleaned from the following two 
+#'graphs. \if{html}{\figure{BioDiscFig1.png}} \if{latex}{\figure{BioDiscFig1.png}{options: 
+#'width=5in}}
+#'\if{html}{\figure{BioDiscFig2.png}} \if{latex}{\figure{BioDiscFig2.png}{options: 
+#'width=5in}}
 
-#'@param Time The parameters of this model do not depend on time: this argument
-#'exists here as a dummy only because deSolve expects it to exist.
-#'@param State Vector of current states. The elements of this vector must be
-#'named because within this function's definition is
-#'\code{with(as.list(State,Pars), {XXX} )} and code in XXX presupposes that it
-#'can call named elements as variables with those names.
-#'@param Pars Vector of parameter values with \emph{named} (see above)
-#'elements.
-#'@return A list of length 2 (as expected by deSolve) where the first list
-#'element is a vector of the derivatives (i.e. the right hand side of the
-#'ODEs), and the second element of the list is a vector of auxiliary variables
-#'that one may wish to track over time.
+
+#'@param Time The parameters of this model do not depend on time: this argument 
+#'  exists here as a dummy only because deSolve expects it to exist.
+#'@param State Vector of current states. The elements of this vector must be 
+#'  named because within this function's definition is 
+#'  \code{with(as.list(State,Pars), {XXX} )} and code in XXX presupposes that it
+#'  can call named elements as variables with those names.
+#'@param Pars Vector of parameter values with \emph{named} (see above) elements.
+#'@return A list of length 2 (as expected by deSolve) where the first list 
+#'  element is a vector of the derivatives (i.e. the right hand side of the 
+#'  ODEs), and the second element of the list is a vector of auxiliary variables
+#'  that one may wish to track over time.
 #'@author Robert C. Jackson (\email{bob@@aol.com})
+#'@references R. C. Jackson and T. Radivoyevith, Modelling c-Abl Signalling in 
+#'  Activated Neutrophils: the Anti-inflammatory Effect of Seliciclib,
+#'  \emph{BioDiscovery}, \bold{7}, 4 (2013)
+
 #'@seealso \code{\link{myelo-package}, \link{fokas91}}
 #'@keywords IO
 #' @export 

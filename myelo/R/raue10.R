@@ -8,7 +8,7 @@
 #'
 #'A graph of the implemented model is shown below.  This model is provided in R
 #'and in C; examples that use the latter can be found in \code{epoDemo.R}.
-#'\if{html}{\figure{raue.svg}} \if{latex}{\figure{raue.png}{options: width=5in}}
+#'\if{html}{\figure{raue.png}} \if{latex}{\figure{raue.png}{options: width=5in}}
 #'
 #'@param Time The parameters of this model do not depend on time: this argument
 #'exists only because deSolve expects it to.

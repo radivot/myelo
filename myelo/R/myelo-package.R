@@ -162,11 +162,12 @@ NULL
 
 
 
-
 #'Models of myeloid hematopoiesis
 #'
-#'This package contains functions that compute the right hand sides of ODEs of
-#'models relevant to myeloid hematopoiesis.
+#'This package aims to make analyses of models of myeloid hematopoiesis more 
+#'readily reproducible. In the case of ODE models it provides functions that
+#'compute the right hand sides of systems of ODEs.
+#'
 #'
 #'\tabular{ll}{ Package: \tab \pkg{myelo}\cr Type: \tab Package\cr Depends:
 #'\tab deSolve\cr Suggests: \tab bbmle \cr License: \tab GPL-2\cr LazyLoad:
@@ -181,6 +182,4 @@ NULL
 #'@seealso \code{\link{fokas91},\link{rcj12}}
 #'@keywords package
 NULL
-
-
 
