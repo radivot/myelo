@@ -71,6 +71,13 @@ pars=c(Vx.p=1.7e4, Kil3=1, Vp.p=.0203, Kgm=2, Kcn=100, Vp.n=.026, Kg=1, Kmo=1,
        Qf=.0373, volP=2900, volM=1400, volT=65700,        # these are boundary  conditions
        bu=0,mo=0,das=0,sb=0,cn=0,seli=0,imab=0,ifna=0,antiox=7)      # Drug concentrations
 
-X0=c(P=6.466e6, Q=5.655e5, N=4.558e6, TN=7.564e4, AN=76.84,
-     GM=3.97,NAP2=.01004, RAC2=26.59, MCL1=2.021, ROS=1.967, BACT=0, ABL=0, GSH=1e6, GSSG=0)                                                                            # Starting values for variables
+# X0=c(P=6.466e6, Q=5.655e5, N=4.558e6, TN=7.564e4, AN=76.84,
+#      GM=3.97,NAP2=.01004, RAC2=26.59, MCL1=2.021, ROS=1.967, BACT=0, ABL=0, GSH=1e6, GSSG=0)                                                                            # Starting values for variables
 # When bact>0 initialise il8 to bact*5e-4 +4
+X0=structure(c(51856311.7168859, 19729860.5277474, 17012655.6091217, 
+            299967.506077166, 343.818967027626, 1.14602836074423, 0.011502219187436, 
+            66.5728450541439, 2.3004438374872, 84.2664337973667, 0, 0.150221918743598, 
+            999607.375711163, 392.624288836607), .Names = c("P", "Q", "N", 
+            "TN", "AN", "GM", "NAP2", "RAC2", "MCL1", "ROS", "BACT", "ABL", 
+            "GSH", "GSSG"))
+

@@ -1,32 +1,24 @@
-#library(myelo)   # load definition of function fBD2013
-setwd("/Rfiles")
 library(deSolve) 
+library(devtools)
+# install.packages("Rcpp")
+install_github("myelo",subdir="myelo",username="radivot")
+library(myelo)   # load definition of function fBD2013
 
-
-
-source("copd.R")
+source(file.path(system.file(package="myelo"), "doc/papers/BioDiscoveryMarch2013/copd.R"))
 times <- seq(1,1e5, by = 1000)
-out   <- ode(X0, times, fcopd, pars)
+out   <- ode(X0copd, times, fcopd, pars)
 plot(out)
-tail(out)  
-X0=out[dim(out)[1],2:15] # end becomes new initial state
-dput(X0)
+# tail(out)  
+# X0=out[dim(out)[1],2:15] # end becomes new initial state
+# dput(X0)
 
-source("norm.R")
+source(file.path(system.file(package="myelo"), "doc/papers/BioDiscoveryMarch2013/norm.R"))
 times <- seq(1,1e5, by = 1000)
 out   <- ode(X0, times, fnorm, pars)
 plot(out)
 tail(out)  
 X0=out[dim(out)[1],2:15] # end becomes new initial state
 dput(X0)
-
-source("myeloN41.R")
-times <- seq(1,1e5, by = 1000)
-out   <- ode(X0, times, fmyelo, pars)
-plot(out)
-tail(out)  
-
-
 
 # DNA cross-linking
 #  bu=20 # set to MTD
