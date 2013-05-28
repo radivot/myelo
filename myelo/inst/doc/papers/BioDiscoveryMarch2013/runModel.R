@@ -1,5 +1,49 @@
-library(myelo)   # load definition of function rcj12 (currently myeloN3)
-library(deSolve) # = Myeloid Cell Maturation and trafficking 14 Oct 2012
+#library(myelo)   # load definition of function fBD2013
+setwd("/Rfiles")
+library(deSolve) 
+
+
+
+source("copd.R")
+times <- seq(1,1e5, by = 1000)
+out   <- ode(X0, times, fcopd, pars)
+plot(out)
+tail(out)  
+X0=out[dim(out)[1],2:15] # end becomes new initial state
+dput(X0)
+
+source("norm.R")
+times <- seq(1,1e5, by = 1000)
+out   <- ode(X0, times, fnorm, pars)
+plot(out)
+tail(out)  
+X0=out[dim(out)[1],2:15] # end becomes new initial state
+dput(X0)
+
+source("myeloN41.R")
+times <- seq(1,1e5, by = 1000)
+out   <- ode(X0, times, fmyelo, pars)
+plot(out)
+tail(out)  
+
+
+
+# DNA cross-linking
+#  bu=20 # set to MTD
+#  (eventdat <- data.frame(var = "P", time = 0, value = 1/10^(2*bu/20), method = "mult"))
+# Bob, this is a one time 100 fold drop in progenitor numbers due to busulfan
+#  out   <- ode(X0, -2:10, fmyelo, pars,events = list(data = eventdat))
+# tail(out) 
+
+matplot(out[ , 1], out[ , 2:6], type = "l", xlab = "time", ylab = "count",
+		main = "Simulation 1: Uninhibited control", log="y", lwd = 2)
+legend(10,1e4, c("Progenitor Cells", "G0 Progenitor Cells","Blood Neutrophils","Tissue Neutrophils",
+				"activated Neutrophils"), col = 1:5, lty = 1:5,bty="n")
+
+
+
+
+
 #
 # state variables are capitalized
 # P   = progenitors (old CFU-GM)
