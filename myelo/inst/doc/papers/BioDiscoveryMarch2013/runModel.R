@@ -8,7 +8,7 @@ source(file.path(system.file(package="myelo"), "doc/papers/BioDiscoveryMarch2013
 times <- seq(1,1e5, by = 1000)
 out   <- ode(X0copd, times, fcopd, pars)
 plot(out)
-# tail(out)  
+tail(out[,1:7])  
 # X0=out[dim(out)[1],2:15] # end becomes new initial state
 # dput(X0)
 
@@ -17,21 +17,16 @@ times <- seq(1,1e5, by = 1000)
 out   <- ode(X0, times, fnorm, pars)
 plot(out)
 tail(out)  
-X0=out[dim(out)[1],2:15] # end becomes new initial state
-dput(X0)
+# X0=out[dim(out)[1],2:15] # end becomes new initial state
+# dput(X0)
 
-# DNA cross-linking
-#  bu=20 # set to MTD
-#  (eventdat <- data.frame(var = "P", time = 0, value = 1/10^(2*bu/20), method = "mult"))
-# Bob, this is a one time 100 fold drop in progenitor numbers due to busulfan
-#  out   <- ode(X0, -2:10, fmyelo, pars,events = list(data = eventdat))
-# tail(out) 
-
+out=as.data.frame(out)
+par(mfrow=(1,1))
 matplot(out[ , 1], out[ , 2:6], type = "l", xlab = "time", ylab = "count",
 		main = "Simulation 1: Uninhibited control", log="y", lwd = 2)
-legend(10,1e4, c("Progenitor Cells", "G0 Progenitor Cells","Blood Neutrophils","Tissue Neutrophils",
+legend(10,10e4, c("Progenitor Cells", "G0 Progenitor Cells","Blood Neutrophils","Tissue Neutrophils",
 				"activated Neutrophils"), col = 1:5, lty = 1:5,bty="n")
-
+tail(out[ , 2:6])
 
 
 
