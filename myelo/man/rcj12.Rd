@@ -34,14 +34,18 @@
 }
 \details{
   The topology of the model can be gleaned from the
-  following two graphs. \if{html}{\figure{BioDiscFig1.png}}
-  \if{latex}{\figure{BioDiscFig1.png}{options: width=5in}}
+  following two graphs. 
+  
+  \if{html}{\figure{BioDiscFig1.png}}
+  \if{latex}{\figure{BioDiscFig1.png}{options: width=5in}} %\cr
+  
   \if{html}{\figure{BioDiscFig2.png}}
   \if{latex}{\figure{BioDiscFig2.png}{options: width=5in}}
 }
 \examples{
 \dontrun{
 library(myelo)
+%?rcj12
 pars=c(Vx.p=1.7e4, Kil3=1, Vp.p=.0203, Kgm=2, Kcn=100, Vp.n=.026, Kg=1, Kmo=1,
 		Vn.tn=.781, Kil8=396, Ksb=250, Vtn.x=.038, Kmcl1=2.438, Vtn.an=.001, Knap2=.1,
 		Van.tn=.09, Vq.p=.53778, Kp=7e4, Vx.gm=2.007, Kn=5e5, Vgm.x=.05,
