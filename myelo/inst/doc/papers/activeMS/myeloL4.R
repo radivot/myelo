@@ -93,19 +93,28 @@ pars=c(Vx.p=4.25e3, Kil3=1, Vp.p=.0203, Kgm=2, Kcn=100, Vp.n=.026, Kg=1, Kmo=1,
     Vgsh.gssg=382.8, Vgssg.gsh=77.0,Kgssg=30,Kros=30, Kgsh=30, Vn.m=1.309e-3,Kros2=.104,
     Kseli=.3, Kifna=1, Vbact.x=5.756e-2, nHr=2.5,kkmax=320,Vx.abl=.22,Ktnfa=1,Ka2=.5,Km0=.1,Kimab=1, Vabl.x=.0145,
 	  il8=4,Qf=.0373, volP=2900, volM=1400, volT=65700, Vgsh.x=6.0e4, Kgsh.x=5.0,        # these are boundary  conditions
-	  bu=0,mo=0,das=0,sb=0,cn=0,seli=0,imab=0,ifna=0,antiox=7,peitc=.01)                  # Drug concentrations
+	  bu=0,mo=0,das=0,sb=0,cn=0,seli=0,imab=0,ifna=0,antiox=7,peitc=0)                  # Drug concentrations
 
 X0=c(P=1.222e7, Q=1.094e6, N=1.727e7, TN=9.296e5, AN=3875,
 	 GM=1.129,NAP2=.01004, RAC2=26.59, Mcl1=2.021, ROS=1.967, bact=0,
-     BcrAbl=5, gb=11, il3=51, gsh=6.78e5, GSSG=1.61e5)                                                                                     # Starting values for variables
+     BcrAbl=0, gb=11, il3=51, gsh=6.78e5, GSSG=1.61e5)                                                                                     # Starting values for variables
                                                                            # When bact>0 initialise il8 to bact*5e-4 +4
 									   # When bact>0 initialise tnfa to bact*5e-6
 									   # When bact>0 initialise abl to tnfa
-times <- seq(1,80, by = 1)
+times <- seq(1,1e6, by = 1e4)
 out   <- ode(X0, times, fmyelo, pars)
 head(out)
 tail(out)  
-X0=out[80,2:19]
+X0=out[dim(out)[1],2:(length(X0)+1)]
+windows(width=12,height=8)
+plot(out)
+
+#P            Q            N           TN           AN           GM         NAP2         RAC2         Mcl1 
+#1.243582e+07 1.180205e+06 1.606299e+07 2.653283e+05 2.681373e+02 1.211738e+00 1.000529e-02 5.522060e+01 2.001058e+00 
+#ROS         bact       BcrAbl           gb          il3          gsh         GSSG 
+#3.202078e+01 0.000000e+00 5.000000e+00 1.100000e+01 5.100000e+01 1.058465e+02 4.999471e+05 
+
+
 
 # DNA cross-linking
 #  bu=20 # set to MTD
