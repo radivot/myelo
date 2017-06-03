@@ -1,6 +1,8 @@
 # myeloN5.R Model of the innate immune response             3 June 2017
 # 
-setwd("C:/R")
+if (length(grep("linux",R.Version()$os))) setwd("~/bob") else #for Thomas (set to your project directory)
+  if(length(grep("darwin",R.Version()$os))) setwd("~/ccf/bobJackson/R/N5") else  #for Tom
+    setwd("C:/R")  #for Bob
 library(deSolve)
 # state variables are capitalized
 # P   = progenitors (old CFU-GM)
@@ -40,7 +42,10 @@ library(deSolve)
 #leva   = levamisole, macrophage activator
 #DAC = 2'-deoxy-5-azacytidine, hypomethylating agent
 
-bacteria=1.0e+3; bact=bacteria; Kbact=1.0e-3; Flps=0.5; Rcount=4e-6; KiM_CSF=8.5e-7; QI=5.655e5; Q=QI; Tet2=1.0; flag99=0; if(bacteria)flag99=1;t99=1e4; 
+bacteria=0; 
+bacteria=1.0e+3; 
+
+bact=bacteria; Kbact=1.0e-3; Flps=0.5; Rcount=4e-6; KiM_CSF=8.5e-7; QI=5.655e5; Q=QI; Tet2=1.0; flag99=0; if(bacteria)flag99=1;t99=1e4; 
 DAC=0;stat5I=.01004; stat5=stat5I; stat3I=26.59; stat3=stat3I
 PI=6.78e6; P=PI; MI=3.0e5; M=MI; NI=4.558e6; N=NI; TNI=7.564e4; TN=TNI; ANI=76.84; AN=ANI; eryth=1.52e8; MKP=1.52e4; MphageI=2.64e4; Mphage=MphageI; AMI=43.7; 
 AM=AMI; GMI=3.73; GM=GMI; Mcl1I=2.021; Mcl1=Mcl1I; ROSI=1.967; ROS=ROSI; g=1; il3=1; gshI=1.0e6; gsh=gshI; GSSGI=0; GSSG=GSSGI;
@@ -183,7 +188,7 @@ write(t99, file="tableM.txt", append=TRUE)
 Cmatrix
 #if(flag99==0 && Cmatrix[i+1,9]<1 && t99<1e4){print("bacteria eliminated at ");print(t99)}
 
-matplot(Cmatrix[,1],Cmatrix[,2:9],type="l",xlab="time",ylab="count",main="myeloN5.R: bacteria=1.0e+3",log="y",lwd=2)
+matplot(Cmatrix[,1],Cmatrix[,2:9],type="l",xlab="time",ylab="count",main="myeloN5.R: bacteria=1.0e+3",log="y",lwd=2,col=1:8,lty=1:8)
 legend(8,1e4,c("progenitors","monocytes","blood neutro","tissue neutro","activated neutro","macrophages","activated macros","bacteria"),col=1:8,lty=1:8,bty="n")
 
 
