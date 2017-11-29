@@ -1,7 +1,10 @@
 .Rproj.user
 .Rhistory
-.gitignore
+.Rbuildignore
 .DS_Store
+.Rhistory
+.Ruserdata
+.gitignore
 .RData
 *.zip
 *.gz
