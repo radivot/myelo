@@ -1,5 +1,7 @@
 .Rproj.user
 .Rhistory
+.gitignore
+.DS_Store
 .RData
 *.zip
 *.gz
