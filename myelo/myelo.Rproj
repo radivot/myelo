@@ -13,8 +13,6 @@ RnwWeave: Sweave
 LaTeX: pdfLaTeX
 
 BuildType: Package
-PackageInstallArgs: --no-multiarch --clean --preclean
-PackageBuildArgs: --clean --preclean
-PackageBuildBinaryArgs: --clean --preclean
-PackageCheckArgs: --no-rebuild-vignettes --check-subdirs=no
+PackageInstallArgs: --no-multiarch
+PackageCheckArgs: --no-build-vignettes --check-subdirs=no
 PackageRoxygenize: rd,namespace

@@ -1,3 +1,4 @@
+import(deSolve)
 export(brooks12)
 export(fokas91)
 export(michor05)
