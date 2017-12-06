@@ -23,6 +23,7 @@
 #'  Modeling the dynamics of mouse iron body distribution: hepcidin is necessary
 #'  but not sufficient,  \emph{BMC Systems Biology}, \bold{11}, 57 (2017)
 #'@keywords IO
+#'@name parmar17
 #'@export
 #'@import deSolve
 
@@ -84,7 +85,10 @@ parmar17<-function(Time, State, Pars) {
     dFe2Tf=-massAc-massAc4-massAc5-massAc7+MassAc8*Plasma
     dFeRBC=-massAc1+massA4
     list(c(dTf, dFeDuo, dFeRest, dFeBM, dNTBI, dFeLiver, dFeSplee,dHepcidi,dFe2Tf,dFeRBC),
-         c(Fe1Tf_c=Fe1Tf_c,Fe2Tf_c=Fe2Tf_c,FeRBC_c=FeRBC_c,VinBM=massA1,VinRBC=massA4,VinSpl=massA5,gTot=gTot)
+         c(Fe1Tf_c=Fe1Tf_c,Fe2Tf_c=Fe2Tf_c,VinBM=massA1,VinRBC=massA4,VinSpl=massA5,
+           FePlas=FePlas,FeDuo_c=FeDuo_c,FeBM_c=FeBM_c,FeRBC_c=FeRBC_c,
+           FeLiver_c=FeLiver_c,FeSplee_c=FeSplee_c,FeRest_c=FeRest_c,Hepcidi_c=Hepcidi_c,
+           gTot=gTot)
     )
   }) # end with.
 }

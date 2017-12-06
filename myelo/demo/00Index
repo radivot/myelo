@@ -3,5 +3,6 @@ epoDemo		Simulate Epo model of Raue et al. Chaos 2010 and find profile likelihoo
 gcsfDemo	Scholz TBMM 2012
 michorDemo	Michor Nature 2005
 ironMetab	  Simulates Figure 5 of Parmar BMC Systems Biology 2017
+stiehl15fig3	  Simulates Figure 3 of Stiehl et al Cancer Research 2015
 
 

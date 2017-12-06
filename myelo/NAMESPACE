@@ -1,5 +1,7 @@
 import(deSolve)
 export(brooks12)
+export(stiehl15)
+export(parmar17)
 export(fokas91)
 export(michor05)
 export(raue10)

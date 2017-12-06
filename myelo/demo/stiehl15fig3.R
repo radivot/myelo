@@ -1,8 +1,55 @@
-# use COPASI to save parmar sbml as XPPAUT *.ODE and do rest by hand + find/replace
-library(myelo)   # load definition of function parmar17
+library(myelo)  
 library(deSolve)
 library(rodeoExt)
-(parameters=parmarPars)
+# start with C  in ss without L 
+# s=1/(1+kc*C3)
+# 0=(2*a1c*s-1)*p1c*C1 => s=1/2a1c = 1/(1+kc*C3ss) => kc=(2*a1-1)/C3ss
+C3ss=4e8 # neuts in blood per Kg body. At 6L/70Kg, (70/6)*4e8 = 4.6e9/L = ~5k/uL, check
+a1c=0.85 # from bone marrow transplantation data ([15] in supplement)  patients need ~15 days to
+# engraft to 5e8 neutrophils per L of blood (4e7 per kg ) after infusion
+# of 5e6 immature cells per kg of body weight. 8 fold increase => 3 doublings in 15 days.
+#Guessing other parameters were set as below and a1c was then tuned to match this
+(kc=(2*a1c-1)/C3ss)
+# 0=2*(1-a1c*s)*p1c*C1ss + (2*a2c*s-1)*p2c*C2ss
+# and s=1/(2a1c) from 1 yields
+# 1*p1c*C1ss = (1-a2c/a1c)*p2c*C2ss 
+# => p2c = p1c*(C1ss/C2ss)/(1-a2c/a1c) ####Eq. 6
+# 0=2*(1-a2c*s)*p2c*C2 - d3c*C3
+# and s=1/(2a1c) from 1 yields
+# 2*(1-(1/2)(a2c/a1c))*p2c*C2ss = d3c*C3ss 
+# => (2-a2c/a1c)*p2c*C2ss = d3c*C3ss 
+# => (2-a2c/a1c)*p2c/d3c = C3ss/C2ss 
+# => (2-a2c/a1c)*p1c*(C1ss/C2ss)/(1-a2c/a1c) = d3c*C3ss/C2ss 
+# => (2-a2c/a1c)/(1-a2c/a1c) = d3c*C3ss/(C1ss*p1c) 
+# => (2-a2c/a1c)= (1-a2c/a1c)*d3c*C3ss/(C1ss*p1c) 
+# => (2-d3c*C3ss/(C1ss*p1c))= a2c/a1c*(1-d3c*C3ss/(C1ss*p1c)) 
+# => 
+d3c=2.3 #per day based on T1/2 of 7 hours
+p1c=0.1 # HSC and committed progenitor average of dividing ~ once per week
+C1ss=1e7 #in marrow per kg (this is an average of HSC and very early committed progenitors)
+(x=d3c*C3ss/(C1ss*p1c))
+(a2c=a1c*(2-x)/(1-x)) #eq 10
+C2ss=2e9 #in marrow per kg
+(p2c = p1c*(C1ss/C2ss)/(1-a2c/a1c))
+
+
+# => (2*p2c*C2ss-d3c*C3ss = (p2c*C2ss)*a2c/a1c   
+# => a2c=a1c*(2*p2c*C2ss-d3c*C3ss/(p2c*C2ss)    
+
+
+# plugging in Eq. 6 yields
+
+
+a2c=d3c*C3ss
+
+
+
+
+
+
+
+
+(parameters=c(a1c=a1c,     ,kc=kc,kl=kc))
 (ic=c(Tf=2.05684e-08, FeDuo=4.52271e-07, FeRest=5.64928e-06, FeBM=6.50966e-07, NTBI=4.33046e-11,           #states are 
      FeLiver=2.32394e-06, FeSplee=2.65354e-07, Hepcidi=2.99023e-11, Fe2Tf=1.75823e-08, FeRBC=3.00042e-05)) #numbers in Moles
 TfTot=5.0309999999999992e-08 # total transferin number in Moles
