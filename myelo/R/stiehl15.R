@@ -38,7 +38,7 @@ stiehl15<-function(Time, State, Pars) {
     dL2=2*(1-a1l*s)*p1l*L1 + (2*a2l*s-1)*p2l*L2
     dL3=2*(1-a2l*s)*p2l*L2 - d3l*L3
     list(c(dC1,dC2,dC3,dL1,dL2,dL3),
-         c(s=s,B=L3/(C1+C2+C3+L1+L2+L3))
+         c(s=s,B=100*(L1+L2)/(C1+C2+L1+L2))
     )
   }) 
 }
