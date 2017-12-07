@@ -32,10 +32,10 @@ C1ss=1e7 #in marrow per kg (this is an average of HSC and very early committed p
 C2ss=2e9 #in marrow per kg
 (p2c = p1c*(C1ss/C2ss)/(1-a2c/a1c))
 
-
+# a1c=0.8 #lower it from 0.85 to 0.80 to make 50% blasts at ~200 days
 (parameters=c(a1c=a1c,    a2c=a2c,  p1c=p1c,    p2c=p2c,    d3c=d3c,      kc=kc,
           a1l=1.6*a1c,a2l=1*a2c,p1l=2.0*p1c,p2l=0.5*p2c,d3l=0.25*d3c, kl=kc)) 
-
+# parameters["a1l"]=0.99
 (ic=c(C1=C1ss,C2=C2ss,C3=C3ss,L1=0,L2=0,L3=0)) # 100 LSC start is in 3B
 
 graphics.off()
@@ -49,17 +49,5 @@ graphics.off()
 quartz(width=8,height=7)
 # The following plot should be the same as the grey bundle in Fig. 3A, but it rises a little early (50% blasts at ~175 days)
 plot(out,which=c("B"),xlab="Days",ylab="Marrow Blasts (%)")  # instead of 50% at ~200 days
-
-#now try to recreat Fig 3B
-(ic=c(C1=C1ss,C2=C2ss,C3=C3ss,L1=100,L2=0,L3=0)) # 1 LSC start is in 3B
-(parameters=c(a1c=a1c,    a2c=a2c,  p1c=p1c,    p2c=p2c,    d3c=d3c,      kc=kc,
-              a1l=2.0*a1c,a2l=1*a2c,p1l=1.6*p1c,p2l=0.5*p2c,d3l=0.25*d3c, kl=kc)) 
-# Problem with this might be that a1l is bigger than 1
-
-out2   <- ode(y=ic, times=seq(1, 500, by = 2), func = stiehl15, parms = parameters)
-out=rbind(out,out2)
-graphics.off()
-quartz(width=8,height=7)
-plot(out,which=c("B"),xlab="Days",ylab="Marrow Blasts (%)")
 
 
