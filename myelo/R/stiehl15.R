@@ -31,7 +31,7 @@
 stiehl15<-function(Time, State, Pars) {
   with(as.list(c(State, Pars)),{
     s=1/(1+kc*C3+kl*L3)
-    dC1=(2*a1c*s-1)*p1c*C1 #parent is always removed (-1) and both daughters either renew or go to C2 (first term below)
+    dC1=(2*a1c*s-1)*p1c*C1 #parent is always removed (-1) and both daughters either renew or go to C2 (first term below) 
     dC2=2*(1-a1c*s)*p1c*C1 + (2*a2c*s-1)*p2c*C2 #2nd term is like one above
     dC3=2*(1-a2c*s)*p2c*C2 - d3c*C3 #leave marrow if become C3, only C3 can die
     dL1=(2*a1l*s-1)*p1l*L1
