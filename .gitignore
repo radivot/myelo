@@ -10,3 +10,4 @@
 *.gz
 myelo/src/*.dll
 myelo/src/*.o
+myelo/src/*.so
