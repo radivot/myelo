@@ -30,7 +30,7 @@
 moore04<-function(Time, State, Pars) {
   with(as.list(c(State, Pars)),{
     dTn = sn - dn*Tn - kn*Tn*C/(C+eta) 
-    dTe = alfn*kn*Tn*C/(C+eta) + alfe*Te*C/(C+eta) - de*Te-ge*C*Te
+    dTe = alfn*kn*Tn*C/(C+eta) + alfe*Te*C/(C+eta) - de*Te - ge*C*Te
     dC  = rc*C*log(Cmax/C) - dc*C - gc*C*Te 
     list( c(dTn,dTe,dC), c(T=Tn+Te) )
   }) 
