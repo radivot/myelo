@@ -1,4 +1,4 @@
-#'CML-T-Cell Model of Moore and Li 2004
+#'CML-T-Cell Model of Clapp et al 2015
 #'
 #'
 #'This function returns the right hand side of an ordinary differential equation
@@ -18,20 +18,23 @@
 #'  and the second element of the list is a vector of auxiliary variables that
 #'  one may wish to track over time.
 #'@author Tom Radivoyevitch
-#'@seealso \code{\link{myelo-package}, \link{fokas91}}
-#'@references Helen Moore and Natasha K. Li  
-#'A mathematical model for chronic myelogenous leukemia (CML) and T cell interaction, 
-#' \emph{Journal of Theoretical Biology},  \bold{227},  513–523 (2004)
+#'@seealso \code{\link{myelo-package}, \link{michor05}}
+#'@references Geoffrey D. Clapp, Thomas Lepoutre, Raouf El Cheikh, Samuel Bernard, Jeremy Ruby, Helene Labussiere-Wallet, Franck E. Nicolini, and Doron Levy Implication of the Autologous
+#'  Immune System in BCR–ABL Transcript Variations in Chronic Myelogenous
+#'  Leukemia Patients Treated with Imatinib, \emph{Cancer Research},  \bold{75}, 4053-4062 (2015)
 #'@keywords IO
-#'@name moore04
+#'@name clapp15
 #'@export
 #'@import deSolve
 
-moore04<-function(Time, State, Pars) {
-  with(as.list(c(State, Pars)),{
-    dTn = sn - dn*Tn - kn*Tn*C/(C+eta) 
-    dTe = alfn*kn*Tn*C/(C+eta) + alfe*Te*C/(C+eta) - de*Te - ge*C*Te
-    dC  = rc*C*log(Cmax/C) - dc*C - gc*C*Te 
-    list( c(dTn,dTe,dC), c(T=Tn+Te) )
+clapp15<-function(Time, State, Pars) {
+  with(as.list(c(Time, State, Pars)),{
+    if (Time>0) {a1=a1/inh1; a2=a2/inh2}
+    dY0 = b1*y1 - a0*Y0                         -  mu*Y0*Z/(1+eps*Y3^2)
+    dY1 = a0*Y0 - b1*Y1 - d1*Y1 + r*Y1*(1-Y1/K) -  mu*Y1*Z/(1+eps*Y3^2)
+    dY2 = a1*Y1         - d2*Y2                 -  mu*Y2*Z/(1+eps*Y3^2)
+    dY3 = a2*Y2         - d3*Y3                 -  mu*Y3*Z/(1+eps*Y3^2)
+    dZ  = sz            - dz*Z                  + alf*Y3*Z/(1+eps*Y3^2)
+    list(c(dY0,dY1,dY2,dY3,dZ),c(ratio=100*beta*Y3/(Y3+2*x)))
   }) 
 }
