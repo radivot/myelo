@@ -21,7 +21,7 @@
 #'@seealso \code{\link{myelo-package}, \link{fokas91}}
 #'@references Helen Moore and Natasha K. Li  
 #'A mathematical model for chronic myelogenous leukemia (CML) and T cell interaction, 
-#' \emph{Journal of Theoretical Biology},  \bold{227},  513–523 (2004)
+#' \emph{Journal of Theoretical Biology},  \bold{227},  513-523 (2004)
 #'@keywords IO
 #'@name moore04
 #'@export

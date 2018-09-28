@@ -19,8 +19,9 @@
 #'  one may wish to track over time.
 #'@author Tom Radivoyevitch
 #'@seealso \code{\link{myelo-package}, \link{michor05}}
-#'@references Geoffrey D. Clapp, Thomas Lepoutre, Raouf El Cheikh, Samuel Bernard, Jeremy Ruby, Helene Labussiere-Wallet, Franck E. Nicolini, and Doron Levy Implication of the Autologous
-#'  Immune System in BCR–ABL Transcript Variations in Chronic Myelogenous
+#'@references Geoffrey D. Clapp, Thomas Lepoutre, Raouf El Cheikh, Samuel Bernard, Jeremy Ruby, 
+#'  Helene Labussie Wallet, Franck E. Nicolini, and Doron Levy, Implication of the Autologous
+#'  Immune System in BCR-ABL Transcript Variations in Chronic Myelogenous
 #'  Leukemia Patients Treated with Imatinib, \emph{Cancer Research},  \bold{75}, 4053-4062 (2015)
 #'@keywords IO
 #'@name clapp15
@@ -30,11 +31,11 @@
 clapp15<-function(Time, State, Pars) {
   with(as.list(c(Time, State, Pars)),{
     if (Time>0) {a1=a1/inh1; a2=a2/inh2}
-    dY0 = b1*y1 - a0*Y0                         -  mu*Y0*Z/(1+eps*Y3^2)
+    dY0 = b1*Y1 - a0*Y0                         -  mu*Y0*Z/(1+eps*Y3^2)
     dY1 = a0*Y0 - b1*Y1 - d1*Y1 + r*Y1*(1-Y1/K) -  mu*Y1*Z/(1+eps*Y3^2)
     dY2 = a1*Y1         - d2*Y2                 -  mu*Y2*Z/(1+eps*Y3^2)
     dY3 = a2*Y2         - d3*Y3                 -  mu*Y3*Z/(1+eps*Y3^2)
     dZ  = sz            - dz*Z                  + alf*Y3*Z/(1+eps*Y3^2)
-    list(c(dY0,dY1,dY2,dY3,dZ),c(ratio=100*beta*Y3/(Y3+2*x)))
+    list(c(dY0,dY1,dY2,dY3,dZ),c(ratio=log10(100*beta*Y3/(Y3+2*x))))
   }) 
 }
