@@ -19,10 +19,12 @@ M
 mymap=function(x) c(fixPars,unlist(x))
 (d=d%>%mutate(pars=map(data,mymap)))
 d$pars[[1]] # has all params needed below
+d1=0.00225
 besse18<-function(Time, State, Pars) {
   with(as.list(c(Time, State, Pars)),{
     if (Time>0) a1=a1/inh1
-    dY1 = r*Y1*(1-Y1/K)                         -  mu*Y1*Z
+    # dY1 = r*Y1*(1-Y1/K)                         -  mu*Y1*Z
+    dY1 = r*Y1*(1-Y1/K) - d1*Y1                   -  mu*Y1*Z
     dY2 = a1*Y1         - d2*Y2                 -  mu*Y2*Z
     dZ  = s             -  d*Z                  + alf*Y2*Z/(1+eps*Y2^2)
     list(c(dY1,dY2,dZ),c(ratio=log10(100*beta*Y2/(Y2+2*x))))
