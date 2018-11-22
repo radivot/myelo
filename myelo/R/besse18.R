@@ -18,7 +18,7 @@
 #'  and the second element of the list is a vector of auxiliary variables that
 #'  one may wish to track over time.
 #'@author Tom Radivoyevitch
-#'@seealso \code{\link{myelo-package}, \link{clapp18}, \link{michor05}}
+#'@seealso \code{\link{myelo-package}, \link{clapp15}, \link{michor05}}
 #'@references Apollos Besse, Geoffrey D. Clapp, Samuel Bernard, Franck E.
 #'  Nicolini, Doron Levy, Thomas Lepoutre, Stability Analysis of a Model of
 #'  Interaction Between the Immune System and Cancer Cells in Chronic

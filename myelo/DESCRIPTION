@@ -11,9 +11,9 @@ Description: This package aims to make analyses of models of
              provides functions that compute
              the right hand sides of systems of ODEs.
 Maintainer: Tomas Radivoyevitch <txr24@case.edu>
-Imports: deSolve
+Imports: deSolve,PBSddesolve
 Suggests: bbmle
 License: GPL-2
 LazyData: yes
 URL: http://epbi-radivot.cwru.edu/myelo/myelo.html
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

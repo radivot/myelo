@@ -6,4 +6,6 @@ ironMetab	  Simulates Figure 5 of Parmar BMC Systems Biology 2017
 stiehl15fig3	  Simulates Figure 3 of Stiehl et al Cancer Research 2015
 mooreDemo      Simulates model of Moore and Li 2004
 clapp15Demo    Simulates model of Clapp et al (2015) for 12 patients
+besse18Demo    Simulates model of Besse et al (2018) 
+kim08Demo      Simulates model of Kim et al (2008) for 3 patients
 
