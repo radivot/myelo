@@ -19,7 +19,7 @@ parameters["vHepSyn"]=5*parameters["vHepSyn"]
 out2   <- ode(y=X0, times=seq(1, 360, by = 1), func = parmar17, parms = parameters)
 out=rbind(out,out2)
 head(out)
-?plot.deSolve
+# ?plot.deSolve
 graphics.off()
 quartz(width=8,height=7)
 # par(mfrow=c(2,4))
