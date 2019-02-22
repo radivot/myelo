@@ -5,6 +5,7 @@
 .Rhistory
 .Ruserdata
 .gitignore
+.html
 .RData
 *.zip
 *.gz
