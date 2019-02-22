@@ -11,8 +11,6 @@ help(pack="myelo")
 ## A mathematical model for chronic myelogenous leukemia (CML) and T cell interaction (Moore and Li 2004)
 
 The following code reproduces Figures 6-8 in [Moore and Li 2004](https://www.ncbi.nlm.nih.gov/pubmed/15038986) 
-![](docs/fig6to8.png)
-![](docs/fig8.png)
 
 ```
 library(myelo)  
@@ -42,7 +40,19 @@ gy=ylab("CML Cells/uL")
 gx=xlab("Days")
 D%>%ggplot(aes(x=time,y=C,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp
 ggsave("~/Results/CML/fig6to8.png",height=3,width=3.5)
+```
+![](docs/fig6to8.png)
+
+
+
+The code below further zooms in on 0 to 100 of the plot in Figure 8
+
+```
 cc=coord_cartesian(xlim=c(0,100))
-D%>%filter(x=="Fig.8")%>%ggplot(aes(x=time,y=C,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+cc
+library(scales)
+D%>%filter(x=="Fig.8")%>%
+  ggplot(aes(x=time,y=C))+geom_line(size=1,color=hue_pal()(4)[3])+gx+gy+tc(14)+ltb+ltp+cc+
+  annotate("text", x =50, y =10000, label = "Fig. 8")
 ggsave("~/Results/CML/fig8.png",height=3,width=3)
 ```
+![](docs/fig8.png)

@@ -26,5 +26,8 @@ gx=xlab("Days")
 D%>%ggplot(aes(x=time,y=C,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp
 ggsave("~/Results/CML/fig6to8.png",height=3,width=3.5)
 cc=coord_cartesian(xlim=c(0,100))
-D%>%filter(x=="Fig.8")%>%ggplot(aes(x=time,y=C,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+cc
+library(scales)
+D%>%filter(x=="Fig.8")%>%
+  ggplot(aes(x=time,y=C))+geom_line(size=1,color=hue_pal()(4)[3])+gx+gy+tc(14)+ltb+ltp+cc+
+  annotate("text", x =50, y =10000, label = "Fig. 8")
 ggsave("~/Results/CML/fig8.png",height=3,width=3)
