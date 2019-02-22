@@ -56,3 +56,56 @@ D%>%filter(x=="Fig.8")%>%
 ggsave("~/Results/CML/fig8.png",height=3,width=3)
 ```
 ![](docs/fig8.png)
+
+
+We can now examine time courses of naive T cells
+```
+gy=ylab("Naive T Cells/uL")
+D%>%ggplot(aes(x=time,y=Tn,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+cc
+ggsave("~/Results/CML/naive.png",height=3,width=3)
+```
+![](docs/naive.png)
+
+and effector T cells
+```
+gy=ylab("Effector T Cells/uL")
+D%>%ggplot(aes(x=time,y=Te,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+cc #WTF?
+ggsave("~/Results/CML/effector.png",height=3,width=3)
+```
+![](docs/effector.png)
+
+It seems the initial effecter T cell population is far higher than it should be. The following code zooms in on the first 3 time points
+```
+D%>%group_by(x)%>%nest()%>%mutate(top=map(data,function(x) x[1:3,]))%>%unnest(top)
+#  A tibble: 12 x 6
+#    x       time    Tn      Te      C     T
+#    <chr>  <dbl> <dbl>   <dbl>  <dbl> <dbl>
+#  1 Table1     0 1510  20      10000  1530 
+#  2 Table1     1 1449.  0.0130  9062. 1449.
+#  3 Table1     2 1391.  0.0137  8252. 1391.
+#  4 Fig.6      0 1510  20      10000  1530 
+#  5 Fig.6      1 1133.  0.0162  9937. 1133.
+#  6 Fig.6      2  850.  0.0122  9877.  850.
+#  7 Fig.7      0 1510  20      10000  1530 
+#  8 Fig.7      1  997.  0.0316 10148.  997.
+#  9 Fig.7      2  659.  0.0205 10319.  659.
+# 10 Fig.8      0 1510  20      10000  1530 
+# 11 Fig.8      1 1349.  0.645   9606. 1350.
+# 12 Fig.8      2 1205.  0.588   9415. 1206.
+```
+
+A help page is available for the function called by ode() of the R package deSolve, i.e. moore04(). Its definition is
+```
+moore04<-function(Time, State, Pars) {
+  with(as.list(c(State, Pars)),{
+    dTn = sn - dn*Tn - kn*Tn*C/(C+eta) 
+    dTe = alfn*kn*Tn*C/(C+eta) + alfe*Te*C/(C+eta) - de*Te - ge*C*Te
+    dC  = rc*C*log(Cmax/C) - dc*C - gc*C*Te 
+    list( c(dTn,dTe,dC), c(T=Tn+Te) )
+  }) 
+}
+```
+
+The terms in this model are as follows:
+![](docs/moore04model.png)
+

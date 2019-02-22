@@ -31,3 +31,13 @@ D%>%filter(x=="Fig.8")%>%
   ggplot(aes(x=time,y=C))+geom_line(size=1,color=hue_pal()(4)[3])+gx+gy+tc(14)+ltb+ltp+cc+
   annotate("text", x =50, y =10000, label = "Fig. 8")
 ggsave("~/Results/CML/fig8.png",height=3,width=3)
+
+gy=ylab("Naive T Cells/uL")
+D%>%ggplot(aes(x=time,y=Tn,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+cc
+ggsave("~/Results/CML/naive.png",height=3,width=3)
+
+gy=ylab("Effector T Cells/uL")
+D%>%ggplot(aes(x=time,y=Te,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+cc #WTF?
+ggsave("~/Results/CML/effector.png",height=3,width=3)
+D%>%group_by(x)%>%nest()%>%mutate(top=map(data,function(x) x[1:3,]))%>%unnest(top)
+
