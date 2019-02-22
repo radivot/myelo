@@ -10,7 +10,15 @@ help(pack="myelo")
 
 ## A mathematical model for chronic myelogenous leukemia (CML) and T cell interaction (Moore and Li 2004)
 
+This model captures CML cells (C) interacting with naive T cells (Tn) and effector T cells (Te). 
+The differential equations of this model are:
+![](docs/moore04model.png)
+
+
 The following code reproduces Figures 6-8 in [Moore and Li 2004](https://www.ncbi.nlm.nih.gov/pubmed/15038986) 
+
+![](docs/fig6to8.png)
+
 
 ```
 library(myelo)  
@@ -41,7 +49,6 @@ gx=xlab("Days")
 D%>%ggplot(aes(x=time,y=C,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp
 ggsave("~/Results/CML/fig6to8.png",height=3,width=3.5)
 ```
-![](docs/fig6to8.png)
 
 
 
@@ -106,6 +113,4 @@ moore04<-function(Time, State, Pars) {
 }
 ```
 
-The terms in this model are as follows:
-![](docs/moore04model.png)
 
