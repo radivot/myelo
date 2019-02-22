@@ -69,7 +69,7 @@ ggsave("~/Results/CML/naive.png",height=3,width=3.5)
 and effector T cells
 ```
 gy=ylab("Effector T Cells/uL")
-D%>%ggplot(aes(x=time,y=Te,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+cc #WTF?
+D%>%ggplot(aes(x=time,y=Te,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+cc
 ggsave("~/Results/CML/effector.png",height=3,width=3)
 ```
 ![](docs/effector.png)
