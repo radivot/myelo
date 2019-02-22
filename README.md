@@ -62,7 +62,7 @@ We can now examine time courses of naive T cells
 ```
 gy=ylab("Naive T Cells/uL")
 D%>%ggplot(aes(x=time,y=Tn,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+cc
-ggsave("~/Results/CML/naive.png",height=3,width=3)
+ggsave("~/Results/CML/naive.png",height=3,width=3.5)
 ```
 ![](docs/naive.png)
 

@@ -34,7 +34,7 @@ ggsave("~/Results/CML/fig8.png",height=3,width=3)
 
 gy=ylab("Naive T Cells/uL")
 D%>%ggplot(aes(x=time,y=Tn,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+cc
-ggsave("~/Results/CML/naive.png",height=3,width=3)
+ggsave("~/Results/CML/naive.png",height=3,width=3.5)
 
 gy=ylab("Effector T Cells/uL")
 D%>%ggplot(aes(x=time,y=Te,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+cc #WTF?
