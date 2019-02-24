@@ -16,4 +16,4 @@ Suggests: bbmle
 License: GPL-2
 LazyData: yes
 URL: http://epbi-radivot.cwru.edu/myelo/myelo.html
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
