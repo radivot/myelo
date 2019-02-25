@@ -15,6 +15,8 @@ names(X0)<-names(ic)
 parameters["ksHepci"]=0
 out2   <- ode(y=X0, times=seq(1, 365, by = 1), func = parmar19, parms = parameters)
 out=rbind(out,out2)
+# out2   <- ode(y=ic, times=seq(1, 365, by = 1), func = parmar19, parms = parameters)
+# out=out2  # still goes negative, so it wasn't the initial run from -30 to 0 that did it
 head(out)
 graphics.off()
 quartz(width=8,height=7)
