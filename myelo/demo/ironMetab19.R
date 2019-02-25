@@ -35,3 +35,16 @@ D=D%>%select(time,NTBI_c:Hepcidi_c)
 d=D%>%gather(key=variable,value=Concentration,-time)
 d%>%ggplot(aes(x=time,y=Concentration))+facet_wrap(~variable,scales="free",nrow=3)+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+sbb
 ggsave("~/Results/myelo/parmar19.png",height=6,width=6.5)
+
+library(CoRC)
+unloadAllModels()
+(L=loadExamples())
+runTC(model=L[[1]])  #runs fine
+path="~/ccf/jarek/grants/msb/iron/parmar19sup/cps/"
+(m0=loadModel(paste0(path,"IronMousePV3.cps")))
+runTC(model=m0) # no results
+(m1=loadModel(paste0(path,"IronMousePV3_Hemochromatosis.cps")))
+runTC(model=m1) # no results
+
+# saveSBML("~/Results/myelo/brus.sbml",level=2,version=4,model=L[[1]],overwrite=T)
+# saveSBML("~/Results/myelo/m0.sbml",level=2,version=4,model=m0,overwrite=T)
