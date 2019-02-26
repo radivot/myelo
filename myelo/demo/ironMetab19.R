@@ -39,14 +39,16 @@ d%>%ggplot(aes(x=time,y=Concentration))+facet_wrap(~variable,scales="free",nrow=
 ggsave("~/Results/myelo/parmar19.png",height=6,width=6.5)
 
 library(CoRC)
-unloadAllModels()
-(L=loadExamples())
-runTC(model=L[[1]])  #runs fine
 path="~/ccf/jarek/grants/msb/iron/parmar19sup/cps/"
 (m0=loadModel(paste0(path,"IronMousePV3.cps")))
-runTC(model=m0) # no results
+r0=runTC( model=m0,duration=30,save_result_in_memory = TRUE)
+D0=r0$result%>%select(Time:FeRBC)%>%select(-Fe1Tf,-EPO)
+D0$Time=D0$Time-30
 (m1=loadModel(paste0(path,"IronMousePV3_Hemochromatosis.cps")))
-runTC(model=m1) # no results
+r1=runTC(model=m1,save_result_in_memory = TRUE) 
+D1=r1$result%>%select(Time:FeRBC)%>%select(-Fe1Tf,-EPO)
+D=bind_rows(D0,D1)
+d=D%>%gather(key=variable,value=Concentration,-Time)
+d%>%ggplot(aes(x=Time,y=Concentration))+facet_wrap(~variable,scales="free",nrow=3)+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+sbb
+ggsave("~/Results/myelo/parmar19CoRC.png",height=6,width=6.5)
 
-# saveSBML("~/Results/myelo/brus.sbml",level=2,version=4,model=L[[1]],overwrite=T)
-# saveSBML("~/Results/myelo/m0.sbml",level=2,version=4,model=m0,overwrite=T)

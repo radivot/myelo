@@ -112,7 +112,7 @@ moore04<-function(Time, State, Pars) {
   }) 
 }
 ```
-## A computational model to understand mouse iron physiology and disease (Parmar and Mendes 2019, Plos Comp Biol)
+## A computational model to understand mouse iron physiology and disease [(Parmar and Mendes 2019, Plos Comp Biol)](https://www.ncbi.nlm.nih.gov/pubmed/30608934) 
 
 This code first runs the model from -30 to 0 days to show the wildtype steady state. 
 It then emulates hemachromatosis formation by setting
@@ -174,4 +174,23 @@ The transferrin concentration (Tf_c) is seen to dip to negative values.  COPASI 
 The reason for this difference is unclear. 
 
 
+Fortunately, there is now a COPASI R Connector R package called CoRC, see https://github.com/jpahle/CoRC. CoRC allows us to run  the iron model through COPASI directly via model files created by COPASI, which was used to develop the model. The code (below) is straightforward. Plots are made using ggplot2 as above. Note that the runTC() (run Time Course)  argument save_result_in_memory must be overriden to TRUE.  
 
+```
+library(CoRC)
+path="~/ccf/jarek/grants/msb/iron/parmar19sup/cps/"
+(m0=loadModel(paste0(path,"IronMousePV3.cps")))
+r0=runTC( model=m0,duration=30,save_result_in_memory = TRUE)
+D0=r0$result%>%select(Time:FeRBC)%>%select(-Fe1Tf,-EPO)
+D0$Time=D0$Time-30
+(m1=loadModel(paste0(path,"IronMousePV3_Hemochromatosis.cps")))
+r1=runTC(model=m1,save_result_in_memory = TRUE) 
+D1=r1$result%>%select(Time:FeRBC)%>%select(-Fe1Tf,-EPO)
+D=bind_rows(D0,D1)
+d=D%>%gather(key=variable,value=Concentration,-Time)
+d%>%ggplot(aes(x=Time,y=Concentration))+facet_wrap(~variable,scales="free",nrow=3)+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+sbb
+ggsave("~/Results/myelo/parmar19CoRC.png",height=6,width=6.5)
+```
+
+![](docs/parmar19CoRC.png)
+The high frequency glitches at early times of the perturbation of zapping the hepicidin synthesis rate instantly to zero have now dissappeared. 
