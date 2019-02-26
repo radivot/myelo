@@ -193,13 +193,6 @@ ggsave("~/Results/myelo/parmar19CoRC.png",height=6,width=6.5)
 ```
 
 ![](docs/parmar19CoRC.png)
-The high frequency glitches at early times of the perturbation of zapping the hepicidin synthesis rate instantly to zero have now disappeared. An explanation of this, offered by Dr. Pedro Mendes, is 
-*...the system is overdetermined due to 
-mass conservation. COPASI identifies the ODEs that are linear 
-combinations of the other ODEs and removes them (those species are then 
-calculated by the algebraic sum that expresses the mass conservation). 
-In many cases this makes no difference, but when there is stiffness or 
-other numerical instabilities the overdetermined system can produce 
-erroneous solutions.*
+The high frequency glitches at early times of the perturbation of zapping the hepicidin synthesis rate instantly to zero have now disappeared. 
 
 
