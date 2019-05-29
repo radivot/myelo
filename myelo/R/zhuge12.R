@@ -31,7 +31,7 @@
 #' 
 #' myplot=function(times, y1,y2) {
 #' 	graphics.off()
-#' 	windows(width=6,height=6)
+#' 	quartz(width=6,height=6)
 #' 	par(mfrow=c(1,1),mar=c(4.7,6,3.3,1),oma=c(0,0,0,0),lwd=3,cex.lab=1.8,cex.axis=1.7,cex.main=1.8)
 #' 	plot(times,y1/1e8,type="l",lty=2,log="y",yaxt="n",ylim=c(1e-2,1e4),ylab="",xlab="days")
 #' 	lines(times,y2/1e8,lty=1)
