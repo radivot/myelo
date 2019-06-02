@@ -239,7 +239,7 @@ zhuge12N<-function(Time, State, Pars) {
 times= -zhugePars[["tauN"]]:5000
 yout <- dede(c(N=zhugePars[["Nss"]]), times = times, func = zhuge12N,	parms = zhugePars)
 
-zhugePars["Nss"]=tail(yout,1)[,"N"] # overide to 6.3e8 to more accurare 6.398e8
+zhugePars["Nss"]=tail(yout,1)[,"N"] # overide 6.3e8 to more accurare 6.398e8
 
 (eventdat <- data.frame(var = c("N"),
                        time = c(25) ,
@@ -258,10 +258,11 @@ ggsave("~/Results/myelo/zhugeNjumpTo2e9.png",height=6,width=6.5)
 ```
 
 ![](docs/zhugeNjumpTo2e9.png)
-We see that the bolus that raised the N count to 2e9 on day 25 led to ordering 
-too few 11 days later (trough), which led to ordering too many 11 days later (surplus), etc.
-As peaks broaden, their amplitudes drop. It is interesting that between the spike and the first
-trough, the system fully returned to steady state. 
+We see that the bolus that raised N to 2e9/kg on day 25 led to ordering 
+too few to arrive 11 days later (trough), which led to ordering too many to arrive 
+11 days later (second spike up), etc.
+As peaks broaden, amplitudes drop. It is interesting that between spikes and
+troughs, the system returns fully to steady state. 
 
 
 
