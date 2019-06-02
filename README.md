@@ -203,9 +203,10 @@ ggsave("~/Results/myelo/parmar19CoRC.png",height=6,width=6.5)
 The high frequency glitches at early times of the perturbation of zapping the hepicidin synthesis rate instantly to zero have now disappeared. 
 
 
-## Neutrophil dynamics in response to chemotherapy and G-CSF (Zhuge, Lei and Mackey, 2012)
+# Neutrophil dynamics in response to chemotherapy and G-CSF (Zhuge, Lei and Mackey, 2012)
 This model captures ringing in neutrophil counts arising due to pure delays in their production being
-difficult to control. We focus on the simplified model in which the number of quiescent (Q) 
+difficult to control. We focus first on a simplified version of the 
+model in which the number of quiescent (Q) 
 hematopoietic stem cells (HSC) is held constant.
 
 First we load libraries and see that zhugePars values match Table 1. 
@@ -263,6 +264,170 @@ too few to arrive 11 days later (trough), which led to ordering too many to arri
 11 days later (second spike up), etc.
 As peaks broaden, amplitudes drop. It is interesting that between spikes and
 troughs, the system returns fully to steady state. 
+
+
+#### Response of simple model to chemo (Figure 2B)
+
+We reproduce Figure 2B exactly in two different ways. First we use events to stop integration
+at points of parameter value switching. This is done by greating internal dummy states
+that have zero derivatives to create step wave functions for 
+
+
+
+```
+
+library(tidyverse)
+library(deSolve)
+library(myelo)  
+zhugePars["Nss"]=639805537  #SS found in readme.md
+Tf=200
+mkEventsC=function(zhugePars,Tf) {  #chemo events only
+  (Tc1=seq(0,Tf,zhugePars["T"]))
+  N1=length(Tc1)
+  (Tc2=seq(1,Tf,zhugePars["T"]))
+  N2=length(Tc2)
+  (eventdat1 <- data.frame(var = rep("eta",N1),
+                           time = Tc1 ,
+                           value = rep(zhugePars["etaMinNP"],N1),
+                           method = rep("rep",N1)))
+  (eventdat2 <- data.frame(var = rep("eta",N2),
+                           time = Tc2 ,
+                           value = rep(zhugePars["etaNP"],N2),
+                           method = rep("rep",N2)))
+  bind_rows(eventdat1,eventdat2)%>%arrange(time)
+}
+
+eventDF=mkEventsC(zhugePars,Tf)
+head(eventDF)
+sapply(eventDF,class)
+
+times= seq(-zhugePars[["tauN"]],Tf,by=0.01)
+
+# Chemo acts only on proliferation,  so add one state to integrate eta 
+zhuge12Nchemo<-function(Time, State, Pars) {  # model with stem cells Q treated as constant
+  with(as.list(c(State, Pars)), {
+    deta=0
+    dEta=eta
+    if (Time < 0) {
+      An=exp(etaNP*tauNP-gam0*tauNM)  # no gcsf or chemo perturbations for negative times
+      dN=-gamN*N + An*f0/(1+(Nss/the1)^s1)*Qss
+    }
+    else{
+      delEta=lagvalue(Time - tauNM,3)-lagvalue(Time - tauN,3)
+      An=exp(delEta - gam0*tauNM)
+      dN=-gamN*N + An*f0/(1+(lagvalue(Time - tauN,1)/the1)^s1)*Qss
+    }
+    list(c(dN,deta,dEta))
+  })
+}
+
+zhugePars["T"]=18
+yout=dede(c(N=zhugePars[["Nss"]],eta=zhugePars[["etaNP"]],Eta=0),
+          times=times,func=zhuge12Nchemo,
+          parms=zhugePars,events=list(data=mkEventsC(zhugePars,Tf)),method="lsodar")
+D18=data.frame(yout)
+
+zhugePars["T"]=23
+yout=dede(c(N=zhugePars[["Nss"]],eta=zhugePars[["etaNP"]],Eta=0),
+          times=times,func=zhuge12Nchemo,
+          parms=zhugePars,events=list(data=mkEventsC(zhugePars,Tf)),method="lsodar")
+D23=data.frame(yout)
+D23$Tc="23 Days"
+D18$Tc="18 Days"
+D=bind_rows(D18,D23)%>%mutate(N=N/1e8)
+ltp=theme(legend.position="top")
+sy=scale_y_log10()
+tc=function(sz) theme_classic(base_size=sz)
+gy=ylab("Neutrophil Counts")
+gx=xlab("Days")
+cc=coord_cartesian(ylim=c(1e-2,1e4))
+gh=geom_hline(yintercept=0.63)
+D%>%ggplot(aes(x=time,y=N,col=Tc))+geom_line(size=1)+gx+gy+tc(14)+sy+ltp+cc+gh
+ggsave("~/Results/myelo/zhugeNchemoEventsfig2B.png",height=6,width=6.5)
+
+```
+
+![](docs/zhugeNchemoEventsfig2B.png)
+This figure matches figure 2B in Zhuge et al 2012 very nicely. 
+We next show how the same plot can be created without events. 
+
+
+```
+zhuge12Nchemo<-function(Time, State, Pars) {  # model with stem cells Q treated as constant
+	with(as.list(c(State, Pars)), {
+				dEta=etaNP
+				if (Time < 0) {
+					An=exp(etaNP*tauNP-gam0*tauNM)  # no gcsf or chemo perturbations for negative times
+					dN=-gamN*N + An*f0/(1+(Nss/the1)^s1)*Qss
+				}
+				else{# quotients and remaninders: 21.4%/%10  21.4%%10
+					if (Time%%T < 1) dEta=etaMinNP  # in chemo period
+					delEta=lagvalue(Time - tauNM)[2]-lagvalue(Time - tauN)[2]
+					An=exp(delEta - gam0*tauNM)
+					dN=-gamN*N + An*f0/(1+(lagvalue(Time - tauN)[1]/the1)^s1)*Qss
+				}
+				list(c(dN,dEta))
+			})
+}
+times <- seq(-zhugePars[["tauN"]],200,by=0.1)
+
+zhugePars["T"]=18
+yout18 <- dede(c(N=zhugePars[["Nss"]],Eta=0), times = times, func = zhuge12Nchemo,	parms = zhugePars)
+D18=data.frame(yout18)
+
+zhugePars["T"]=23
+yout23 <- dede(c(N=zhugePars[["Nss"]],Eta=0), times = times, func = zhuge12Nchemo,	parms = zhugePars)
+D23=data.frame(yout23)
+
+D23$Tc="23 Days"
+D18$Tc="18 Days"
+D=bind_rows(D18,D23)%>%mutate(N=N/1e8)
+
+D%>%ggplot(aes(x=time,y=N,col=Tc))+geom_line(size=1)+gx+gy+tc(14)+sy+ltp+cc+gh
+ggsave("~/Results/myelo/zhugeNchemoFig2B.png",height=6,width=6.5)
+
+
+```
+
+![](docs/zhugeNchemoFig2B.png)
+The two figure appear to be identical to each other and to figure 2B in Zhuge et al 2012.
+Events were used above because reported times are not necessarily at the ends of integration step sizes, so it is possible that the implementation without events might be less accurate. High frequency components are, however, clearly present in the solution, and this would tend to keep integration step sizes small. 
+This may be why these two implementations yield identical results.
+
+
+#### Response of full model to chemo and G-CSF (Figure 6B)
+This code is the example on the Zhuge12 help page. It uses the full model, with both stem cells and neutrophils and both chemo and G-CSF. 
+
+```
+times <- seq(-zhugePars[["tauN"]],200,by=0.1)
+zhugePars["T"]=21
+zhugePars["T1"]=4
+yout4 <- dede(c(Q=zhugePars[["Qss"]],N=zhugePars[["Nss"]],Eta=0,Gam=0,GamS=0),
+		times = times, func = zhuge12,	parms = zhugePars)
+
+zhugePars["T1"]=14
+yout14 <- dede(c(Q=zhugePars[["Qss"]],N=zhugePars[["Nss"]],Eta=0,Gam=0,GamS=0),
+		times = times, func = zhuge12,	parms = zhugePars)
+
+
+D4=data.frame(yout4)
+D14=data.frame(yout14)
+
+D4$T1="4 Days"
+D14$T1="14 Days"
+D=bind_rows(D4,D14)%>%mutate(N=N/1e8)
+
+D%>%ggplot(aes(x=time,y=N,col=T1))+geom_line(size=1)+gx+gy+tc(14)+sy+ltp+cc+gh
+ggsave("~/Results/myelo/zhugeFig6B.png",height=6,width=6.5)
+```
+
+![](docs/zhugeFig6B.png)
+
+Relative to Figure 6B, the T1=14 curve here hits severe neutropenia ~40 days later 
+(at ~90 vs ~50 days).  The reason for this is unclear. 
+
+
+
 
 
 
