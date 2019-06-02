@@ -204,12 +204,11 @@ The high frequency glitches at early times of the perturbation of zapping the he
 
 
 # Neutrophil dynamics in response to chemotherapy and G-CSF (Zhuge, Lei and Mackey, 2012)
-This model captures ringing in neutrophil counts arising due to pure delays in their production being
-difficult to control. We focus first on a simplified version of the 
-model in which the number of quiescent (Q) 
+This model captures ringing in neutrophil counts arising due to pure delays in their production. We focus 
+first on a simplified version of the model in which the number of quiescent (Q) 
 hematopoietic stem cells (HSC) is held constant.
 
-First we load libraries and see that zhugePars values match Table 1. 
+First check that values in zhugePars match Table 1. 
 ```
 library(tidyverse)
 library(deSolve)
@@ -224,7 +223,7 @@ zhugePars #matches Table 1 parameters
 
 ``` 
 
-Next we examine ringing in Neut counts after we boost them from a steady of 6.4e8 to 2e9. 
+Next we examine ringing in Neut counts after we boost them from a steady of 6.4e8/kg to 2e9/kg. 
 
 ```
 zhuge12N<-function(Time, State, Pars) {  
@@ -269,11 +268,8 @@ troughs, the system returns fully to steady state.
 #### Response of simple model to chemo (Figure 2B)
 
 We reproduce Figure 2B exactly in two different ways. First we use events to stop integration
-at points of parameter value switching. This is done by greating internal dummy states
-that have zero derivatives to create step wave functions for 
-
-
-
+at points of parameter value switching. This is done by mapping dynamic parameters 
+to dummy states (with zero derivatives) that are set to values at event times.  
 ```
 
 library(tidyverse)
@@ -348,12 +344,11 @@ ggsave("~/Results/myelo/zhugeNchemoEventsfig2B.png",height=6,width=6.5)
 ```
 
 ![](docs/zhugeNchemoEventsfig2B.png)
-This figure matches figure 2B in Zhuge et al 2012 very nicely. 
-We next show how the same plot can be created without events. 
-
+This figure appears to match figure 2B in Zhuge et al 2012 exactly. 
+Next we see how the exact same plot can be created without events. 
 
 ```
-zhuge12Nchemo<-function(Time, State, Pars) {  # model with stem cells Q treated as constant
+zhuge12Nchemo<-function(Time, State, Pars) {  # model without events 
 	with(as.list(c(State, Pars)), {
 				dEta=etaNP
 				if (Time < 0) {
@@ -390,13 +385,12 @@ ggsave("~/Results/myelo/zhugeNchemoFig2B.png",height=6,width=6.5)
 ```
 
 ![](docs/zhugeNchemoFig2B.png)
-The two figure appear to be identical to each other and to figure 2B in Zhuge et al 2012.
-Events were used above because reported times are not necessarily at the ends of integration step sizes, so it is possible that the implementation without events might be less accurate. High frequency components are, however, clearly present in the solution, and this would tend to keep integration step sizes small. 
-This may be why these two implementations yield identical results.
+
+Events were used because reported times are not necessarily integration times: the model with events could thus be more accurate. Identical solutions may be due to high frequencies causing integration step sizes small enough that differences are negligible.  
 
 
 #### Response of full model to chemo and G-CSF (Figure 6B)
-This code is the example on the Zhuge12 help page. It uses the full model, with both stem cells and neutrophils and both chemo and G-CSF. 
+This code is the Zhuge12 help page example. It runs a model that includes both stem cells and neutrophils and both chemo and G-CSF. 
 
 ```
 times <- seq(-zhugePars[["tauN"]],200,by=0.1)
