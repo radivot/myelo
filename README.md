@@ -205,10 +205,10 @@ The high frequency glitches at early times of the perturbation of zapping the he
 
 ## Neutrophil dynamics in response to chemotherapy and G-CSF (Zhuge, Lei and Mackey, 2012)
 This model captures ringing in neutrophil counts arising due to pure delays in their production being
-difficult to control. We focus on the simplified model in which number of quiescent (Q) 
+difficult to control. We focus on the simplified model in which the number of quiescent (Q) 
 hematopoietic stem cells (HSC) is held constant.
 
-First we load libraries and see that zhugePars parameter values match those in Table 1. 
+First we load libraries and see that zhugePars values match Table 1. 
 ```
 library(tidyverse)
 library(deSolve)
@@ -223,7 +223,7 @@ zhugePars #matches Table 1 parameters
 
 ``` 
 
-Next we examine  ringing in Neut counts after we boost them from a steady of 6.4e8 to 2e9. 
+Next we examine ringing in Neut counts after we boost them from a steady of 6.4e8 to 2e9. 
 
 ```
 zhuge12N<-function(Time, State, Pars) {  
