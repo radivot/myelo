@@ -21,9 +21,10 @@ The following code reproduces Figures 6-8 in [Moore and Li 2004](https://www.ncb
 
 
 ```
-library(myelo)  
-library(deSolve)
 library(tidyverse)
+library(deSolve)
+library(myelo)  
+
 #Table 1
 (p1=c(sn=0.073,dn=0.04,de=0.06,dc=0.2,  kn=.001,eta=100,alfn=0.41,alfe=0.2, Cmax=3e5, rc=.03, ge=.005, gc=.005)) 
 #Table 3
@@ -48,6 +49,7 @@ gy=ylab("CML Cells/uL")
 gx=xlab("Days")
 D%>%ggplot(aes(x=time,y=C,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp
 ggsave("~/Results/CML/fig6to8.png",height=3,width=3.5)
+
 ```
 
 
@@ -61,15 +63,18 @@ D%>%filter(x=="Fig.8")%>%
   ggplot(aes(x=time,y=C))+geom_line(size=1,color=hue_pal()(4)[3])+gx+gy+tc(14)+ltb+ltp+cc+
   annotate("text", x =50, y =10000, label = "Fig. 8")
 ggsave("~/Results/CML/fig8.png",height=3,width=3)
+
 ```
 ![](docs/fig8.png)
 
 
 We can now examine time courses of naive T cells
+
 ```
 gy=ylab("Naive T Cells/uL")
 D%>%ggplot(aes(x=time,y=Tn,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+cc
 ggsave("~/Results/CML/naive.png",height=3,width=3.5)
+
 ```
 ![](docs/naive.png)
 
@@ -78,6 +83,7 @@ and effector T cells
 gy=ylab("Effector T Cells/uL")
 D%>%ggplot(aes(x=time,y=Te,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+cc
 ggsave("~/Results/CML/effector.png",height=3,width=3)
+
 ```
 ![](docs/effector.png)
 
@@ -99,6 +105,7 @@ D%>%group_by(x)%>%nest()%>%mutate(top=map(data,function(x) x[1:3,]))%>%unnest(to
 # 10 Fig.8      0 1510  20      10000  1530 
 # 11 Fig.8      1 1349.  0.645   9606. 1350.
 # 12 Fig.8      2 1205.  0.588   9415. 1206.
+
 ```
 
 A help page is available for the function called by ode() of the R package deSolve, i.e. moore04(). Its definition is
@@ -194,5 +201,67 @@ ggsave("~/Results/myelo/parmar19CoRC.png",height=6,width=6.5)
 
 ![](docs/parmar19CoRC.png)
 The high frequency glitches at early times of the perturbation of zapping the hepicidin synthesis rate instantly to zero have now disappeared. 
+
+
+## Neutrophil dynamics in response to chemotherapy and G-CSF (Zhuge, Lei and Mackey, 2012)
+This model captures ringing in neutrophil counts arising due to pure delays in their production being
+difficult to control. We focus on the simplified model in which number of quiescent (Q) 
+hematopoietic stem cells (HSC) is held constant.
+
+First we load libraries and see that zhugePars parameter values match those in Table 1. 
+```
+library(tidyverse)
+library(deSolve)
+library(myelo)  
+zhugePars #matches Table 1 parameters
+#        Qss       gamS    gamMinS    gamMaxS       tauS         k0       the2         s2        Nss 
+# 1.1000e+06 7.0000e-02 3.0000e-02 2.0000e-01 2.8000e+00 8.0000e+00 3.0000e+05 4.0000e+00 6.3000e+08 
+#       gamN      tauNP      tauNM  tauNMgcsf       tauN      etaNP   etaMinNP   etaMaxNP       gam0 
+# 2.4000e+00 5.0000e+00 6.0000e+00 2.0000e+00 1.1000e+01 2.5420e+00 2.0420e+00 3.0552e+00 2.7000e-01 
+#    gamMin0         f0       the1         s1       kdel          T         T1 
+# 1.2000e-01 4.0000e-01 3.6000e+07 1.0000e+00 1.0000e-02 2.1000e+01 4.0000e+00 
+
+``` 
+
+Next we examine  ringing in Neut counts after we boost them from a steady of 6.4e8 to 2e9. 
+
+```
+zhuge12N<-function(Time, State, Pars) {  
+	with(as.list(c(State, Pars)), {
+				An=exp(etaNP*tauNP-gam0*tauNM)
+				if (Time < 0) 
+					dN=-gamN*N + An*f0/(1+(Nss/the1)^s1)*Qss
+				else
+					dN=-gamN*N + An*f0/(1+(lagvalue(Time - tauN)/the1)^s1)*Qss
+				list(c(dN))
+			})
+}
+times= -zhugePars[["tauN"]]:5000
+yout <- dede(c(N=zhugePars[["Nss"]]), times = times, func = zhuge12N,	parms = zhugePars)
+
+zhugePars["Nss"]=tail(yout,1)[,"N"] # overide to 6.3e8 to more accurare 6.398e8
+
+(eventdat <- data.frame(var = c("N"),
+                       time = c(25) ,
+                       value = c(2e9),
+                       method = c("rep")))
+
+times= seq(-zhugePars[["tauN"]],100,by=0.01)
+yout=dede(c(N=zhugePars[["Nss"]]),times=times,func=zhuge12N,
+          parms=zhugePars,events=list(data=eventdat),method="lsodar")
+D=data.frame(yout)
+tc=function(sz) theme_classic(base_size=sz)
+gy=ylab("Neutrophil Counts")
+gx=xlab("Days")
+D%>%ggplot(aes(x=time,y=N))+geom_line(size=1)+gx+gy+tc(14) 
+ggsave("~/Results/myelo/zhugeNjumpTo2e9.png",height=6,width=6.5)
+```
+
+![](docs/zhugeNjumpTo2e9.png)
+We see that the bolus that raised the N count to 2e9 on day 25 led to ordering 
+too few 11 days later (trough), which led to ordering too many 11 days later (surplus), etc.
+As peaks broaden, their amplitudes drop. It is interesting that between the spike and the first
+trough, the system fully returned to steady state. 
+
 
 
