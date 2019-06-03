@@ -32,6 +32,19 @@ In this model S = stem cells, N = neutrophils, and P = platlets
 \note{
 This work was supported by the Cleveland Clinic Foundation.
 }
+\examples{
+
+\dontrun{
+library(deSolve)
+library(myelo)
+zhugePars19
+times <- seq(-(zhugePars19["tauPM"]+zhugePars19["tauPS"]),200,by=0.1)
+yout <- dede(c(S=zhugePars19["Sss"],N=zhugePars19["Nss"],P=zhugePars19["Pss"]),
+		times = times, func = zhuge19,	parms = zhugePars19)
+plot(yout)
+}
+
+}
 \references{
 Changjing Zhuge, Michael C. Mackey, and Jinzhi Lei,
 Origins of oscillation patterns in cyclical thrombocytopenia, 

@@ -26,7 +26,22 @@
 #'
 #'@keywords IO
 #'@export
-
+#'
+#'
+#'
+#'@export
+#'@examples
+#'
+#'\dontrun{
+#'library(deSolve)
+#'library(myelo)
+#' zhugePars19
+#' times <- seq(-(zhugePars19["tauPM"]+zhugePars19["tauPS"]),200,by=0.1)
+#' yout <- dede(c(S=zhugePars19[["Sss"]],N=zhugePars19[["Nss"]],P=zhugePars19[["Pss"]]),
+#' 		times = times, func = zhuge19,	parms = zhugePars19)
+#' plot(yout)
+#'}
+#'
 zhuge19<-function(Time, State, Pars) {
 	with(as.list(c(State, Pars)), {
 	      Aq=2*exp(-gamS*tauS)
