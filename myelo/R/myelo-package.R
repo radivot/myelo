@@ -125,7 +125,7 @@ NULL
 #'\link{brooksPars},\link{raue10} }
 #'@references  Changjing Zhuge, Jinzhi Lei, and Michael C. Mackey,
 #'Neutrophil dynamics in response to chemotherapy and G-CSF, \emph{Journal of Theoretical Biology} 
-#' \bold{293} 111?120 (2012).
+#' \bold{293} 111-120 (2012).
 #'@source The parameter values were taken from Table 1 of the PDF of the JTB 2012 paper. 
 #'@keywords datasets
 #'@examples
@@ -134,6 +134,29 @@ NULL
 #'zhugePars
 #'
 NULL
+
+#'Model parameter values of Zhuge et al. JTB 2019
+#'
+#'This is a numeric vector that holds the parameter values of the model of Zhuge et al. JTB 2019. 
+#'
+#'@name zhugePars19
+#'@docType data
+#'@format A vector of parameter values.  \describe{
+#'See description in comments in zhugePars19.R of the doc folder. }
+#'@note Coding supported by the Cleveland Clinic Foundation.
+#'@seealso \code{\link{zhugePars},\link{brooksPars} }
+#'@references  Changjing Zhuge, Michael C. Mackey, and Jinzhi Lei,
+#'Origins of oscillation patterns in cyclical thrombocytopenia, \emph{Journal of Theoretical Biology} 
+#' \bold{462} 432-445 (2019).
+#'@source The parameter values were taken from Table 1 of this 2019 paper. 
+#'@keywords datasets
+#'@examples
+#'
+#'library(myelo)
+#'zhugePars19
+#'
+NULL
+
 
 #'Model parameter values of Brooks et al. JTB 2012
 #'

@@ -27,6 +27,7 @@
 #'@examples
 #'
 #'\dontrun{
+#'library(deSolve)
 #'library(myelo)
 #' 
 #' myplot=function(times, y1,y2) {
@@ -67,7 +68,7 @@ zhuge12<-function(Time, State, Pars) {
 				if (Time < 0) {
 					Aq=2*exp(-gamS*tauS)
 					An=exp(etaNP*tauNP-gam0*tauNM)
-					dQ=-(k0/(1+(Q/the2)^s2) + f0/(1+(N/the1)^s1))*Q + Aq*k0/(1+(Qss/the2)^s2)*Qss
+					dQ=-(k0/(1+(Q/the2)^s2)+f0/(1+(N/the1)^s1)+kdel)*Q + Aq*k0/(1+(Qss/the2)^s2+kdel)*Qss
 					dN=-gamN*N + An*f0/(1+(Nss/the1)^s1)*Qss
 				}	else {
 					if (!is.na(T)&(Time%%T < 1)) { # in chemo

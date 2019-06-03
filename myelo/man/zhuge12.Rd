@@ -36,6 +36,7 @@ Integrative Cancer Biology Program under U54CA149233-029689.
 \examples{
 
 \dontrun{
+library(deSolve)
 library(myelo)
 
 myplot=function(times, y1,y2) {
