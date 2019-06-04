@@ -158,6 +158,60 @@ NULL
 NULL
 
 
+#'Model parameter values of Colijn and Mackey Periodic CML model (JTB 2005, part I)
+#'
+#'This is a numeric vector that holds the parameter values of Part I of the model of 
+#'Colijn and Mackey in JTB 2005. 
+#'
+#'@name colijnPars05a
+#'@docType data
+#'@format A vector of parameter values.  \describe{
+#'See description in comments in colijnPars05a.R of the doc folder. }
+#'@note Coding supported by the Cleveland Clinic Foundation.
+#'@seealso \code{\link{colijnPars05b},\link{zhugePars},\link{brooksPars} }
+#'@references  Caroline Colijn and Michael C. Mackey,
+#'A mathematical model of hematopoiesis: I. Periodic chronic myelogenous leukemia, 
+#'\emph{Journal of Theoretical Biology} 
+#' \bold{237} 117-132 (2005).
+#'@source The parameter values were taken from Table 1 of this  paper. 
+#'@keywords datasets
+#'@examples
+#'
+#'library(myelo)
+#'colijnPars05a
+#'
+NULL
+
+
+#'Model parameter values of Colijn and Mackey Periodic CML model (JTB 2005, part II)
+#'
+#'This is a numeric vector that holds the parameter values of Part II of the model of 
+#'Colijn and Mackey in JTB 2005. 
+#'
+#'@name colijnPars05b
+#'@docType data
+#'@format A vector of parameter values.  \describe{
+#'See description in comments in colijnPars05a.R of the doc folder. }
+#'@note Coding supported by the Cleveland Clinic Foundation.
+#'@seealso \code{\link{colijnPars05a},\link{zhugePars},\link{brooksPars} }
+#'@references  Caroline Colijn and Michael C. Mackey,
+#'A mathematical model of hematopoiesis: II. Cyclical neutropenia, 
+#'\emph{Journal of Theoretical Biology} 
+#' \bold{237} 133-146  (2005).
+#'@source The parameter values were taken from Table 1 of this  paper. 
+#'@keywords datasets
+#'@examples
+#'
+#'library(myelo)
+#'colijnPars05b
+#'
+NULL
+
+
+
+
+
+
 #'Model parameter values of Brooks et al. JTB 2012
 #'
 #'This is a numeric vector that holds the parameter values of the model of Brooks et al. JTB 2012. 
@@ -173,7 +227,7 @@ NULL
 #'@references  Grace Brooks, Gabriel Provencher,  Jinzhi Lei, and Michael C. Mackey,
 #'Neutrophil dynamics after chemotherapy and G-CSF: The role
 #'of pharmacokinetics in shaping the response, \emph{Journal of Theoretical Biology} 
-#'\bold{315} 97?109 (2012).
+#'\bold{315} 97-109 (2012).
 #'@source The parameter values were taken from Table 1 of the PDF of the JTB 2012 paper. 
 #'@keywords datasets
 #'@examples
