@@ -1,10 +1,10 @@
-############################ ZHUGE19 SNP Model ##################
+############################ ColijnO5a  ##################
 library(tidyverse)
 library(deSolve)
 library(myelo)  
-zhugePars19
 
-zhuge19<-function(Time, State, Pars) {
+
+colijn05a<-function(Time, State, Pars) {
   with(as.list(c(State, Pars)), {
     if (Time < 0) {
       # etaN=etaNbar/(1+(N/the1script)^nu1)

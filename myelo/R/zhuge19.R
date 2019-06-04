@@ -44,18 +44,18 @@
 #'
 zhuge19<-function(Time, State, Pars) {
 	with(as.list(c(State, Pars)), {
-	      Aq=2*exp(-gamS*tauS)
+	      As=2*exp(-gamS*tauS)
 				if (Time < 0) {
 				  etaN=etaNbar/(1+(Nss/the1script)^nu1)
 				  etaP=etaPbar/(1+(Pss/the4script)^nu4)
 				  An=Anmax*exp(-etaN*tauNM)
 				  Ap=Apmax*exp(-etaP*tauPM)
 					beta=k0/(1+(Sss/the2)^s2)
-					Kn=f0/(1+(Nss/the1)^s1)
-					Kp=Kpbar/(1+Kp*Pss^s4)
-					dS=-(beta+Kn+Kp+kR)*S + Aq*beta*Sss
-					dN=-gamN*N + An*Kn*Sss
-					dP=-gamP*P + Ap*(1-exp(-gamP*tauPS))*Kp*Sss 
+					kN=f0/(1+(Nss/the1)^s1)
+					kP=Kpbar/(1+Kp*Pss^s4)
+					dS=-(beta+kN+kP+kR)*S + As*beta*Sss
+					dN=-gamN*N + An*kN*Sss
+					dP=-gamP*P + Ap*(1-exp(-gamP*tauPS))*kP*Sss 
 				}	else {
 				  St=lagvalue(Time - tauS,1)
 				  Snt=lagvalue(Time - tauNM,1)
@@ -68,16 +68,16 @@ zhuge19<-function(Time, State, Pars) {
 				  etaP=etaPbar/(1+(Pt/the4script)^nu4)
 				  Ant=Anmax*exp(-etaN*tauNM)
 				  Apt=Apmax*exp(-etaP*tauPM)
-				  Kn=f0/(1+(N/the1)^s1)
-				  Knt=f0/(1+(Nt/the1)^s1)
-          Kp=Kpbar/(1+Kp*P^s4)
-          Kpt=Kpbar/(1+Kp*Pt^s4)
-          Kptsum=Kpbar/(1+Kp*Ptsum^s4)
+				  kN=f0/(1+(N/the1)^s1)
+				  kNt=f0/(1+(Nt/the1)^s1)
+          kP=Kpbar/(1+Kp*P^s4)
+          kPt=Kpbar/(1+Kp*Pt^s4)
+          kPtsum=Kpbar/(1+Kp*Ptsum^s4)
           beta=k0/(1+(S/the2)^s2)
           betat=k0/(1+(St/the2)^s2)
-          dS=-(beta+Kn+Kp+kR)*S + Aq*betat*St
-				  dN=-gamN*N + Ant*Knt*Snt
-				  dP=-gamP*P + Apt*(Kpt*Spt-exp(-gamP*tauPS)*Kptsum*Sptsum) 
+          dS=-(beta+kN+kP+kR)*S + As*betat*St
+				  dN=-gamN*N + Ant*kNt*Snt
+				  dP=-gamP*P + Apt*(kPt*Spt-exp(-gamP*tauPS)*kPtsum*Sptsum) 
 					}
 				list(c(dS,dN,dP))
 			})

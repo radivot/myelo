@@ -39,7 +39,7 @@ library(deSolve)
 library(myelo)
 zhugePars19
 times <- seq(-(zhugePars19["tauPM"]+zhugePars19["tauPS"]),200,by=0.1)
-yout <- dede(c(S=zhugePars19["Sss"],N=zhugePars19["Nss"],P=zhugePars19["Pss"]),
+yout <- dede(c(S=zhugePars19[["Sss"]],N=zhugePars19[["Nss"]],P=zhugePars19[["Pss"]]),
 		times = times, func = zhuge19,	parms = zhugePars19)
 plot(yout)
 }
