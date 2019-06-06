@@ -14,7 +14,7 @@ The model of Changjing Zhuge, Michael C. Mackey, and Jinzhi Lei, Origins of osci
 
 ![](docs/zhuge19model.png)
 
-In the model, the units of S, N and P are 1e6/kg, 1e8/kg, and 1e10/kg, respectively.  Steady states given in Table 1 (of the paper) are 
+The units of S, N and P are 1e6/kg, 1e8/kg, and 1e10/kg.  Steady states in Table 1 (of the paper) are 
 
 ```
 library(tidyverse)
