@@ -10,11 +10,12 @@ help(pack="myelo")
 
 # Origins of oscillation patterns in cyclical thrombocytopenia (Zhuge et al JTB 2019)
 
-This section provides R code that reproduces Figures 2C-2E of Changjing Zhuge, Michael C. Mackey, and Jinzhi Lei, Origins of oscillation patterns in cyclical thrombocytopenia, *Journal of Theoretical Biology* **462** 432-445 (2019).
+The model, fully described in  Changjing Zhuge, Michael C. Mackey, and Jinzhi Lei, Origins of oscillation patterns in cyclical thrombocytopenia, *Journal of Theoretical Biology* **462** 432-445 (2019), includes three state variables: numbers of stem cells (S),  neutrophils (N) and platelets (P). Stem cells self replicate at a net rate of beta which decreases with S, or they differentiate toward N, P or red blood cells (not modeled). Lineaage committed cells have net amplifications A~N~ and A~P~; here net means they are multiplied by the probability of having zero lethal hits by the end of maturation (the number of lethal hits is the product of the time spent maturing and the apoptosis rate, which increases with final products to regulate N and P).  This is depicted below, wherein dashed lines are feedback signals to apoptosis rates and solid lines are cell fluxes.  
 
+![](docs/zhuge19model.png)
 
-Their model includes stem cells (S),  neutrophils (N) and platelets (P), in 1e6/kg, 1e8/kg, 
-and 1e10/kg, respectively.  Steady states  in Table 1 are 
+In the model, the units of S, N and P are 1e6/kg, 1e8/kg, and 1e10/kg, respectively.  
+Steady states provided in Table 1 (of the paper) are 
 
 ```
 library(tidyverse)
@@ -51,7 +52,7 @@ ggsave("~/Results/myelo/default.png",height=6,width=6.5)
 
 ![](docs/default.png)
 The default parameters thus yield a steady state that differs 
-from the initial condition: 1.1 to 1.3 for S, 6.9 to 7.0 for N, and 3.1 to 2.97 for P.
+from the initial condition: 1.1 vs 1.3 for S, 6.9 vs 7.0 for N, and 3.1 vs 2.97 for P.
 
 
 Parameter values in Table 2 are now used to yield patterns 1a, 1b and 2 
