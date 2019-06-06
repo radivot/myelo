@@ -8,7 +8,114 @@ The help pages can then be reached via:
 help(pack="myelo")
 
 
-## A mathematical model for chronic myelogenous leukemia (CML) and T cell interaction (Moore and Li 2004)
+# Origins of oscillation patterns in cyclical thrombocytopenia (Zhuge et al JTB 2019)
+
+This section provides R code that reproduces Figures 2C-2E of Changjing Zhuge, Michael C. Mackey, and Jinzhi Lei, Origins of oscillation patterns in cyclical thrombocytopenia, *Journal of Theoretical Biology* **462** 432-445 (2019).
+
+
+Their model includes stem cells (S),  neutrophils (N) and platelets (P), in 1e6/kg, 1e8/kg, 
+and 1e10/kg, respectively.  Steady states  in Table 1 are 
+
+```
+library(tidyverse)
+library(deSolve)
+library(myelo)
+zhugePars19[c("Sss","Nss","Pss")]
+#    Sss    Nss    Pss 
+# 1.1000 6.9000 3.1071 
+```
+
+Converting S to cells per adult and N and P to cells per uL yields 
+```
+zhugePars19[c("Sss")]*70 #77e6 per 70 kg adult
+zhugePars19[c("Nss")]*70/5# 96.6e8/L (10k/uL is high, but maybe some are not circulating)
+zhugePars19[c("Pss")]*70/5# 43.4994e10/L (435k/uL is upper normal)
+```
+
+Note that 500 neutrophils/uL (dangerously low) maps to 5e8/L x 5L/70kg = 0.36e8/kg in this model 
+and 2M platelets/uL (dangerously high) maps to 200e10/L x 5L/70kg = 14.3e10/kg. First we see how well the default parameters maintain the steady state as an initial condition. 
+
+```
+times <- seq(-200,1000,by=0.1)
+yout <- dede(c(S=zhugePars19[["Sss"]],N=zhugePars19[["Nss"]],P=zhugePars19[["Pss"]]),
+             times = times, func = zhuge19,	parms = zhugePars19)
+D=data.frame(yout)
+d=D%>%gather(key="Cell",value="Counts",-time)%>%mutate(Cell=factor(Cell,levels=c("S","N","P")))
+tc=function(sz) theme_classic(base_size=sz)
+gx=xlab("Days")
+sbb=theme(strip.background=element_blank())
+d%>%ggplot(aes(x=time,y=Counts))+facet_grid(Cell~.,scales = "free")+geom_line(size=1)+gx+tc(14)+sbb
+ggsave("~/Results/myelo/default.png",height=6,width=6.5)
+
+```
+
+![](docs/default.png)
+The default parameters thus yield a steady state that differs 
+from the initial condition: 1.1 to 1.3 for S, 6.9 to 7.0 for N, and 3.1 to 2.97 for P.
+
+
+Parameter values in Table 2 are now used to yield patterns 1a, 1b and 2 
+in Figures 2C, 2D and 2E, respectively.  Figure 2C is produced as follows 
+
+
+```
+zhugePars19["Kpbar"]=0.0744 # pattern 1a
+zhugePars19["tauPM"]=13      # pattern 1a
+times <- seq(-(zhugePars19["tauPM"]+zhugePars19["tauPS"]),1000,by=0.1)
+yout <- dede(c(S=zhugePars19[["Sss"]],N=zhugePars19[["Nss"]],P=zhugePars19[["Pss"]]),
+             times = times, func = zhuge19,	parms = zhugePars19)
+D=data.frame(yout)
+d=D%>%gather(key="Cell",value="Counts",-time)%>%mutate(Cell=factor(Cell,levels=c("S","N","P")))
+d%>%ggplot(aes(x=time,y=Counts))+facet_grid(Cell~.,scales = "free")+geom_line(size=1)+gx+tc(14)+sbb 
+ggsave("~/Results/myelo/patt1a.png",height=6,width=6.5)
+```
+
+![](docs/patt1a.png)
+This shows the initial condition destabilizing unitil it reaches a 
+limit cycle (oscillations that maintain a finite amplitude). Oscillations are stronger in P  than in N and S. The next two figures zoom in
+on days 1700 to 2000 to yield exact matches to Figures 2D and 2E.
+
+
+
+Figure 2D is
+![](docs/patt1b.png)
+This figure was made by this script.  
+
+
+
+```
+zhugePars19["Kpbar"]=2      # pattern 1b
+zhugePars19["tauPM"]=14      # pattern 1b
+times <- seq(-(zhugePars19["tauPM"]+zhugePars19["tauPS"]),2000,by=0.1)
+yout <- dede(c(S=zhugePars19[["Sss"]],N=zhugePars19[["Nss"]],P=zhugePars19[["Pss"]]),
+             times = times, func = zhuge19,	parms = zhugePars19)
+D=data.frame(yout)
+d=D%>%gather(key="Cell",value="Counts",-time)%>%mutate(Cell=factor(Cell,levels=c("S","N","P")))
+cc=coord_cartesian(xlim=c(1700,2000))
+d%>%ggplot(aes(x=time,y=Counts))+facet_grid(Cell~.,scales = "free")+geom_line(size=1)+gx+tc(14)+sbb+cc
+ggsave("~/Results/myelo/patt1b.png",height=6,width=6.5)
+```
+
+
+Figure 2E is
+![](docs/patt2.png)
+This figure was made by this script.  
+
+```
+zhugePars19["Kpbar"]=9.5442 # pattern 2
+zhugePars19["tauPM"]=11.583  # pattern 2
+yout <- dede(c(S=zhugePars19[["Sss"]],N=zhugePars19[["Nss"]],P=zhugePars19[["Pss"]]),
+             times = times, func = zhuge19,	parms = zhugePars19)
+D=data.frame(yout)
+d=D%>%gather(key="Cell",value="Counts",-time)%>%mutate(Cell=factor(Cell,levels=c("S","N","P")))
+cc=coord_cartesian(xlim=c(1700,2000))
+d%>%ggplot(aes(x=time,y=Counts))+facet_grid(Cell~.,scales = "free")+geom_line(size=1)+gx+tc(14)+cc+sbb 
+ggsave("~/Results/myelo/patt2.png",height=6,width=6.5)
+```
+
+
+
+# A mathematical model for chronic myelogenous leukemia (CML) and T cell interaction (Moore and Li 2004)
 
 This model captures CML cells (C) interacting with naive T cells (Tn) and effector T cells (Te). 
 The differential equations of this model are:

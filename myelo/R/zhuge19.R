@@ -46,16 +46,16 @@ zhuge19<-function(Time, State, Pars) {
 	with(as.list(c(State, Pars)), {
 	      As=2*exp(-gamS*tauS)
 				if (Time < 0) {
-				  etaN=etaNbar/(1+(Nss/the1script)^nu1)
-				  etaP=etaPbar/(1+(Pss/the4script)^nu4)
+				  etaN=etaNbar*(N/the1script)^nu1/(1+(N/the1script)^nu1)
+				  etaP=etaPbar*(P/the4script)^nu4/(1+(P/the4script)^nu4)
 				  An=Anmax*exp(-etaN*tauNM)
 				  Ap=Apmax*exp(-etaP*tauPM)
-					beta=k0/(1+(Sss/the2)^s2)
-					kN=f0/(1+(Nss/the1)^s1)
-					kP=Kpbar/(1+Kp*Pss^s4)
-					dS=-(beta+kN+kP+kR)*S + As*beta*Sss
-					dN=-gamN*N + An*kN*Sss
-					dP=-gamP*P + Ap*(1-exp(-gamP*tauPS))*kP*Sss 
+				  beta=k0/(1+(S/the2)^s2)
+				  kN=f0/(1+(N/the1)^s1)
+				  kP=Kpbar/(1+Kp*P^s4)
+				  dS=-(beta+kN+kP+kR)*S + As*beta*S
+				  dN=-gamN*N + (An/1e2)*kN*S  # 1e2 map units of S to N
+				  dP=-gamP*P + (Ap/1e4)*(kP*S-exp(-gamP*tauPS)*kP*S)# 1e4 maps units of S to P
 				}	else {
 				  St=lagvalue(Time - tauS,1)
 				  Snt=lagvalue(Time - tauNM,1)
@@ -64,20 +64,23 @@ zhuge19<-function(Time, State, Pars) {
 				  Nt=lagvalue(Time - tauNM,2)
 				  Pt=lagvalue(Time - tauPM,3)
 				  Ptsum=lagvalue(Time - (tauPM+tauPS),3)
-				  etaN=etaNbar/(1+(Nt/the1script)^nu1)
-				  etaP=etaPbar/(1+(Pt/the4script)^nu4)
-				  Ant=Anmax*exp(-etaN*tauNM)
-				  Apt=Apmax*exp(-etaP*tauPM)
+				  etaNt=etaNbar*(Nt/the1script)^nu1/(1+(Nt/the1script)^nu1)
+				  etaPt=etaPbar*(Pt/the4script)^nu4/(1+(Pt/the4script)^nu4)
+				  etaPtsum=etaPbar*(Ptsum/the4script)^nu4/(1+(Ptsum/the4script)^nu4)
+				  Ant=Anmax*exp(-etaNt*tauNM)
+				  Apt=Apmax*exp(-etaPt*tauPM)
+				  Aptsum=Apmax*exp(-etaPtsum*tauPM)
 				  kN=f0/(1+(N/the1)^s1)
 				  kNt=f0/(1+(Nt/the1)^s1)
-          kP=Kpbar/(1+Kp*P^s4)
-          kPt=Kpbar/(1+Kp*Pt^s4)
-          kPtsum=Kpbar/(1+Kp*Ptsum^s4)
-          beta=k0/(1+(S/the2)^s2)
-          betat=k0/(1+(St/the2)^s2)
-          dS=-(beta+kN+kP+kR)*S + As*betat*St
-				  dN=-gamN*N + Ant*kNt*Snt
-				  dP=-gamP*P + Apt*(kPt*Spt-exp(-gamP*tauPS)*kPtsum*Sptsum) 
+				  kP=Kpbar/(1+Kp*P^s4)
+				  kPt=Kpbar/(1+Kp*Pt^s4)
+				  kPtsum=Kpbar/(1+Kp*Ptsum^s4)
+				  beta=k0/(1+(S/the2)^s2)
+				  betat=k0/(1+(St/the2)^s2)
+				  dS=-(beta+kN+kP+kR)*S + As*betat*St
+				  dN=-gamN*N + (Ant/1e2)*kNt*Snt
+				  dP=-gamP*P + (Apt/1e4)*(kPt*Spt-exp(-gamP*tauPS)*kPtsum*Sptsum) # in paper
+				  # dP=-gamP*P + (Apt/1e4)*kPt*Spt-(Aptsum/1e4)*exp(-gamP*tauPS)*kPtsum*Sptsum) # should be?
 					}
 				list(c(dS,dN,dP))
 			})
