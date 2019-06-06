@@ -72,7 +72,7 @@ ggsave("~/Results/myelo/patt1a.png",height=6,width=6.5)
 ```
 
 ![](docs/patt1a.png)
-This shows the sysmtem reaching a 
+This shows the system reaching a 
 limit cycle (oscillations that maintain a finite amplitude). Oscillations are stronger in P  than in N and S. The next two figures zoom in
 on days 1700 to 2000 to yield exact matches to Figures 2D and 2E.
 
@@ -109,7 +109,6 @@ yout <- dede(c(S=zhugePars19[["Sss"]],N=zhugePars19[["Nss"]],P=zhugePars19[["Pss
              times = times, func = zhuge19,	parms = zhugePars19)
 D=data.frame(yout)
 d=D%>%gather(key="Cell",value="Counts",-time)%>%mutate(Cell=factor(Cell,levels=c("S","N","P")))
-cc=coord_cartesian(xlim=c(1700,2000))
 d%>%ggplot(aes(x=time,y=Counts))+facet_grid(Cell~.,scales = "free")+geom_line(size=1)+gx+tc(14)+cc+sbb 
 ggsave("~/Results/myelo/patt2.png",height=6,width=6.5)
 ```
