@@ -10,12 +10,11 @@ help(pack="myelo")
 
 # Origins of oscillation patterns in cyclical thrombocytopenia (Zhuge et al JTB 2019)
 
-The model [Changjing Zhuge, Michael C. Mackey, and Jinzhi Lei, Origins of oscillation patterns in cyclical thrombocytopenia, *Journal of Theoretical Biology* **462** 432-445 (2019)] includes three state variables: numbers of stem cells (S),  neutrophils (N) and platelets (P). Stem cells self replicate at a net rate of &#0946;<sub>S</sub> which decreases with S, or they differentiate toward N, P or red blood cells (not modeled). Lineaage committed cells have net amplifications A<sub>N</sub> and A<sub>P</sub>; here net means they are multiplied by the probability of having zero lethal hits by the end of maturation (the number of lethal hits is the product of the time spent maturing and the apoptosis rate, which increases with final products to regulate N and P).  This is depicted below, wherein dashed lines are feedback signals to apoptosis rates and solid lines are cell fluxes.  
+The model of Changjing Zhuge, Michael C. Mackey, and Jinzhi Lei, Origins of oscillation patterns in cyclical thrombocytopenia, *Journal of Theoretical Biology* **462** 432-445 (2019) includes three state variables: numbers of stem cells (S),  neutrophils (N) and platelets (P). Stem cells self replicate at a net rate of &#0946;<sub>S</sub> which decreases with S, or they differentiate toward N, P or red blood cells (not modeled). Lineaage committed cells have net amplifications A<sub>N</sub> and A<sub>P</sub>; here net means multiplied by the probability of having zero lethal hits by the end of maturation (the number of lethal hits is the product of the time spent maturing and the apoptosis rate, which increases with final products to regulate N and P).  The model is depicted below, wherein dashed lines are feedback signals to apoptosis rates and solid lines are cell fluxes.  
 
 ![](docs/zhuge19model.png)
 
-In the model, the units of S, N and P are 1e6/kg, 1e8/kg, and 1e10/kg, respectively.  
-Steady states provided in Table 1 (of the paper) are 
+In the model, the units of S, N and P are 1e6/kg, 1e8/kg, and 1e10/kg, respectively.  Steady states given in Table 1 (of the paper) are 
 
 ```
 library(tidyverse)
@@ -72,7 +71,7 @@ ggsave("~/Results/myelo/patt1a.png",height=6,width=6.5)
 ```
 
 ![](docs/patt1a.png)
-This shows the initial condition destabilizing unitil it reaches a 
+This shows the sysmtem reaching a 
 limit cycle (oscillations that maintain a finite amplitude). Oscillations are stronger in P  than in N and S. The next two figures zoom in
 on days 1700 to 2000 to yield exact matches to Figures 2D and 2E.
 
