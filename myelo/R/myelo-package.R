@@ -208,6 +208,31 @@ NULL
 NULL
 
 
+#'Model parameters  of Morgan Craig et al JTB 2015
+#'
+#'This is a numeric vector that holds the parameter values of the neutrophil
+#'chemo GCSF Morgan Craig et al JTB 2015
+#'
+#'@name craigPars15jtb
+#'@docType data
+#'@format A vector of parameter values.  \describe{ See description in comments
+#'  in colijnPars05a.R of the doc folder. }
+#'@note Coding supported by the Cleveland Clinic Foundation.
+#'@seealso \code{\link{colijnPars05a},\link{zhugePars},\link{brooksPars} }
+#'@references  # Morgan Craig ... Michael C. Mackey, Neutrophil dynamics during
+#'  concurrent chemotherapy and G-CSF administration: Mathematical modelling
+#'  guides dose optimisation to minimise neutropenia, \emph{Journal of
+#'  Theoretical Biology} \bold{385} 77-89  (2015).
+#'@source The parameter values were taken from Table 1 of this  paper.
+#'@keywords datasets
+#'@examples
+#'
+#'library(myelo)
+#'craigPars15jtb
+#'
+NULL
+
+
 
 
 
