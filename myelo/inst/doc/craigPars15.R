@@ -3,11 +3,11 @@
 # Mathematical modelling guides dose optimisation to minimise neutropenia
 # Journal of Theoretical Biology 385 (2015) 77-89
 
-craigPars15jtb=c(
+craigPars15=c(
   Qss=1.1, # 1e6 cells/kg
   gamS=0.1, # 1/day
   tauS=2.8, #days
-  AQss = 1.5116,
+  AQss = 1.5116, # text 1.512
   kapDelta = 0.0140, # 1/day
   betaQss = 0.043, # 1/day
   fQ = 8,      # 1/day
@@ -19,24 +19,18 @@ craigPars15jtb=c(
   Nhomeocirc = 0.22, # 1e9 cells/kg  
   
   gamN=2.1875, # 1/day
-  tauNM=3.5, # days
-  An=752, # none  # 70635 in Z19, 
-  f0=0.40, # 1/days
-  the1=0.36, # 1e8 cells/kg 
-  n=1, # n=1
-
   tauNP = 7.3074,    # days
   aNM = 3.9,      # days
-  tauNr = 2.7,    # days
+  tauNr = 2.7,    # days 2.5
   gamNr = 0.0064, # 1/day
   gamNM = 0.1577,# 1/day
   kapNss = 0.0073, # 1/day
-  ANss = 103780,
+  ANss = 103780,  # text 103777
   etaNPss = 1.6647, # 1/day
   fN = 0.0088,    # 1/day
   s1 = 2,
   the1 = 0.8409,  # 1e9 cells/kg  
-  fhomeotrans = 0.3640,  # 1/day
+  fhomeotrans = 0.3640,  # 1/day (text 0.387)
   
   kelC = 132.0734, # 1/day
   k12 = 90.2752,# 1/day
@@ -76,6 +70,6 @@ craigPars15jtb=c(
   bNM = 11.2679, # ng/mL
   bG = 11.2679  # ng/mL
 )
-save(craigPars15jtb,file="craigPars15jtb.rda")
+save(craigPars15,file="craigPars15.rda")
 # library(tools)
 # showNonASCIIfile("R/myelo-package.R")

@@ -1,10 +1,10 @@
-#'Neutrophil and Platelet model of Zhuge et al 2019
+#'Neutrophil-GCSF-Chemo model of Craig et al 2015
 #'
 #'This function returns the right hand side of an ordinary differential delay
-#'equation model of Zhuge et al. JTB 2019. 
+#'equation model of Craig et al. JTB 2015. 
 #'The intended use of this function is as an argument to \code{dede()} of the \code{deSolve} package.
 #'
-#' In this model S = stem cells, N = neutrophils, and P = platlets
+#' In this model Q = stem cells, Nr = marrow reserve neutrophils, and N = circulating neutrophils
 #'
 #'@param Time The current time.
 #'@param State Vector of current states. The elements of this vector must be
@@ -17,30 +17,30 @@
 #'element is the vector of derivatives, i.e. the right hand side of the ODEs 
 #'@note This work was supported by the Cleveland Clinic Foundation.
 #'@author Tom Radivoyevitch (\email{txr24@@case.edu})
-#'@seealso \code{\link{myelo-package}, \link{zhuge12}}
+#'@seealso \code{\link{myelo-package}, \link{craig15}}
 
-#'@references  Changjing Zhuge, Michael C. Mackey, and Jinzhi Lei,
-#'Origins of oscillation patterns in cyclical thrombocytopenia, 
-#'\emph{Journal of Theoretical Biology} 
-#' \bold{462} 432-445 (2019).
+
+#'@references  # Morgan Craig ... Michael C. Mackey, Neutrophil dynamics during
+#'  concurrent chemotherapy and G-CSF administration: Mathematical modelling
+#'  guides dose optimisation to minimise neutropenia, \emph{Journal of
+#'  Theoretical Biology} \bold{385} 77-89  (2015).
 #'
 #'@keywords IO
+#'
 #'@export
-#'
-#'
 #'@examples
 #'
 #'\dontrun{
 #'library(deSolve)
 #'library(myelo)
-#' zhugePars19
-#' times <- seq(-(zhugePars19["tauPM"]+zhugePars19["tauPS"]),200,by=0.1)
-#' yout <- dede(c(S=zhugePars19[["Sss"]],N=zhugePars19[["Nss"]],P=zhugePars19[["Pss"]]),
-#' 		times = times, func = zhuge19,	parms = zhugePars19)
+#' craigPars15
+#' times <- seq(-30,200,by=0.1)
+#' yout <- dede(c(Q=craigPars15[["Qss"]],Nr=craigPars15[["Nrss"]],N=craigPars15[["Nss"]]),
+#' 		times = times, func = craig15,	parms = craigPars15)
 #' plot(yout)
 #'}
 #'
-zhuge19<-function(Time, State, Pars) {
+craig15<-function(Time, State, Pars) {
 	with(as.list(c(State, Pars)), {
 	      As=2*exp(-gamS*tauS)
 				if (Time < 0) {

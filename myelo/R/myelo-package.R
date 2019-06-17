@@ -213,10 +213,10 @@ NULL
 #'This is a numeric vector that holds the parameter values of the neutrophil
 #'chemo GCSF Morgan Craig et al JTB 2015
 #'
-#'@name craigPars15jtb
+#'@name craigPars15
 #'@docType data
 #'@format A vector of parameter values.  \describe{ See description in comments
-#'  in colijnPars05a.R of the doc folder. }
+#'  in craigPars15.R of the doc folder. }
 #'@note Coding supported by the Cleveland Clinic Foundation.
 #'@seealso \code{\link{colijnPars05a},\link{zhugePars},\link{brooksPars} }
 #'@references  # Morgan Craig ... Michael C. Mackey, Neutrophil dynamics during
@@ -228,7 +228,7 @@ NULL
 #'@examples
 #'
 #'library(myelo)
-#'craigPars15jtb
+#'craigPars15
 #'
 NULL
 
