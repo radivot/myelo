@@ -94,7 +94,7 @@ craigPars16=c(
   
   hQ=0.0079657,  # was hS = 0.1, (new is Value 2 in Table 3)    
   EC50 = 0.75390, #was 2.3056, # ng/mL (new is not in Table 3, but close to Value 2)
-  h = 0.89816, # was 3,
+  Sc = 0.89816, # was h=3 in (Cp/EC50)^h in 2015, now (Cp/EC50)^Sc in 2016
   etaNPInf=0  # chemo at Inf shuts down P completely 
   # # below was in 2015 but not in 2016 
   # bS = 11.2679, # ng/mL
