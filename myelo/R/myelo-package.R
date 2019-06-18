@@ -211,14 +211,14 @@ NULL
 #'Model parameters  of Morgan Craig et al JTB 2015
 #'
 #'This is a numeric vector that holds the parameter values of the neutrophil
-#'chemo GCSF Morgan Craig et al JTB 2015
+#'chemo GCSF model of Morgan Craig et al JTB 2015
 #'
 #'@name craigPars15
 #'@docType data
 #'@format A vector of parameter values.  \describe{ See description in comments
 #'  in craigPars15.R of the doc folder. }
 #'@note Coding supported by the Cleveland Clinic Foundation.
-#'@seealso \code{\link{colijnPars05a},\link{zhugePars},\link{brooksPars} }
+#'@seealso \code{\link{craigPars16},\link{zhugePars},\link{brooksPars} }
 #'@references  # Morgan Craig ... Michael C. Mackey, Neutrophil dynamics during
 #'  concurrent chemotherapy and G-CSF administration: Mathematical modelling
 #'  guides dose optimisation to minimise neutropenia, \emph{Journal of
@@ -233,7 +233,28 @@ NULL
 NULL
 
 
-
+#'Model parameters  of Morgan Craig et al BMB 2016
+#'
+#'This is a numeric vector that holds the parameter values of the neutrophil
+#'chemo GCSF model of Morgan Craig et al BMB 2016
+#'
+#'@name craigPars16
+#'@docType data
+#'@format A vector of parameter values.  \describe{ See description in comments
+#'  in craigPars16.R of the doc folder. }
+#'@note Coding supported by the Cleveland Clinic Foundation.
+#'@seealso \code{\link{craigPars15},\link{zhugePars},\link{brooksPars} }
+#'@references  M. Craig, A. R. Humphries, M. C. Mackey, A Mathematical Model of 
+#'Granulopoiesis Incorporating the Negative Feedback Dynamics and Kinetics of 
+#'G-CSF/Neutrophil Binding and Internalization, \emph{Bull Math Biol} \bold{78} 2304-2357  (2016). 
+#'@source The parameter values were taken from Table 4-6 of this  paper.
+#'@keywords datasets
+#'@examples
+#'
+#'library(myelo)
+#'craigPars16
+#'
+NULL
 
 
 
