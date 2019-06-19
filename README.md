@@ -7,6 +7,60 @@ The help pages can then be reached via:
 
 help(pack="myelo")
 
+# A Mathematical Model of Granulopoiesis Incorporating the Negative Feedback Dynamics and Kinetics of G-CSF/Neutrophil Binding and Internalization
+
+The model of   [Craig et al  *Bull Math Biol* **78** 2304-2357 (2016)](https://www.ncbi.nlm.nih.gov/pubmed/27324993) includes as state variables  numbers of quiescent stem cells (Q),  marrow neutrophil reserves  (Nr), neutrophils in the blood (N), free GCSF (G1), and GCSF bound to Nr and N (G2). Stem cells self replicate at a net rate of &#0946;<sub>S</sub> which decreases with Q, or they differentiate toward Nr or other cell types (not modeled). Lineaage committed cells have net amplifications A<sub>N</sub>; here net means multiplied by the probability of having zero lethal hits by the end of maturation (the number of lethal hits is the product of the time spent maturing and the apoptosis rate).  The model is depicted below. Dashed lines are feedback signals and solid lines are cell fluxes.  
+
+![](docs/craig16.png)
+
+The units of Q and N are 1e6/kg and 1e9/kg.  The steady states (ss)  are 
+
+```
+library(tidyverse)
+library(deSolve)
+library(myelo)
+craigPars16[c("Qss","Nrss","Nss","G1ss","G2ss")]
+       Qss       Nrss        Nss       G1ss       G2ss 
+1.1000e+00 2.2600e+00 3.7610e-01 2.5000e-02 2.1899e-05 
+```
+
+The following code reproduces the G1 response to subcutaneously injected GCSF given in Figure 5B of the paper.
+
+
+```
+craigPars16
+(x0=c(Q=craigPars16[["Qss"]],Nr=craigPars16[["Nrss"]],N=craigPars16[["Nss"]],
+      G1=craigPars16[["G1ss"]],G2=craigPars16[["G2ss"]],
+      Tn=craigPars16[["tauNP"]]+craigPars16[["aNM"]],  #here time Tn is to reserves
+      An=craigPars16[["ANss"]],Aq=craigPars16[["AQss"]],Cp=0,Cf=0,Cs1=0,Cs2=0,Gs=0,Ic=0,Ig=0))
+(eventdat=data.frame(var="Gs",
+                     time=0,
+                     value=craigPars16[["F750"]]*750e3/craigPars16[["Vd750"]],
+                     method="add"))
+times <- seq(-15,2,by=.01)
+yout <- dede(x0,times = times, func = craig16,	parms = craigPars16,
+             events=list(data=eventdat),method="lsodar")
+
+plotQtoG2=function(yout,cc) {
+  D=data.frame(yout)
+  d=D%>%select(time:G2)%>%gather(key="Lab",value="Value",-time)%>%
+    mutate(Lab=factor(Lab,levels=c("Q","Nr","N","G1","G2")))
+  tc=function(sz) theme_classic(base_size=sz)
+  gx=xlab("Days")
+  sbb=theme(strip.background=element_blank())
+  g=d%>%ggplot(aes(x=time,y=Value))+facet_grid(Lab~.,scales = "free")+geom_line(size=1)+gx+tc(14)+sbb+cc
+  print(g)
+}
+cc=coord_cartesian(xlim=c(-.1,2))#clips high errorbars
+plotQtoG2(yout,cc)
+ggsave("~/Results/myelo/craig16fig5b.png",height=6,width=6.5)
+```
+
+
+![](docs/craig16fig5b.png)
+The cusp in neutrophil reserves  at ~0.5 days is curious. 
+
+
 
 # Origins of oscillation patterns in cyclical thrombocytopenia (Zhuge et al JTB 2019)
 

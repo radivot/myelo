@@ -130,7 +130,7 @@ craig15<-function(Time, State, Pars) {
       # chi=Gss/Nss  # already in pars
       dG=ka*Gs + Gprod - kren*G - chi*kint*(G/Kd)^2/(1+(G/Kd)^2)
       dCp=k21*Cf+k31*Cs1-(k12+k13+kelC)*Cp  # add Dc/Vd 
-      dCf=k12*Cp+k42*Cs1-(k21+k24)*Cf
+      dCf=k12*Cp+k42*Cs2-(k21+k24)*Cf
       dCs1=k13*Cp-k31*Cs1
       dCs2=k24*Cf-k42*Cs2
     }

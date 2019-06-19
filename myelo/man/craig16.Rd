@@ -39,7 +39,7 @@ library(deSolve)
 library(myelo)
 craigPars16
 times <- seq(-30,200,by=.2)
-yout <- dede(c(Q=craigPars15[["Qss"]],Nr=craigPars15[["Nrss"]],N=craigPars15[["Nss"]]),
+yout <- dede(c(Q=craigPars16[["Qss"]],Nr=craigPars16[["Nrss"]],N=craigPars16[["Nss"]]),
 		times = times, func = craig16,	parms = craigPars16)
 plot(yout)
 }

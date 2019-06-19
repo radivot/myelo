@@ -79,6 +79,10 @@ craigPars16=c(
   Vd750=2178.0,
   F750=0.75,
   ka750=5.143,  
+  # set defaults to 750 (override if needed)
+  Vd=2178.0,
+  F=0.75,
+  ka=5.143,  
   # 2015 JTB had
   # Vd = 1788,   #mL
   # F = 0.6020,
