@@ -17,8 +17,8 @@ yout <- dede(x0,times = times, func = craig16,	parms = craigPars16,
 
 plotQtoG2=function(yout,cc) {
   D=data.frame(yout)
-  d=D%>%select(time:G2)%>%gather(key="Lab",value="Value",-time)%>%
-    mutate(Lab=factor(Lab,levels=c("Q","Nr","N","G1","G2")))
+  d=D%>%select(time:G2,ANC)%>%gather(key="Lab",value="Value",-time)%>%
+    mutate(Lab=factor(Lab,levels=c("Q","Nr","N","G1","G2","ANC")))
   tc=function(sz) theme_classic(base_size=sz)
   gx=xlab("Days")
   sbb=theme(strip.background=element_blank())
@@ -26,8 +26,11 @@ plotQtoG2=function(yout,cc) {
   print(g)
 }
 cc=coord_cartesian(xlim=c(-.1,2))#clips high errorbars
-plotQtoG2(yout,cc)
+plotQtoG2(yout,cc) #ANC matches Nc(t) in Fig 7c
 ggsave("~/Results/myelo/craig16fig5b.png",height=6,width=6.5)
+
+
+
 
 (eventdat=data.frame(var="G1",
                      time=0,

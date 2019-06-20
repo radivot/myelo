@@ -19,7 +19,7 @@ n=length(gtimes)
 (ctimes=seq(0,80,14))
 nc=length(ctimes)
 (delt=round(1/24,2)) # 1-hour chemo infusions
-dose=4 # ug of chemo per injection
+dose=4*craigPars16[["BSA"]]*1e3# ug of chemo per injection (D=4 mg/m2)
 infusionRate=dose/delt # this feeds straight into dCp
 (eventCon=tibble(var=rep("Ic",nc),
                      time=ctimes,
@@ -36,13 +36,13 @@ times <- seq(-15,85,by=.01)
 yout <- dede(x0,times = times, func = craig16,	parms = craigPars16,
              events=list(data=eventdat),method="lsodar")
 
-plotQtoCs2=function(yout,cc) {
+myPlot=function(yout,cc) {
   D=data.frame(yout)
   D%>%filter(time>-.1,time<1)
   head(D)
   tail(D)
-  d=D%>%select(time:Cs2)%>%gather(key="Lab",value="Value",-time)%>%
-    mutate(Lab=factor(Lab,levels=c("Q","Nr","N","G1","G2","Tn","An","Aq","Cp","Cf","Cs1","Cs2")))
+  d=D%>%select(time:Cp,Cs1,ANC)%>%gather(key="Lab",value="Value",-time)%>%
+    mutate(Lab=factor(Lab,levels=c("Q","Nr","N","G1","G2","Tn","An","Aq","Cp","Cs1","ANC")))
   tc=function(sz) theme_classic(base_size=sz)
   gx=xlab("Days")
   sbb=theme(strip.background=element_blank())
@@ -51,7 +51,7 @@ plotQtoCs2=function(yout,cc) {
   print(g)
 }
 cc=coord_cartesian(xlim=c(-3,85))#clips high errorbars
-plotQtoCs2(yout,cc)
+myPlot(yout,cc)
 
 ggsave("~/Results/myelo/craig16fig9.png",height=9,width=6.5)
 
@@ -65,8 +65,7 @@ ggsave("~/Results/myelo/craig16fig9.png",height=9,width=6.5)
 
 yout <- dede(x0,times = times, func = craig16,	parms = craigPars16,
              events=list(data=eventdat),method="lsodar")
-
-plotQtoCs2(yout,cc)
+myPlot(yout,cc)
 ggsave("~/Results/myelo/craig16fig9spike.png",height=9,width=6.5)
 
 
@@ -79,6 +78,6 @@ ggsave("~/Results/myelo/craig16fig9spike.png",height=9,width=6.5)
 yout <- dede(x0,times = times, func = craig16,	parms = craigPars16,
              events=list(data=eventdat),method="lsodar")
 
-plotQtoCs2(yout,cc)
+myPlot(yout,cc)
 ggsave("~/Results/myelo/craig16fig9spikeChemoG750.png",height=9,width=6.5)
 

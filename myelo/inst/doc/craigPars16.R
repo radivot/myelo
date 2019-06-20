@@ -98,6 +98,8 @@ craigPars16=c(
   
   hQ=0.0079657,  # was hS = 0.1, (new is Value 2 in Table 3)    
   EC50 = 0.75390, #was 2.3056, # ng/mL (new is not in Table 3, but close to Value 2)
+  EM50 = 0.75390*32.7, #map to mass in ug in V1 to match units of chemo ODE states
+  # see table 3 of Cancer Chemother Pharmacol (2012) 69:15–24 to find 32.7
   Sc = 0.89816, # was h=3 in (Cp/EC50)^h in 2015, now (Cp/EC50)^Sc in 2016
   etaNPInf=0  # chemo at Inf shuts down P completely 
   # # below was in 2015 but not in 2016 

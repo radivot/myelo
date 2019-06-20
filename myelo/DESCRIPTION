@@ -13,6 +13,7 @@ Description: This package aims to make analyses of models of
 Maintainer: Tomas Radivoyevitch <txr24@case.edu>
 Imports: deSolve,PBSddesolve
 Suggests: bbmle
+Depends: R (>= 3.5.0)
 License: GPL-2
 LazyData: yes
 URL: http://epbi-radivot.cwru.edu/myelo/myelo.html

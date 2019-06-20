@@ -91,7 +91,8 @@ craig16<-function(Time, State, Pars) {  # with Chemo and GCSF subQ
     fkapN=function(G1) kapss + (kapss-kapmin)*(G1^s1-G1ss^s1)/(G1^s1+G1ss^s1)
     fetaNP=function(G1) etaNPss  + (etaNPss -etaNPmin)*(bNP/G1ss)*(G1-G1ss)/(G1+bNP)
     # next func reduces to above when Cp=0 (no chemo)
-    fetaNPchemo=function(G1,Cp) etaNPInf  + (fetaNP(G1)-etaNPInf)/(1+(Cp/EC50)^Sc)
+    # fetaNPchemo=function(G1,Cp) etaNPInf  + (fetaNP(G1)-etaNPInf)/(1+(Cp/EC50)^Sc)
+    fetaNPchemo=function(G1,Cp) etaNPInf  + (fetaNP(G1)-etaNPInf)/(1+(Cp/EM50)^Sc)
     Vn=function(G1) 1 + (Vmax-1)*(G1-G1ss)/(G1-G1ss+bV)
     GBF=G2/(V*(Nr+N))
     GBFss=G2ss/(V*(Nrss+Nss))
@@ -155,7 +156,7 @@ craig16<-function(Time, State, Pars) {  # with Chemo and GCSF subQ
       dCs2=k24*Cf-k42*Cs2
       dGs=-ka*Gs + Ig # G in skin, add F*Dg/Vd to Gs at each injection
     }
-    list(c(dQ,dNr,dN,dG1,dG2,dTn,dAn,dAq,dCp,dCf,dCs1,dCs2,dGs,dIc,dIg))
+    list(c(dQ,dNr,dN,dG1,dG2,dTn,dAn,dAq,dCp,dCf,dCs1,dCs2,dGs,dIc,dIg),c(ANC=N*8.19))
   })
 }
 

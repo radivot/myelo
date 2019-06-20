@@ -51,7 +51,7 @@ plotQtoG2=function(yout,cc) {
   g=d%>%ggplot(aes(x=time,y=Value))+facet_grid(Lab~.,scales = "free")+geom_line(size=1)+gx+tc(14)+sbb+cc
   print(g)
 }
-cc=coord_cartesian(xlim=c(-.1,2))#clips high errorbars
+cc=coord_cartesian(xlim=c(-.1,2))
 plotQtoG2(yout,cc)
 ggsave("~/Results/myelo/craig16fig5b.png",height=6,width=6.5)
 ```
@@ -59,6 +59,63 @@ ggsave("~/Results/myelo/craig16fig5b.png",height=6,width=6.5)
 
 ![](docs/craig16fig5b.png)
 The cusp in neutrophil reserves  at ~0.5 days is curious. 
+
+
+Finally, the code below comes close to reproducing Figures 9 and 10. 
+
+```
+(gtimes=as.numeric(t(outer(seq(0,80,14),4:13,"+"))))
+n=length(gtimes)
+(eventG=tibble(var=rep("Gs",n),
+                   time=gtimes,
+                   # value=rep(craigPars16[["F300"]]*300e3/craigPars16[["Vd300"]],n),
+                   value=rep(craigPars16[["F750"]]*750e3/craigPars16[["Vd750"]],n),
+                   method=rep("add",n)))
+
+(ctimes=seq(0,80,14))
+nc=length(ctimes)
+(delt=round(1/24,2)) # 1-hour chemo infusions
+dose=4*craigPars16[["BSA"]]*1e3# ug of chemo per injection (D=4 mg/m2)
+infusionRate=dose/delt # this feeds straight into dCp
+(eventCon=tibble(var=rep("Ic",nc),
+                     time=ctimes,
+                     value=rep(infusionRate,nc),
+                     method=rep("rep",nc)))
+
+(eventCoff=tibble(var=rep("Ic",nc),
+                      time=ctimes+delt,
+                      value=rep(0,nc),
+                      method=rep("rep",nc)))
+(eventdat=as.data.frame(bind_rows(eventG,eventCon,eventCoff)%>%arrange(time)))
+
+times <- seq(-15,85,by=.01)
+yout <- dede(x0,times = times, func = craig16,	parms = craigPars16,
+             events=list(data=eventdat),method="lsodar")
+
+myPlot=function(yout,cc) {
+  D=data.frame(yout)
+  D%>%filter(time>-.1,time<1)
+  head(D)
+  tail(D)
+  d=D%>%select(time:Cp,Cs1,ANC)%>%gather(key="Lab",value="Value",-time)%>%
+    mutate(Lab=factor(Lab,levels=c("Q","Nr","N","G1","G2","Tn","An","Aq","Cp","Cs1","ANC")))
+  tc=function(sz) theme_classic(base_size=sz)
+  gx=xlab("Days")
+  sbb=theme(strip.background=element_blank())
+  g=d%>%ggplot(aes(x=time,y=Value))+facet_grid(Lab~.,scales = "free")+geom_line(size=1)+gx+tc(14)+sbb+cc
+  # g=d%>%ggplot(aes(x=time,y=Value))+facet_wrap(Lab~.,ncol=2,scales = "free")+geom_line(size=1)+gx+tc(14)+sbb+cc
+  print(g)
+}
+cc=coord_cartesian(xlim=c(-3,85))
+myPlot(yout,cc)
+
+ggsave("~/Results/myelo/craig16fig9.png",height=9,width=6.5)
+```
+
+![](docs/craig16fig9.png)
+ANCs here vs. in Figure 9 have higher peaks (upper vs. lower 20s) and higher rapid vs. slower peaks.  Q here vs. Figure 10 has nadirs below 1 (in Figure 10 they go no lower than 1.08). 
+The system here thus seems to be more perturbed. 
+
 
 
 
