@@ -3,6 +3,9 @@ library(tidyverse)
 library(deSolve)
 library(myelo)
 craigPars16
+
+# craigPars16[["kapmin"]] =0.0052359  # value 1 in Table 2 = Fig 11a => WORSE! higher ANC peaks, lower HSC Nadirs
+
 (x0=c(Q=craigPars16[["Qss"]],Nr=craigPars16[["Nrss"]],N=craigPars16[["Nss"]],
       G1=craigPars16[["G1ss"]],G2=craigPars16[["G2ss"]],
       Tn=craigPars16[["tauNP"]]+craigPars16[["aNM"]],  #here time Tn is to reserves
@@ -52,7 +55,7 @@ myPlot=function(yout,cc) {
 }
 cc=coord_cartesian(xlim=c(-3,85))#clips high errorbars
 myPlot(yout,cc)
-
+# ggsave("~/Results/myelo/craig16fig9kpminLow.png",height=9,width=6.5) #WORSE! higher ANC peaks, lower HSC Nadirs
 ggsave("~/Results/myelo/craig16fig9.png",height=9,width=6.5)
 
 
