@@ -1,0 +1,12 @@
+name: craig16shiny
+title: craig16shiny
+username:
+account: radivot
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 990406
+bundleId: 2166998
+url: https://radivot.shinyapps.io/craig16shiny/
+when: 1561049233.14846
+asMultiple: FALSE
+asStatic: FALSE

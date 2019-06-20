@@ -1,24 +1,28 @@
+# Craig et al Bull Math Biol 78 2304-2357 (2016)
+# Change a dose to re-simulate the model. 
+# Figure updates take ~20 seconds
 library(shiny)
-
-# Define UI
 ui <- fluidPage(
-  
-  # App title ----
-  titlePanel("Model of Morgan Craig et al Bull Marh Biol (2016)"),
-  
+headerPanel("Chemo-GCSF Model of Granulopoiesis"),
+titlePanel("14-Day cycles. 10 GCSF doses 4 days after each chemo dose."),
+
   # Sidebar layout with input and output definitions ----
   sidebarLayout(
     
     # Sidebar panel for inputs ----
     sidebarPanel(
       
-      # Input: Slider for the LSC multiplier ----
-      sliderInput(inputId = "mult",
-                  label = "Chemo dose in mg/m2:",
+      sliderInput(inputId = "chemo",
+                  label = "Chemo dose per cycle in mg/m2:",
                   min = .1,
                   max = 10,
                   step= 0.1,
-                  value = 4) # initial value => Fig. 9
+                  value = 4), # initial value => Fig. 9
+
+      selectInput(inputId = "gcsf",
+                  label = "SubQ GCSF dose in ug/kg:",
+                  choices = list(`Dose` = list("300","375","750")),
+                  selected = "300") # initial value => Fig. 9
       
     ),
     
@@ -26,7 +30,9 @@ ui <- fluidPage(
     mainPanel(
       plotOutput(outputId = "distPlot")
       
-    )
+    ) #,
+    # titlePanel(" "),
+    
   )
 )
 
@@ -37,9 +43,11 @@ server <- function(input, output) {
   # 2. Its output type is a plot
   output$distPlot <- renderPlot({
     
+    # library(dplyr)
+    # library(ggplot2)
     library(tidyverse)
     library(deSolve)
-    library(rodeoExt)
+    # library(rodeoExt)
     
     craig16<-function(Time, State, Pars) {  # with Chemo and GCSF subQ
       with(as.list(c(State, Pars)), {
@@ -116,23 +124,24 @@ server <- function(input, output) {
       })
     }
     
+    
     craigPars16=c(gamSss = 0.1, tauS = 2.8, AQss = 1.5116, fQ = 8, s2 = 2, the2 = 0.0809, 
-                  kapDel = 0.0146, kapss = 0.0073325, kapmin = 0.0052359, s1 = 1.5, 
-                  etaNPss = 1.6647, bNP = 0.022868, etaNPmin = 1.406, tauNP = 7.3074, 
-                  Vmax = 7.867, bV = 0.24611, aNM = 3.9, gamNMss = 0.1577, phiNrss = 0.364, 
-                  phiNrmax = 4.1335, bG = 0.00018924, gamNr = 0.0063661, gamNss = 2.1875, 
-                  G1ss = 0.025, GBFss = 1.5823e-05, Gprod = 0.014161, V = 0.525, 
-                  kren = 0.16139, kint = 462.42, k12g = 2.2423, k21g = 184.87, 
-                  Pow = 1.4608, Qss = 1.1, betaQss = 0.043, Nss = 0.3761, Ncircss = 0.22, 
-                  Nrss = 2.26, Npss = 0.93, Nmss = 4.51, G2ss = 2.1899e-05, tauNr = 2.7, 
-                  tauNcircss = 0.4571429, tauhalf = 7.6, ANss = 103780, bbarV = 0.031283, 
-                  phiRatio = 11.356, phiMin = 0.020056, theta = 0.15096, Cko = 0.25, 
-                  mu = 0.84458, Vd300 = 4754.7, F300 = 0.64466, ka300 = 8.0236, 
-                  Vd375 = 2322.9, F375 = 0.49964, ka375 = 6.6133, Vd750 = 2178, 
-                  F750 = 0.75, ka750 = 5.143, Vd = 2178, F = 0.75, ka = 5.143, 
-                  k21 = 18.2222, k31 = 0.699, k12 = 90.2752, k13 = 8.2936, kelC = 132.0734, 
-                  k42 = 62.5607, k24 = 9.2296, BSA = 1.723, hQ = 0.0079657, EC50 = 0.7539, 
-                  EM50 = 24.65253, Sc = 0.89816, etaNPInf = 0)
+      kapDel = 0.0146, kapss = 0.0073325, kapmin = 0.0073325, s1 = 1.5, 
+      etaNPss = 1.6647, bNP = 0.022868, etaNPmin = 1.406, tauNP = 7.3074, 
+      Vmax = 7.867, bV = 0.24611, aNM = 3.9, gamNMss = 0.1577, phiNrss = 0.364, 
+      phiNrmax = 4.1335, bG = 0.00018924, gamNr = 0.0063661, gamNss = 2.1875, 
+      G1ss = 0.025, GBFss = 1.5823e-05, Gprod = 0.014161, V = 0.525, 
+      kren = 0.16139, kint = 462.42, k12g = 2.2423, k21g = 184.87, 
+      Pow = 1.4608, Qss = 1.1, betaQss = 0.043, Nss = 0.3761, Ncircss = 0.22, 
+      Nrss = 2.26, Npss = 0.93, Nmss = 4.51, G2ss = 2.1899e-05, tauNr = 2.7, 
+      tauNcircss = 0.4571429, tauhalf = 7.6, ANss = 103780, bbarV = 0.031283, 
+      phiRatio = 11.356, phiMin = 0.020056, theta = 0.15096, Cko = 0.25, 
+      mu = 0.84458, Vd300 = 4754.7, F300 = 0.64466, ka300 = 8.0236, 
+      Vd375 = 2322.9, F375 = 0.49964, ka375 = 6.6133, Vd750 = 2178, 
+      F750 = 0.75, ka750 = 5.143, Vd = 2178, F = 0.75, ka = 5.143, 
+      k21 = 18.2222, k31 = 0.699, k12 = 90.2752, k13 = 8.2936, kelC = 132.0734, 
+      k42 = 62.5607, k24 = 9.2296, BSA = 1.723, hQ = 0.0079657, EC50 = 0.7539, 
+      EM50 = 24.65253, Sc = 0.89816, etaNPInf = 0)
     
     (x0=c(Q=craigPars16[["Qss"]],Nr=craigPars16[["Nrss"]],N=craigPars16[["Nss"]],
           G1=craigPars16[["G1ss"]],G2=craigPars16[["G2ss"]],
@@ -141,37 +150,36 @@ server <- function(input, output) {
     
     (gtimes=as.numeric(t(outer(seq(0,80,14),4:13,"+"))))
     n=length(gtimes)
+    sqAdd=craigPars16[["F300"]]*300e3/craigPars16[["Vd300"]] # default for 300 ug/kg
+    if(input$gcsf=="375") sqAdd=craigPars16[["F375"]]*375e3/craigPars16[["Vd375"]]
+    if(input$gcsf=="750") sqAdd=craigPars16[["F750"]]*750e3/craigPars16[["Vd750"]]
     (eventG=tibble(var=rep("Gs",n),
                    time=gtimes,
-                   # value=rep(craigPars16[["F300"]]*300e3/craigPars16[["Vd300"]],n),
-                   value=rep(craigPars16[["F750"]]*750e3/craigPars16[["Vd750"]],n),
+                   value=rep(sqAdd,n),
+                   # value=rep(craigPars16[["F750"]]*750e3/craigPars16[["Vd750"]],n),
                    method=rep("add",n)))
     
     (ctimes=seq(0,80,14))
     nc=length(ctimes)
-    (delt=round(1/24,2)) # 1-hour chemo infusions
-    dose=4*craigPars16[["BSA"]]*1e3# ug of chemo per injection (D=4 mg/m2)
-    infusionRate=dose/delt # this feeds straight into dCp
-    (eventCon=tibble(var=rep("Ic",nc),
-                     time=ctimes,
-                     value=rep(infusionRate,nc),
-                     method=rep("rep",nc)))
+    D=input$chemo
+    dose=D*craigPars16[["BSA"]]*1e3# ug of chemo per injection (D=4 mg/m2)
     
-    (eventCoff=tibble(var=rep("Ic",nc),
-                      time=ctimes+delt,
-                      value=rep(0,nc),
-                      method=rep("rep",nc)))
-    (eventdat=as.data.frame(bind_rows(eventG,eventCon,eventCoff)%>%arrange(time)))
+    (eventCspike=tibble(var=rep("Cp",nc),
+                        time=ctimes,
+                        value=rep(dose,nc),
+                        method=rep("add",nc)))
     
-    times <- seq(-15,85,by=.01)
-    yout <- dede(x0,times = times, func = craig16,	parms = craigPars16,
-                 events=list(data=eventdat),method="lsodar")
+    (eventdat=as.data.frame(bind_rows(eventG,eventCspike)%>%arrange(time)))
+    
+    times <- seq(-15,85,by=.1)
+    system.time(yout <- dede(x0,times = times, func = craig16,	parms = craigPars16,
+                 events=list(data=eventdat),method="lsodar"))  # 17 secs is best for now
     
     myPlot=function(yout,cc) {
       D=data.frame(yout)
-      D%>%filter(time>-.1,time<1)
-      head(D)
-      tail(D)
+      # D%>%filter(time>-.1,time<1)
+      # head(D)
+      # tail(D)
       d=D%>%select(time:Cp,Cs1,ANC)%>%gather(key="Lab",value="Value",-time)%>%
         mutate(Lab=factor(Lab,levels=c("Q","Nr","N","G1","G2","Tn","An","Aq","Cp","Cs1","ANC")))
       tc=function(sz) theme_classic(base_size=sz)

@@ -15,8 +15,8 @@ craigPars16
 n=length(gtimes)
 (eventG=tibble(var=rep("Gs",n),
                    time=gtimes,
-                   # value=rep(craigPars16[["F300"]]*300e3/craigPars16[["Vd300"]],n),
-                   value=rep(craigPars16[["F750"]]*750e3/craigPars16[["Vd750"]],n),
+                   value=rep(craigPars16[["F300"]]*300e3/craigPars16[["Vd300"]],n),
+                   # value=rep(craigPars16[["F750"]]*750e3/craigPars16[["Vd750"]],n),
                    method=rep("add",n)))
 
 (ctimes=seq(0,80,14))
@@ -35,9 +35,14 @@ infusionRate=dose/delt # this feeds straight into dCp
                       method=rep("rep",nc)))
 (eventdat=as.data.frame(bind_rows(eventG,eventCon,eventCoff)%>%arrange(time)))
 
-times <- seq(-15,85,by=.01)
-yout <- dede(x0,times = times, func = craig16,	parms = craigPars16,
-             events=list(data=eventdat),method="lsodar")
+# times <- seq(-12,30,by=.01)
+# times <- seq(-12,30,by=.01) # 15 secs
+times <- seq(-15,85,by=.01) # 42 secs
+# yout <- dede(x0,times = times, func = craig16,	parms = craigPars16,
+#              events=list(data=eventdat),method="lsodar")
+system.time(yout <- dede(x0,times = times, func = craig16,	parms = craigPars16,
+             events=list(data=eventdat),method="lsodar"))
+
 
 myPlot=function(yout,cc) {
   D=data.frame(yout)
@@ -66,8 +71,11 @@ ggsave("~/Results/myelo/craig16fig9.png",height=9,width=6.5)
 
 (eventdat=as.data.frame(bind_rows(eventG,eventCspike)%>%arrange(time)))
 
-yout <- dede(x0,times = times, func = craig16,	parms = craigPars16,
-             events=list(data=eventdat),method="lsodar")
+times <- seq(-12,85,by=.01) # 40 secs
+times <- seq(-12,85,by=.1) # 18 secs
+# times <- seq(-12,85,by=1) # 18 secs
+system.time(yout <- dede(x0,times = times, func = craig16,	parms = craigPars16,
+             events=list(data=eventdat),method="lsodar"))
 myPlot(yout,cc)
 ggsave("~/Results/myelo/craig16fig9spike.png",height=9,width=6.5)
 
