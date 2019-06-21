@@ -105,7 +105,7 @@ craig16<-function(Time, State, Pars) {  # with Chemo and GCSF subQ
     
     if (Time < 0) {
       dQ=-(beta+kapG1+kapDel)*Q + AQss*beta*Q
-      dNr=-gamNr*Nr-phiNr(GBF)*Nr + (An/1e3)*kapG1*Q  # 1e3 maps units of Q to N
+      dNr=-gamNrss*Nr-phiNr(GBF)*Nr + (An/1e3)*kapG1*Q  # 1e3 maps units of Q to N
       dN= phiNr(GBF)*Nr-gamNss*N
       # dG1=0  # 4  unbound circulating GCSF
       # dG2=0   #5  #bound GCSF
@@ -133,7 +133,7 @@ craig16<-function(Time, State, Pars) {  # with Chemo and GCSF subQ
       G1nt=lagvalue(Time - Tn,4)
       Qnt=lagvalue(Time - Tn,1)
       kapG1nt=fkapN(G1nt)
-      dNr=(An/1e3)*kapG1nt*Qnt*Vrat-gamNr*Nr-phiNr(GBF)*Nr # 1e3 maps units of S to N
+      dNr=(An/1e3)*kapG1nt*Qnt*Vrat-gamNrss*Nr-phiNr(GBF)*Nr # 1e3 maps units of S to N
       
       dN = phiNr(GBF)*Nr-gamNss*N
       

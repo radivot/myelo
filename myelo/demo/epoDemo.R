@@ -1,4 +1,6 @@
+library(deSolve)
 library(myelo)
+
 thetahat=c(Bmax = 2.821, Epo0 = 3.322,Kd= 2.583, kde  = -1.884,
 		kdi=-2.730, ke= -1.177, kex=-2.447,kon=-4.091,kt=-1.758,scale= 2.210)  # from Table 1 in Chao 2010  
 # NOTE that in the Science 2010 supplement these values are given
@@ -32,6 +34,7 @@ matlines(yout[,1],yout[,-(1:7)])
 np=as.numeric(p0) # strips names before sending values in as ODE ICs 
 c(Epo=p0[2],EpoR=p0[1]) #to avoid this sort of thing
 c(Epo=np[2],EpoR=np[1]) # and instead have this sort of thing
+c(Epo=p0[[2]],EpoR=p0[[1]]) #(one can also do this)
 #Also, there are three model outputs to fit to data, so residuals need to be 
 # weighted by the reciprocols of the measurement error, obtained here using
 # saturated one-way anova models of the time courses. 
