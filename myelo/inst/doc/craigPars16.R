@@ -8,7 +8,7 @@ craigPars16=c(
   # table 4
   gamSss=0.1, # 1/day
   tauS=2.8, #days
-  AQss = 1.5116, # = 2*exp(-0.1*2.8), text 1.512 
+  Aqss = 1.5116, # = 2*exp(-0.1*2.8), text 1.512 
   fQ = 8,      # 1/day
   s2 = 2,
   the2 = 0.0809, # 1e6 cells/kg
@@ -35,7 +35,7 @@ craigPars16=c(
   phiNrmax=4.1335,                 ########was transmax = 1.456,  # 1/day
   
   bG = 1.8924e-4, ###### was 11.2679  # ng/mL
-  gamNr = 0.0063661, # 0.0064, # 1/day
+  gamNrss = 0.0063661, # 0.0064, # 1/day
   gamNss= 2.1875, # 1/day  (= 35/16)
   G1ss=0.025, # ng/mL # was Gss = 0.0246,  # ng/mL
   GBFss=1.5823e-5, 
@@ -61,7 +61,7 @@ craigPars16=c(
   tauNr = 2.7,    # days was 2.5
   tauNcircss = 0.4571429,    # days =16/35
   tauhalf = 7.6,    # hrs 
-  ANss = 1.0378e5, # 103780,  #, text 103777     exp(etaNPss*tauNP-gamNr*tauNr-gamNM*aNM) =>
+  Anss = 1.0378e5, # 103780,  #, text 103777     exp(etaNPss*tauNP-gamNr*tauNr-gamNM*aNM) =>
   bbarV=0.031283, #matches value 4 (0.8 at top) in table 2
   phiRatio=11.356,  # max/ss
   phiMin=0.020056, 
