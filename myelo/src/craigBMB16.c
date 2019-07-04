@@ -144,14 +144,14 @@ void derivsCraig16(int *neq, double *t, double *y, double *ydot, double *yout, i
     }	else {
         
 //        ts= *t - tauS;
-        ts= *t - round(1000*tauS)/1000;
+        ts= *t - round(1e4*tauS)/1e4;
 //        ts= round(1000*(*t - tauS))/1000;
 //        tn= *t - Tn;
         tauNM = Tn - tauNP; //  Tn is time to reserves
 //        tnm= *t - tauNM;
     //    tn= round(100*(*t - Tn))/100;
-        tn= *t - round(1000*Tn)/1000;
-        tnm= *t - round(1000*tauNM)/1000;
+        tn= *t - round(1e4*Tn)/1e4;
+        tnm= *t - round(1e4*tauNM)/1e4;
 //        tnm= round(100*(*t - tauNM))/100;
         
         lagvalue(ts, nrTs, NoutTs, ytauTs);
