@@ -177,7 +177,7 @@ craig16<-function(Time, State, Pars) {  # with Chemo and GCSF subQ
       dCf=k12*Cp+k42*Cs2-(k21+k24)*Cf
       dCs1=k13*Cp-k31*Cs1
       dCs2=k24*Cf-k42*Cs2
-      dGs=-ka*Gs + Ig # G in skin, add F*Dg/Vd to Gs at each injection
+      dGs=-ka*Gs # G in skin, add F*Dg/Vd to Gs at each injection
     }
     
     list(c(dQ,dNr,dN,dG1,dG2,dTn,dAn,dAq,dCp,dCf,dCs1,dCs2,dGs,dIc,dIg),
