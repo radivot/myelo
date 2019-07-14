@@ -21,14 +21,16 @@ static double parms[16];
 #define hQ parms[15]
 
 
-/* Interface to dede utility functions in package deSolve  */
+void lagvalue(double T, int *nr, int N, double *ytau); // defined in craigBMB16.c
+
+/* Interface to dede utility functions in package deSolve  
 void lagvalue2(double T, int *nr, int N, double *ytau) {
     static void(*fun)(double, int*, int, double*) = NULL;
     if (fun == NULL)
         fun = (void(*)(double, int*, int, double*))R_GetCCallable("deSolve", "lagvalue");
     return fun(T, nr, N, ytau);
 }
-
+*/
 
 
 void parmsCraig16Q(void (* odeparms)(int *, double *))
@@ -74,7 +76,8 @@ void derivsCraig16Q(int *neq, double *t, double *y, double *ydot, double *yout, 
     }	else {
 //        ts= *t - tauS;
         ts= *t - round(1e4*tauS)/1e4;
-        lagvalue2(ts, nrTs, NoutTs, ytauTs);
+//        lagvalue2(ts, nrTs, NoutTs, ytauTs);
+        lagvalue(ts, nrTs, NoutTs, ytauTs);
 
         Qts=ytauTs[0]; 
         Cpts=ytauTs[1];
