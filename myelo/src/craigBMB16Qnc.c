@@ -31,14 +31,17 @@ void derivsCraig16Qnc(int *neq, double *t, double *y, double *ydot, double *yout
     if (ip[0] <1) error("nout should be at least 1");
     Q=y[0]; Aq=y[1];   
     
-    int NoutTs  = 2;  //number of returned lags for tauS
-    int nrTs[2] = {0, 1}; // positions of Q and Aq  
+//    int NoutTs  = 2;  //number of returned lags for tauS
+    int NoutTs  = 1;  //reducing to one state grab back in time made no diff
+//    int nrTs[2] = {0, 1}; // positions of Q and Aq  
+    int nrTs[1] = {0}; // positions of Q and Aq  
 //    double ytauTs[2] = {Qss,Aqss};
-    double ytauTs[2] = {0.0,0.0};
+//    double ytauTs[2] = {0.0,0.0};
+    double ytauTs[1] = {0.0};
     
     double ts;
     double Qts;
-    double Aqts;
+//    double Aqts;
     
     beta=fQ/(1+pow(Q/the2,s2));
 
@@ -46,10 +49,10 @@ void derivsCraig16Qnc(int *neq, double *t, double *y, double *ydot, double *yout
     if (*t<0) {
         dQ=-(beta+kapDel)*Q + Aq*beta*Q;
         ytauTs[0]=Qss; 
-        ytauTs[1]=Aqss;
+//        ytauTs[1]=Aqss;
         
         Qts=ytauTs[0]; 
-        Aqts=ytauTs[1];
+//        Aqts=ytauTs[1];
         
     }	else {
 //        ts= *t - tauS;
@@ -58,7 +61,7 @@ void derivsCraig16Qnc(int *neq, double *t, double *y, double *ydot, double *yout
         lagvalue(ts, nrTs, NoutTs, ytauTs);
 
         Qts=ytauTs[0]; 
-        Aqts=ytauTs[1];
+//        Aqts=ytauTs[1];
 
         betaTs=fQ/(1+pow(Qts/the2,s2));
 //        dQ=-(beta+kapDel)*Q + ((Aq+Aqts)/2)*betaTs*Qts;
@@ -69,6 +72,6 @@ void derivsCraig16Qnc(int *neq, double *t, double *y, double *ydot, double *yout
     ydot[1] = dAq ;
 
     yout[0] = Qts;  
-    yout[1] = Aqts;
+//    yout[1] = Aqts;
 }
 
