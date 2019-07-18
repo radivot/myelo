@@ -5,6 +5,36 @@ library(myelo)
 (parsQ=craigPars[c("Qss","Aqss","tauS","fQ","the2","s2")])
 parsQ["kapDel"]=craigPars["kapss"]+craigPars["kapDel"]
 parsQ
+attach(as.list(parsQ))
+Q=seq(0.01,2,0.01)
+fbeta=function(Q) fQ/(1+(Q/the2)^s2)
+beta=fbeta(Q)
+betaSS=fbeta(Qss)
+tc=function(sz) theme_classic(base_size=sz)
+gx=xlab("Q (1e6/kg)")
+gy=ylab("Beta (fraction leaving Q per day)")
+tibble(Q,beta)%>%ggplot(aes(x=Q,y=beta))+geom_line(size=1)+
+  geom_vline(aes(xintercept=Qss))+geom_hline(aes(yintercept=betaSS))+gx+gy+tc(14)
+ggsave("~/Results/myelo/Qprofile.pdf",width=5, height=5)
+
+thresh=0.1
+fbetaDB=function(Q,thresh,betaSS,fQ) {
+  ifelse(Q>thresh,betaSS,fQ-((fQ-betaSS)/thresh)*Q)
+}
+
+(betaDB=fbetaDB(Q,thresh,betaSS,fQ))
+tibble(Q,betaDB)%>%ggplot(aes(x=Q,y=betaDB))+geom_line(size=1)+
+  geom_vline(aes(xintercept=Qss))+geom_hline(aes(yintercept=betaSS))+gx+gy+tc(14)
+ggsave("~/Results/myelo/QDBprofile.pdf",width=5, height=5)
+
+
+
+detach(as.list(parsQ))
+
+
+
+
+
 (StrTimes=seq(0,80,14))
 (StpTimes=StrTimes+5)
 nc=length(StpTimes)
@@ -75,18 +105,20 @@ d5%>%ggplot(aes(x=time,y=Value))+facet_grid(Lab~.,scales = "free")+geom_line(siz
 ggsave("~/Results/myelo/Q5nc.pdf",width=5, height=5)
 
 
-# (x10=c(x0[1],S1=0.03307528,S2=0.03307528,S3=0.03307528,S4=0.03307528,
-#        S5=0.03307528,S6=0.03307528,S7=0.03307528,S8=0.03307528,S9=0.03307528,x0[2]))
-# system.time(yout10 <- dede(x10,times = seq(-20,1000,by=0.01), func = "derivsCraig16Q10nc",	parms = parsQ,
-#                           dllname = "myelo",initfunc = "parmsCraig16Q10nc",
-#                           events=list(data=eventsdat),
-#                           method="lsoda",
-#                           nout = 1, outnames = c("beta"))    )
-# 
-# D10=data.frame(yout10)
-# head(D10,2)
-# tail(D10,2)
-# dput(tail(D10,1))
+#################   find steady state of S1 to S4
+# (x10=c(x0[1],S1=0,S2=0,S3=0,S4=0,S5=0,S6=0,S7=0,S8=0,S9=0,x0[2]))
+(x10=c(x0[1],S1=0.03307528,S2=0.03307528,S3=0.03307528,S4=0.03307528,
+       S5=0.03307528,S6=0.03307528,S7=0.03307528,S8=0.03307528,S9=0.03307528,x0[2]))
+system.time(yout10 <- dede(x10,times = seq(-20,1000,by=0.01), func = "derivsCraig16Q10nc",	parms = parsQ,
+                          dllname = "myelo",initfunc = "parmsCraig16Q10nc",
+                          events=list(data=eventsdat),
+                          method="lsoda",
+                          nout = 1, outnames = c("beta"))    )
+
+D10=data.frame(yout10)
+head(D10,2)
+tail(D10,2)
+dput(tail(D10,1))
 
 x10=c(Q = 1.10216835127602, S1 = 0.0147001261011713, 
 S2 = 0.0147001261011713, S3 = 0.0147001261011713, S4 = 0.0147001261011713, 
@@ -107,14 +139,13 @@ d10=D10%>%select(time,Q,Aq)%>%gather(key="Lab",value="Value",-time)
 d10%>%ggplot(aes(x=time,y=Value))+facet_grid(Lab~.,scales = "free")+geom_line(size=1)+gx+tc(14)+sbb
 ggsave("~/Results/myelo/Q10nc.pdf",width=5, height=5)
 
-# head(d10)
-# d$n=1
-# d5$n=5
-# d10$n=10
-# D=bind_rows(d,d5,d10)%>%filter(Lab=="Q")
-# D$n=factor(D$n)
-# D$n=factor(D$n,levels=c(10,5,1))
-# D%>%ggplot(aes(x=time,y=Value,col=n))+geom_line(size=.3)+gx+tc(14)+sbb
+head(d10)
+d$n=1
+d5$n=5
+d10$n=10
+D=bind_rows(d,d5,d10)%>%filter(Lab=="Q")
+# D$n=as_factor(D$n)
+D%>%ggplot(aes(x=time,y=Value,col=n))+geom_line(size=1)+gx+tc(14)+sbb
 
 library(rbenchmark)
 benchmark("delayQ" = {
