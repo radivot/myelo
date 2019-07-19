@@ -11,11 +11,11 @@ fbeta=function(Q) fQ/(1+(Q/the2)^s2)
 beta=fbeta(Q)
 betaSS=fbeta(Qss)
 tc=function(sz) theme_classic(base_size=sz)
-gx=xlab("Q (1e6/kg)")
+gx=xlab(quote(paste("Q in ",10^6," HSC/(kg body mass)")))
 gy=ylab("Beta (fraction leaving Q per day)")
 tibble(Q,beta)%>%ggplot(aes(x=Q,y=beta))+geom_line(size=1)+
   geom_vline(aes(xintercept=Qss))+geom_hline(aes(yintercept=betaSS))+gx+gy+tc(14)
-ggsave("~/Results/myelo/Qprof.pdf",width=5, height=5)
+ggsave("~/Results/myelo/Qprof.pdf",width=4, height=4)
 
 thresh=0.1
 fbetaDB=function(Q,thresh,betaSS,fQ) {
@@ -30,6 +30,6 @@ fbetaDB=function(Q,thresh,betaSS,fQ) {
 (betaDB=fbetaDB(Q,thresh,betaSS,fQ=2*betaSS))
 tibble(Q,betaDB)%>%ggplot(aes(x=Q,y=betaDB))+geom_line(size=1)+
   geom_vline(aes(xintercept=Qss))+gx+gy+tc(14)+ylim(0,0.1)
-ggsave("~/Results/myelo/QdbProf.pdf",width=5, height=5)
+ggsave("~/Results/myelo/QdbProf.pdf",width=4, height=4)
 
 detach(as.list(parsQ))

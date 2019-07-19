@@ -46,6 +46,32 @@ d%>%ggplot(aes(x=time,y=Value))+facet_grid(Lab~.,scales = "free")+geom_line(size
 ggsave("~/Results/myelo/Qnc.pdf",width=5, height=5)
 
 
+
+(events1=tibble(var=rep("Aq",2*nc),
+               time=sort(c(StrTimes,StpTimes)),
+               value=rep(c(0.0*parsQ["Aqss"],parsQ["Aqss"]),nc),
+               method=rep("rep",2*nc)))
+events2=events1
+events2$time=events2$time+150
+(eventsdat2=as.data.frame(bind_rows(events1,events2)))
+
+x0=c(Q = 1.10216835127603, Aq = 1.5116)
+system.time(yout <- dede(x0,times = seq(-20,500,by=0.01), func = "derivsCraig16Qnc",	parms = parsQ,
+                         dllname = "myelo",initfunc = "parmsCraig16Qnc",
+                         events=list(data=eventsdat2),method="lsoda",  #method made no diff
+                         nout = 2, outnames = c("Qts","Aqts"))    )
+
+D=data.frame(yout)
+tail(D,2)
+d=D%>%select(time,Q,Aq)%>%gather(key="Lab",value="Value",-time)
+d%>%ggplot(aes(x=time,y=Value))+facet_grid(Lab~.,scales = "free")+geom_line(size=1)+gx+tc(14)+sbb#+cc
+ggsave("~/Results/myelo/Qnc2x6.pdf",width=5, height=5)
+
+
+
+
+
+
 #################   find steady state of S1 to S4
 # (x05=c(x0[1],S1=0,S2=0,S3=0,S4=0,x0[2]))
 # system.time(yout5 <- dede(x05,times = seq(-20,1000,by=0.01), func = "derivsCraig16Q5nc",	parms = parsQ,

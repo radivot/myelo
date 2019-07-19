@@ -102,13 +102,13 @@ psim=function(Q0,beta0,betaSS,sigma) {
 }
 
 
-signif(coef(summary(M))[,1:2],2)
-round(coef(M2),5)
+signif(coef(summary(M))[,1:2],3)
+round(coef(M),5)
 p=as.list(coef(M))
 out=do.call(psim,p)
 d$ei=out[,"Q"]
-
-d%>%ggplot(aes(x=t,y=Q))+geom_point(size=0.3)+geom_line(aes(x=t,y=ei),size=.3)+gx+tc(14)
-ggsave("~/Results/myelo/Qdb1_2x6fit.pdf",width=5, height=5) 
+gy=ylab(quote(paste(10^6," HSC/(kg body mass)")))
+d%>%ggplot(aes(x=t,y=Q))+geom_point(size=0.3)+geom_line(aes(x=t,y=ei),size=.3)+gx+gy+tc(14)
+ggsave("~/Results/myelo/Qdb1_2x6fit.pdf",width=4, height=4) 
 
 
