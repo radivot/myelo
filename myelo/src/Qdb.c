@@ -32,9 +32,9 @@ void derivsQdb(int *neq, double *t, double *y, double *ydot, double *yout, int *
     dAq = 0;   // Changes only by events
     dQ=-(beta+kapDel)*Q + Aq*k*S4;
     dS1=beta*Q - k*S1;
-    dS2=k*S1 - k*S2;
-    dS3=k*S2 - k*S3;
-    dS4=k*S3 - k*S4;
+    dS2=k*S1   - k*S2;
+    dS3=k*S2   - k*S3;
+    dS4=k*S3   - k*S4;
     
     ydot[0] = dQ ; 
     ydot[1] = dS1; 
