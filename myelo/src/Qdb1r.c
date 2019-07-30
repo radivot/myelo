@@ -1,20 +1,20 @@
-#include <R.h>
+#include <R.h>   // qdb1.c with parameters reordered and renamed (for beta0)
 #include <Rinternals.h>
 #include <Rdefines.h>
 #include <R_ext/Rdynload.h>
 static double  parms[4];
-#define fQ     parms[0]
-#define thresh parms[1]
-#define betaSS parms[2]
-#define kapDel parms[3]
+#define beta0  parms[0]
+#define betaSS parms[1]
+#define kapDel parms[2]
+#define thresh parms[3]
 
-void parmsQdb1(void (* odeparms)(int *, double *))
+void parmsQdb1r(void (* odeparms)(int *, double *))
 {   int N=4;
     odeparms(&N, parms);
 }
 
 
-void derivsQdb1(int *neq, double *t, double *y, double *ydot, double *yout, int *ip)
+void derivsQdb1r(int *neq, double *t, double *y, double *ydot, double *yout, int *ip)
 {
     double  Q,  Aq;
     double dQ, dAq;
@@ -25,7 +25,7 @@ void derivsQdb1(int *neq, double *t, double *y, double *ydot, double *yout, int 
     if (Q>thresh) {
         beta=betaSS;
     } else { 
-        beta = fQ-((fQ-betaSS)/thresh)*Q;
+        beta = beta0-((beta0-betaSS)/thresh)*Q;
     }
     dAq = 0;   // Changes only by events
     dQ=-kapDel*Q + (Aq-1)*beta*Q;
