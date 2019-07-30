@@ -3,7 +3,7 @@
 #include <Rdefines.h>
 #include <R_ext/Rdynload.h>
 static double  parms[4];
-#define fQ     parms[0]
+#define beta0  parms[0]
 #define thresh parms[1]
 #define betaSS parms[2]
 #define kapDel parms[3]
@@ -25,7 +25,7 @@ void derivsQdb1(int *neq, double *t, double *y, double *ydot, double *yout, int 
     if (Q>thresh) {
         beta=betaSS;
     } else { 
-        beta = fQ-((fQ-betaSS)/thresh)*Q;
+        beta = beta0-((beta0-betaSS)/thresh)*Q;
     }
     dAq = 0;   // Changes only by events
     dQ=-kapDel*Q + (Aq-1)*beta*Q;
