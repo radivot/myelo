@@ -10,7 +10,6 @@ devtools::install_github("radivot/myelo",subdir="myelo")
 The model of   [Scholz et al  *Theoretical Biology and Medical Modelling* **9** 32 (2012)](https://www.ncbi.nlm.nih.gov/pubmed/22846180) 
 -->
 
-[//]: # comment 2
 
 # Model of Chemotherapy-Induced Myelosuppression With Parameter Consistency Across Drugs
 
@@ -44,7 +43,7 @@ x0=c(C1=0,C2=0,C3=0,Prol=5.05,Trans1=5.05,Trans2=5.05,Trans3=5.05,Circ=5.05)
 ```
 in  uM and 1e3 cells/uL (of blood). 
 The initial number of circulating neutrophils,  5.05,  is 
-also the setpoint(i.e. Circ0) and thus steady state. 
+also the setpoint (i.e. Circ0) and thus steady state. 
 At steady state this is also the number of cells in each of the 
 three transition/maturation compartments and in the
 proliferating compartment. A bolus  of docetaxel making C1 33.5 uM at t=0 yields a 
