@@ -8,6 +8,7 @@ fribergPars02
 plot(d)
 times <- seq(-5,25,0.1)
 200/0.808/7.4
+38.5/7.4
 (evnt=data.frame(var="C1",time=0,value=33.5,method="rep"))
 x0=c(C1=0,C2=0,C3=0,Prol=5.05,Trans1=5.05,Trans2=5.05,Trans3=5.05,Circ=5.05)
 yout=ode(x0,times=times,func=friberg02,events=list(data=evnt),parms=fribergPars02)

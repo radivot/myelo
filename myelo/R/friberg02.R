@@ -32,7 +32,8 @@ friberg02<-function(Time, State, Pars) {
     dC1=-(k12+k13+k10)*C1 + k21*C2 + k31*C3
     dC2=k12*C1 - k21*C2
     dC3=k13*C1 - k31*C3
-    Edrug=slope*C1
+    Cp=C1/V1/mw  #mw in mg/umole => uM
+    Edrug=slope*Cp
     dProl = ktr*Prol*(1-Edrug)*(Circ0/Circ)^gam - ktr*Prol
     dTrans1=ktr*Prol-ktr*Trans1
     dTrans2=ktr*Trans1-ktr*Trans2
