@@ -157,12 +157,52 @@ dxdt_Trans3=ktr*Trans2-ktr*Trans3;
 dxdt_Circ=ktr*Trans3-ktr*Circ;
 '
 mod <- mread("fri02", "~/tmp", code)
-mod%>%mrgsim(end = 30, delta = 0.1)%>%plot(xlab="Days") #no drugs
-e=ev(time=10,amt=100,cmt=3)+ev(time=20,amt=100,cmt=4)
-e # adds 100 mg/kg to Angiostatin (state 3) at 10 days and endostatin (state 4) at 20 days
+(e=ev(time=5,amt=33.5,cmt=1)) #adds (evid=1) 33.5 to cmt 1 at t=5 days
 mod%>%ev(e)%>%mrgsim(end = 30, delta = 0.1)%>%plot(xlab="Days")
 ```
 which generates
 
 ![](../docs/mrgFri02.png)
 
+
+mrssolve also offer nice Rx short hand as follows: 
+```
+(e=ev_rx("50 q 21 x 6 then 25 q 14 x 6"))
+mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
+(e=ev_rx("50 over 2h q 21 x 6 then 25 q 14 x 6"))
+mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
+(e=ev_rx("50 over 12h q 21 x 6 then 25 q 14 x 6"))
+mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
+```
+which shows that a 2 hour infusion is the same as a bolus with respect to PD but not PK, 
+and that a 12 hour infusion also changes the PD. 
+
+![](../docs/fribolus.png)
+![](../docs/friinfus.png)
+![](../docs/infus12h.png)
+
+
+The following block simulates the model for 6 21 day cycles and adds a small amount of noise
+```
+ev1=ev(time=0, amt=33.5,addl=6)
+
+
+
+
+(pars=c( lambda1=.192,b=5.85,d=0.00873,eA=0.15,eE=0.66))
+PH=function(pars) {
+  dput(ev1@data)
+  left()
+  ev1@data=merge(evnt@data,data.frame(t(pars)))
+  (mod <- mod %>% ev(evnt))
+  (out=mod%>%mrgsim(end = 100, delta = 1) )
+  D=as.data.frame(as_tibble(out))
+  D[!duplicated(D[1:2]),]
+}
+D=PH(pars)%>%select(ID,time,V)%>%mutate(Trt=levels(d$Trt)[ID])%>%mutate(Trt=as_factor(Trt))
+head(D)
+sd=2
+D$V=D$V+rnorm(dim(D)[1],sd=sd)
+D%>%ggplot(aes(x=time,y=V))+facet_wrap(Trt~.,scales = "free")+geom_line(size=1)+tc(11)+sbb
+ggsave("~/tmp/simulated.png",width=5,height=4)
+```

@@ -60,4 +60,19 @@ mod <- mread("fri02", "~/tmp", code)
 (e=ev(time=5,amt=33.5,cmt=1)) #adds (evid=1) 33.5 to cmt 1 at t=5 days
 mod%>%ev(e)%>%mrgsim(end = 30, delta = 0.1)%>%plot(xlab="Days")
 
+(e=ev_rx("50 q 21 x 6 then 25 q 14 x 6"))
+mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
+(e=ev_rx("50 over 2h q 21 x 6 then 25 q 14 x 6"))
+mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
+(e=ev_rx("50 over 12h q 21 x 6 then 25 q 14 x 6"))
+mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
+
+# (e=ev_rx("50 over 17h q 21 x 6 then 25 q 14 x 6"))
+# (e=ev_rx("50 over 18h q 21 x 6 then 25 q 14 x 6"))
+# (e=ev_rx("50 over 24h q 21 x 6 then 25 q 14 x 6"))
+# mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
+
+(out=mod%>%ev_rx("50 q 14 x 4")%>%mrgsim(end = 100, delta = 0.1))
+out%>%plot(xlab="Days")
+str(out)
 
