@@ -178,7 +178,9 @@ which shows that a 2 hour infusion is the same as a bolus with respect to PD but
 and that a 12 hour infusion also changes the PD. 
 
 ![](../docs/fribolus.png)
+
 ![](../docs/friinfus.png)
+
 ![](../docs/infus12h.png)
 
 
