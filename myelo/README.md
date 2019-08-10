@@ -154,14 +154,19 @@ dxdt_Circ=ktr*Trans3-ktr*Circ;
 '
 mod <- mread("fri02", "~/tmp", code)
 (e=ev(time=0,amt=180,cmt=1)) 
-mod%>%ev(e)%>%mrgsim(end = 25, delta = 0.01)%>%plot(xlab="Days")
+out=mod%>%ev(e)%>%mrgsim(start=0,end = 25, delta = 1)
+out%>%plot(xlab="Days")
+d=as.data.frame(out)
+D=d%>%select(time,Prol:Circ)%>%gather(key="Cell",value="Value",-time)%>%mutate(Cell=as_factor(Cell))
+D%>%ggplot(aes(x=time,y=Value,col=Cell))+geom_line(size=1)+gx+tc(14)+sbb
 ```
 which generates
 
 ![](../docs/mrgFri02.png)
+![](../docs/waves.png)
 
 
-mrgsolve also offer nice Rx short hand as follows: 
+mrgsolve also offers nice Rx short hand as follows: 
 ```
 (e=ev_rx("50 q 21 x 6 then 25 q 14 x 6"))
 mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
@@ -169,49 +174,88 @@ mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
 
 ![](../docs/Fribolus.png)
 
-
-```
-(e=ev_rx("50 over 2 q 21 x 6 then 25 q 14 x 6"))
-mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
-```
-![](../docs/friInfus.png)
-
+and the ability to easily change the dose to a continuous infusion, here over 12 of the 21 days
+of a cycle
 ```
 (e=ev_rx("50 over 12 q 21 x 6 then 25 q 14 x 6"))
 mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
 ```
 ![](../docs/infus12.png)
 
-which shows that a 2 day infusion is the same as a bolus with respect to PD but not PK, 
-and that a 12 day infusion also changes the PD. 
+To see if we can recover 4 parameters from a simulation, we first simulate some data
 
-
-<!--
-
-
-The following block simulates the model for 6 21 day cycles and adds a small amount of noise
 ```
-ev1=ev(time=0, amt=33.5,addl=6)
+(e=ev(time=0,amt=180,cmt=1)) 
+out=mod%>%ev(e)%>%mrgsim(start=0,end = 50, delta = .1)
+d=as.data.frame(out)
+sd=0.1
+d$ANC=d$Circ+rnorm(dim(d)[1],sd=sd)
+d%>%ggplot(aes(x=time,y=Circ))+ geom_line(size=.1)+
+  geom_point(aes(x=time,y=ANC),size=1)+gx+tc(14)+sbb
+ggsave("~/GitHubs/myelo/docs/noiseData.png",width=5, height=4)
+```
+![](../docs/noiseData.png)
 
 
+and then see if FME can retrieve the estimates 
 
-
-(pars=c( lambda1=.192,b=5.85,d=0.00873,eA=0.15,eE=0.66))
-PH=function(pars) {
-  dput(ev1@data)
-  left()
-  ev1@data=merge(evnt@data,data.frame(t(pars)))
-  (mod <- mod %>% ev(evnt))
-  (out=mod%>%mrgsim(end = 100, delta = 1) )
-  D=as.data.frame(as_tibble(out))
-  D[!duplicated(D[1:2]),]
+```
+dput(fribergPars02)
+(pars=c(Circ0 = 5.05, ktr = 1.08229988726043, gam = 0.161, slope = 8.58))# recover 4 params
+LF=function(pars) {
+  evnt=ev(time=0,amt=180,cmt=1,Circ0=pars["Circ0"],ktr=pars["ktr"],gam=pars["gam"],slope=pars["slope"])
+  out=mod%>%ev(evnt)%>%mrgsim(start=0,end = 25, delta = 1)
+  out%>%plot(xlab="Days")
+  as.data.frame(out)
 }
-D=PH(pars)%>%select(ID,time,V)%>%mutate(Trt=levels(d$Trt)[ID])%>%mutate(Trt=as_factor(Trt))
-head(D)
-sd=2
-D$V=D$V+rnorm(dim(D)[1],sd=sd)
-D%>%ggplot(aes(x=time,y=V))+facet_wrap(Trt~.,scales = "free")+geom_line(size=1)+tc(11)+sbb
-ggsave("~/tmp/simulated.png",width=5,height=4)
+D=LF(pars)%>%select(time,Circ)
+dd=d%>%select(time,Circ=ANC)
+library(FME)
+LFcost <- function (pars) {
+  out=LF(pars)%>%select(time,Circ)
+  modCost(model = out, obs = dd,sd=sd)
+}
+(Fit <- modFit(f = PHcost, p = 1.5*pars))
+pars
+coef(Fit)
+1.5*pars
+summary(Fit)
 ```
 
--->
+The output of this below shows that while the 1st three parameters moved in the
+correct direction, the fourth did not. Strong negative correlation between gamma and slope 
+hints at the problem: stronger chemo can look weaker if ANC control is stronger.
+```
+> pars
+ Circ0    ktr    gam  slope 
+5.0500 1.0823 0.1610 8.5800 
+> coef(Fit)
+     Circ0        ktr        gam      slope 
+ 4.4233503  1.4563017  0.1647432 27.0110295 
+> 1.5*pars
+   Circ0      ktr      gam    slope 
+ 7.57500  1.62345  0.24150 12.87000 
+> summary(Fit)
+
+Parameters:
+       Estimate Std. Error t value Pr(>|t|)    
+Circ0  4.423350   0.138695   31.89   <2e-16 ***
+ktr    1.456302   0.033024   44.10   <2e-16 ***
+gam    0.164743   0.006138   26.84   <2e-16 ***
+slope 27.011029   0.832308   32.45   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.572 on 248 degrees of freedom
+
+Parameter correlation:
+        Circ0     ktr     gam   slope
+Circ0  1.0000 -0.6384  0.3664 -0.5419
+ktr   -0.6384  1.0000  0.4584 -0.2954
+gam    0.3664  0.4584  1.0000 -0.9570
+slope -0.5419 -0.2954 -0.9570  1.0000
+```
+
+
+
+

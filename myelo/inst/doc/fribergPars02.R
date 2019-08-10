@@ -15,7 +15,9 @@ fribergPars02=c(
 		k21 = 24*1.51, 
 		k13 = 24*1.26, 
 		k31 = 24*0.084, 
-		k10 = 24*5.2# CL=38.5 L/hr , V1=7.4L  38.5/7.4=5.2
+		k10 = 24*5.2,# CL=38.5 L/hr , V1=7.4L  38.5/7.4=5.2
+		V1=7.4,
+		mw=0.808 
 )
 save(fribergPars02,file="fribergPars02.rda")
 
