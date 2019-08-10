@@ -153,15 +153,15 @@ dxdt_Trans3=ktr*Trans2-ktr*Trans3;
 dxdt_Circ=ktr*Trans3-ktr*Circ;
 '
 mod <- mread("fri02", "~/tmp", code)
-(e=ev(time=5,amt=180,cmt=1)) 
-mod%>%ev(e)%>%mrgsim(end = 30, delta = 0.01)%>%plot(xlab="Days")
+(e=ev(time=0,amt=180,cmt=1)) 
+mod%>%ev(e)%>%mrgsim(end = 25, delta = 0.01)%>%plot(xlab="Days")
 ```
 which generates
 
 ![](../docs/mrgFri02.png)
 
 
-mrssolve also offer nice Rx short hand as follows: 
+mrgsolve also offer nice Rx short hand as follows: 
 ```
 (e=ev_rx("50 q 21 x 6 then 25 q 14 x 6"))
 mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
@@ -170,23 +170,23 @@ mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
 ![](../docs/Fribolus.png)
 
 
+```
+(e=ev_rx("50 over 2 q 21 x 6 then 25 q 14 x 6"))
+mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
+```
+![](../docs/friInfus.png)
+
+```
+(e=ev_rx("50 over 12 q 21 x 6 then 25 q 14 x 6"))
+mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
+```
+![](../docs/infus12.png)
+
+which shows that a 2 day infusion is the same as a bolus with respect to PD but not PK, 
+and that a 12 day infusion also changes the PD. 
+
+
 <!--
-```
-(e=ev_rx("50 over 2h q 21 x 6 then 25 q 14 x 6"))
-mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
-```
-![](../docs/friinfus.png)
-
-```
-(e=ev_rx("50 over 12h q 21 x 6 then 25 q 14 x 6"))
-mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
-```
-![](../docs/infus12h.png)
-
-which shows that a 2 hour infusion is the same as a bolus with respect to PD but not PK, 
-and that a 12 hour infusion also changes the PD. 
-
-
 
 
 The following block simulates the model for 6 21 day cycles and adds a small amount of noise
