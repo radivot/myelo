@@ -130,7 +130,7 @@ yout=ode(x0,times=times,func="derivsFri02",
        events=list(data=evnt),parms=fribergPars02)
 plot(yout) 
 ```
-![](../docs/Fri02deSolve.png)
+![](../docs/fri02deSolve.png)
 
 
 Using Metrum Research Group's mrgsolve, such C code is automatically generated and compiled using this neat R code.
@@ -167,7 +167,7 @@ mrssolve also offer nice Rx short hand as follows:
 mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
 ```
 
-![](../docs/fribolus.png)
+![](../docs/Fribolus.png)
 
 
 <!--
