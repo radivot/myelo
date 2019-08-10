@@ -15,7 +15,11 @@ The model of   [Scholz et al  *Theoretical Biology and Medical Modelling* **9** 
 
 [Friberg et al  *J Clin Oncol* **20**  4713-4721 (2002)](https://www.ncbi.nlm.nih.gov/pubmed/12488418) 
 provide a model of 5 neutrophil lineage cell state variables, one proliferating, 
-3 transitioning through maturation stages, and one circulating in  blood. In R their model is 
+3 transitioning through maturation stages, and one circulating in  blood. 
+![](../docs/friberg02graph.png)
+
+
+In R their model is 
 ```
 friberg02<-function(Time, State, Pars) {
   with(as.list(c(State, Pars)), {
@@ -31,44 +35,132 @@ friberg02<-function(Time, State, Pars) {
     return(list(c(dC1,dC2,dC3,dProl,dTrans1,dTrans2,dTrans3,dCirc)))
   })
 }
+
 ```
 Using fits of this model to docetaxel response data, the parameter estimates in days are
 ```
 fribergPars02=c(Circ0=5.05, ktr=24*4/88.7,gam=0.161,slope=8.58, 
-		k12 = 24*1.06,k21 = 24*1.51,k13 = 24*1.26, k31 = 24*0.084,k10 = 24*5.2)
+k12 = 24*1.06,k21 = 24*1.51,k13 = 24*1.26, k31 = 24*0.084,k10 = 24*5.2)
 ```
 and initial state  is
 ```
 x0=c(C1=0,C2=0,C3=0,Prol=5.05,Trans1=5.05,Trans2=5.05,Trans3=5.05,Circ=5.05)
 ```
-in  uM and 1e3 cells/uL (of blood). 
-The initial number of circulating neutrophils,  5.05,  is 
-also the setpoint (i.e. Circ0) and thus steady state. 
-At steady state this is also the number of cells in each of the 
-three transition/maturation compartments and in the
-proliferating compartment. A bolus  of docetaxel making C1 33.5 uM at t=0 yields a 
-circulating neutrophil response similar to the curve PREDe 
-in the upper left panel of Figure 4: at doses of 100 mg/m2 *2 m2 = 200 mg, 
-the number of umoles is 247.524 = 200/0.808 (since 808 gm/mole=0.808 mg/umole),
-so a volume of 7.4L => C1(0)=247.524/7.4 = 33.5 uM.
+
+The initial number of circulating neutrophils (Circ) is  5.05e3 cells/uL. As this is 
+also the setpoint, Circ0, it is also the steady state of Circ, and from the equations, 
+also the steady state of each  compartment. We start in this steady state at t=-5 days  and
+at time t=0 add a bolus  of  
+docetaxel (100 mg/m2 *2 m2 = 200 mg) to the central compartment C1.  This equates to setting 
+C1 to 33.5 uM at t=0; the number of umoles is 247.524 = 200/0.808 
+(since 808 gm/mole=0.808 mg/umole), so V1=7.4L => 247.524/7.4 = 33.5 uM. 
 The code for this is
 ```
+library(tidyverse)
+library(deSolve)
 library(myelo)
-times <- c(-5:25)
+times <- seq(-5,25,0.1)
 (evnt=data.frame(var="C1",time=0,value=33.5,method="rep"))
 yout=ode(x0,times=times,func=friberg02,events=list(data=evnt),parms=fribergPars02)
-plot(yout)
+D=as.data.frame(yout)
+gx=xlab("Days")
+sbb=theme(strip.background=element_blank())
+tc=function(sz) theme_classic(base_size=sz)
+d=D%>%select(time,C1:Circ)%>%gather(key="Lab",value="Value",-time)
+d%>%ggplot(aes(x=time,y=Value))+facet_grid(Lab~.,scales = "free")+geom_line(size=1)+gx+tc(14)+sbb
+ggsave("~/Results/myelo/fri02.png",width=5, height=6)
 ```
 ![](../docs/fri02.png)
 
+The same model, in faster deSolve C code, is
+
 ```
-library(tidyverse)
-D=as.data.frame(yout)
-tc=function(sz) theme_classic(base_size=sz)
-gx=xlab("Days")
-gy=ylab(quote(paste(10^3," Neutrophils/uL")))
-D%>%ggplot(aes(x=time,y=Circ))+geom_line()+gx+gy+tc(14)+ylim(0,7)
-ggsave("~/Results/myelo/friberg02.png",width=5,height=6)
+#include <R.h>
+#include <Rinternals.h>
+#include <Rdefines.h>
+#include <R_ext/Rdynload.h>
+static double  parms[9];
+#define Circ0  parms[0]
+#define ktr    parms[1]
+#define gam    parms[2]
+#define slope  parms[3]
+#define k12    parms[4]
+#define k21    parms[5]
+#define k13    parms[6]
+#define k31    parms[7]
+#define k10    parms[8]
+
+
+void parmsFri02(void (* odeparms)(int *, double *))
+{   int N=9;
+    odeparms(&N, parms);
+}
+
+
+void derivsFri02(int *neq, double *t, double *y, double *ydot)
+{
+    double C1, C2,C3,Prol,Trans1,Trans2,Trans3,Circ, Edrug;
+    double dC1, dC2,dC3,dProl,dTrans1,dTrans2,dTrans3,dCirc;
+    C1=y[0];  C2=y[1];   C3=y[2];  Prol=y[3];   
+    Trans1=y[4];  Trans2=y[5];   Trans3=y[6];  Circ=y[7];   
+    
+    dC1=-(k12+k13+k10)*C1 + k21*C2 + k31*C3;
+    dC2=k12*C1 - k21*C2;
+    dC3=k13*C1 - k31*C3;
+    Edrug=slope*C1;
+    dProl = ktr*Prol*(1-Edrug)*pow(Circ0/Circ,gam) - ktr*Prol;
+    dTrans1=ktr*Prol-ktr*Trans1;
+    dTrans2=ktr*Trans1-ktr*Trans2;
+    dTrans3=ktr*Trans2-ktr*Trans3;
+    dCirc=ktr*Trans3-ktr*Circ;
+    
+    ydot[0] = dC1 ; 
+    ydot[1] = dC2;
+    ydot[2] = dC3;
+    ydot[3] = dProl;
+    ydot[4] = dTrans1;
+    ydot[5] = dTrans2;
+    ydot[6] = dTrans3;
+    ydot[7] = dCirc;
+}
+
 ```
-![](../docs/friberg02.png)
+
+Running this C version of the model is done as follows
+```
+(f=file.path(system.file(paste("libs",Sys.getenv("R_ARCH"),sep=""), package = "myelo"),
+paste("myelo",.Platform$dynlib.ext,sep="")))
+dyn.load(f)
+yout=ode(x0,times=times,func="derivsFri02",
+       dllname = "myelo",initfunc = "parmsFri02",
+       events=list(data=evnt),parms=fribergPars02)
+plot(yout) 
+```
+
+
+Using Metrum Research Group's mrgsolve, such C code is automatically generated and compiled using this neat R code.
+```
+library(mrgsolve)
+code='
+$PARAM Circ0=5.05,ktr=1.0823,gam=0.161,slope=8.58,k12=25.44,k21=36.24,k13=30.24,k31=2.016,k10=124.8
+$INIT C1=0,C2=0,C3=0,Prol=5.05,Trans1=5.05,Trans2=5.05,Trans3=5.05,Circ=5.05 
+$ODE 
+double Edrug=slope*C1;
+dxdt_C1=-(k12+k13+k10)*C1 + k21*C2 + k31*C3;
+dxdt_C2=k12*C1 - k21*C2;
+dxdt_C3=k13*C1 - k31*C3;
+dxdt_Prol = ktr*Prol*(1-Edrug)*pow(Circ0/Circ,gam) - ktr*Prol;
+dxdt_Trans1=ktr*Prol-ktr*Trans1;
+dxdt_Trans2=ktr*Trans1-ktr*Trans2;
+dxdt_Trans3=ktr*Trans2-ktr*Trans3;
+dxdt_Circ=ktr*Trans3-ktr*Circ;
+'
+mod <- mread("fri02", "~/tmp", code)
+mod%>%mrgsim(end = 30, delta = 0.1)%>%plot(xlab="Days") #no drugs
+e=ev(time=10,amt=100,cmt=3)+ev(time=20,amt=100,cmt=4)
+e # adds 100 mg/kg to Angiostatin (state 3) at 10 days and endostatin (state 4) at 20 days
+mod%>%ev(e)%>%mrgsim(end = 30, delta = 0.1)%>%plot(xlab="Days")
+```
+which generates
+![](../docs/mrgFri02.png)
 
