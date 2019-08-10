@@ -136,6 +136,7 @@ yout=ode(x0,times=times,func="derivsFri02",
        events=list(data=evnt),parms=fribergPars02)
 plot(yout) 
 ```
+![](../docs/Fri02deSolve.png)
 
 
 Using Metrum Research Group's mrgsolve, such C code is automatically generated and compiled using this neat R code.
@@ -162,5 +163,6 @@ e # adds 100 mg/kg to Angiostatin (state 3) at 10 days and endostatin (state 4) 
 mod%>%ev(e)%>%mrgsim(end = 30, delta = 0.1)%>%plot(xlab="Days")
 ```
 which generates
+
 ![](../docs/mrgFri02.png)
 
