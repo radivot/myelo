@@ -199,7 +199,7 @@ ggsave("~/GitHubs/myelo/docs/noiseData.png",width=5, height=4)
 ![](../docs/noiseData.png)
 
 
-and then retrieve the estimates with initial guesses 50% higher 
+and then retrieve the estimates with initial guesses 2-fold higher 
 
 ```
 dput(fribergPars02)
