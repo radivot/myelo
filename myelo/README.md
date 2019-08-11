@@ -182,13 +182,15 @@ mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
 ```
 ![](../docs/infus12.png)
 
-To see if we can recover 4 parameters from a simulation, we first simulate some data
+To see if we can recover parameters from a simulation, we first simulate some data
 
 ```
+END=50
+DELTA=.1
+sd=0.05
 (e=ev(time=0,amt=180,cmt=1)) 
-out=mod%>%ev(e)%>%mrgsim(start=0,end = 50, delta = .1)
+out=mod%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
 d=as.data.frame(out)
-sd=0.1
 d$ANC=d$Circ+rnorm(dim(d)[1],sd=sd)
 d%>%ggplot(aes(x=time,y=Circ))+ geom_line(size=.1)+
   geom_point(aes(x=time,y=ANC),size=1)+gx+tc(14)+sbb
@@ -197,63 +199,69 @@ ggsave("~/GitHubs/myelo/docs/noiseData.png",width=5, height=4)
 ![](../docs/noiseData.png)
 
 
-and then see if FME can retrieve the estimates 
+and then retrieve the estimates with initial guesses 50% higher 
 
 ```
 dput(fribergPars02)
-(pars=c(Circ0 = 5.05, ktr = 1.08229988726043, gam = 0.161, slope = 8.58))# recover 4 params
-LF=function(pars) {
-  evnt=ev(time=0,amt=180,cmt=1,Circ0=pars["Circ0"],ktr=pars["ktr"],gam=pars["gam"],slope=pars["slope"])
-  out=mod%>%ev(evnt)%>%mrgsim(start=0,end = 25, delta = 1)
-  out%>%plot(xlab="Days")
-  as.data.frame(out)
+(pars=c(Circ0 = 5.05, ktr = 1.08229988726043,gam = 0.161, slope = 8.58))
+LF4=function(pars) {
+  evnt=ev(time=0,amt=180,cmt=1,Circ0=pars["Circ0"],ktr=pars["ktr"],gam=pars["gam"],slope=pars["slope"],
+          Prol_0=pars["Circ0"],Trans1_0=pars["Circ0"],Trans2_0=pars["Circ0"],
+          Trans3_0=pars["Circ0"],Circ_0=pars["Circ0"] )
+  as.data.frame(mod%>%ev(evnt)%>%mrgsim(start=0,end = END, delta = DELTA))
 }
-D=LF(pars)%>%select(time,Circ)
-dd=d%>%select(time,Circ=ANC)
-library(FME)
-LFcost <- function (pars) {
-  out=LF(pars)%>%select(time,Circ)
-  modCost(model = out, obs = dd,sd=sd)
+D=LF4(pars)%>%select(time,Circ)
+dd=d%>%select(time,Circ=ANC)%>%mutate(sd=sd)
+LF4cost <- function (pars) {
+  out=LF4(pars)%>%select(time,Circ)
+  modCost(model = out, obs = dd, err = "sd")
 }
-(Fit <- modFit(f = PHcost, p = 1.5*pars))
-pars
-coef(Fit)
-1.5*pars
-summary(Fit)
+parsIC=2*pars
+LF4cost2 <- function(lpars)  LF4cost(exp(lpars))
+Fit <- modFit(f = LF4cost2, p = log(parsIC),method="Nelder-Mead") #crashes without log
+data.frame(parsIC,fit=exp(coef(Fit)),trueVals=pars)
+(s=summary(Fit))
+data.frame(point=exp(s$par[,1]),
+           lowCI=exp(s$par[,1]-1.96*s$par[,2]),
+           hiCI=exp(s$par[,1]+1.96*s$par[,2])  )
 ```
 
-The output of this below shows that while the 1st three parameters moved in the
-correct direction, the fourth did not. Strong negative correlation between gamma and slope 
-hints at the problem: stronger chemo can look weaker if ANC control is stronger.
+The output of this is shown below.
+
 ```
-> pars
- Circ0    ktr    gam  slope 
-5.0500 1.0823 0.1610 8.5800 
-> coef(Fit)
-     Circ0        ktr        gam      slope 
- 4.4233503  1.4563017  0.1647432 27.0110295 
-> 1.5*pars
-   Circ0      ktr      gam    slope 
- 7.57500  1.62345  0.24150 12.87000 
-> summary(Fit)
+> data.frame(parsIC,fit=exp(coef(Fit)),trueVals=pars)
+       parsIC       fit trueVals
+Circ0 10.1000 5.0541353   5.0500
+ktr    2.1646 1.0809904   1.0823
+gam    0.3220 0.1611887   0.1610
+slope 17.1600 8.5477287   8.5800
+> (s=summary(Fit))
 
 Parameters:
-       Estimate Std. Error t value Pr(>|t|)    
-Circ0  4.423350   0.138695   31.89   <2e-16 ***
-ktr    1.456302   0.033024   44.10   <2e-16 ***
-gam    0.164743   0.006138   26.84   <2e-16 ***
-slope 27.011029   0.832308   32.45   <2e-16 ***
+        Estimate Std. Error  t value Pr(>|t|)    
+Circ0  1.6202068  0.0005684  2850.42   <2e-16 ***
+ktr    0.0778777  0.0013110    59.41   <2e-16 ***
+gam   -1.8251797  0.0018221 -1001.68   <2e-16 ***
+slope  2.1456656  0.0028347   756.94   <2e-16 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-Residual standard error: 1.572 on 248 degrees of freedom
+Residual standard error: 1.025 on 498 degrees of freedom
 
 Parameter correlation:
-        Circ0     ktr     gam   slope
-Circ0  1.0000 -0.6384  0.3664 -0.5419
-ktr   -0.6384  1.0000  0.4584 -0.2954
-gam    0.3664  0.4584  1.0000 -0.9570
-slope -0.5419 -0.2954 -0.9570  1.0000
+        Circ0     ktr      gam    slope
+Circ0  1.0000  0.2437 -0.44243 -0.12102
+ktr    0.2437  1.0000 -0.84473  0.23152
+gam   -0.4424 -0.8447  1.00000 -0.09001
+slope -0.1210  0.2315 -0.09001  1.00000
+> data.frame(point=exp(s$par[,1]),
++            lowCI=exp(s$par[,1]-1.96*s$par[,2]),
++            hiCI=exp(s$par[,1]+1.96*s$par[,2])  )
+          point    lowCI      hiCI
+Circ0 5.0541353 5.048508 5.0597692
+ktr   1.0809904 1.078216 1.0837716
+gam   0.1611887 0.160614 0.1617654
+slope 8.5477287 8.500370 8.5953517
 ```
 
 

@@ -61,7 +61,7 @@ out%>%plot(xlab="Days")
 d=as.data.frame(out)
 D=d%>%select(time,Prol:Circ)%>%gather(key="Cell",value="Value",-time)%>%mutate(Cell=as_factor(Cell))
 D%>%ggplot(aes(x=time,y=Value,col=Cell))+geom_line(size=1)+gx+tc(14)+sbb
-ggsave("~/GitHubs/myelo/docs/waves.png",width=5, height=4)
+# ggsave("~/GitHubs/myelo/docs/waves.png",width=5, height=4)
 
 
 (e=ev_rx("50 q 21 x 6 then 25 q 14 x 6"))
@@ -71,33 +71,127 @@ mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
 
 # cant have negative times, so forget about starting negative
 
-sd=0.1
+
+####### simulate data
+(e=ev(time=0,amt=180,cmt=1)) 
+END=50
+DELTA=1
+out=mod%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
+d=as.data.frame(out)
+sd=0.05
 d$ANC=d$Circ+rnorm(dim(d)[1],sd=sd)
 d%>%ggplot(aes(x=time,y=Circ))+ geom_line(size=.1)+
   geom_point(aes(x=time,y=ANC),size=1)+gx+tc(14)+sbb
-ggsave("~/GitHubs/myelo/docs/noiseData",width=5, height=4)
+# ggsave("~/GitHubs/myelo/docs/noiseData.png",width=5, height=4)
 
 
+####### try FME with mrgsolve
+library(FME)
 dput(fribergPars02)
-(pars=c(Circ0 = 5.05, ktr = 1.08229988726043, gam = 0.161, slope = 8.58))# recover 4 params
+### start with two scale params for y and time axis
+(pars=c(Circ0 = 5.05, ktr = 1.08229988726043))
 LF=function(pars) {
-  evnt=ev(time=0,amt=180,cmt=1,Circ0=pars["Circ0"],ktr=pars["ktr"],gam=pars["gam"],slope=pars["slope"])
-  out=mod%>%ev(evnt)%>%mrgsim(start=0,end = 25, delta = 1)
-  out%>%plot(xlab="Days")
-  as.data.frame(out)
+  evnt=ev(time=0,amt=180,cmt=1,Circ0=pars["Circ0"],ktr=pars["ktr"],
+          Prol_0=pars["Circ0"],Trans1_0=pars["Circ0"],Trans2_0=pars["Circ0"],
+          Trans3_0=pars["Circ0"],Circ_0=pars["Circ0"] )
+  as.data.frame(mod%>%ev(evnt)%>%mrgsim(start=0,end = END, delta = DELTA))
 }
 D=LF(pars)%>%select(time,Circ)
-dd=d%>%select(time,Circ=ANC)
-library(FME)
+dd=d%>%select(time,Circ=ANC)%>%mutate(sd=sd)
 LFcost <- function (pars) {
   out=LF(pars)%>%select(time,Circ)
-  modCost(model = out, obs = dd,sd=sd)
+  modCost(model = out, obs = dd, err = "sd")
 }
-(Fit <- modFit(f = PHcost, p = 1.5*pars))
-pars
+Pars=1.5*pars
+Fit <- modFit(f = LFcost, p = Pars,method="Nelder-Mead")
+Pars
 coef(Fit)
-1.5*pars
+pars
 summary(Fit)
+
+######### try adding in gam
+dput(fribergPars02)
+(pars=c(Circ0 = 5.05, ktr = 1.08229988726043,gam = 0.161))
+LF3=function(pars) {
+  evnt=ev(time=0,amt=180,cmt=1,Circ0=pars["Circ0"],ktr=pars["ktr"],gam = pars["gam"],
+          Prol_0=pars["Circ0"],Trans1_0=pars["Circ0"],Trans2_0=pars["Circ0"],
+          Trans3_0=pars["Circ0"],Circ_0=pars["Circ0"] )
+  as.data.frame(mod%>%ev(evnt)%>%mrgsim(start=0,end = END, delta = DELTA))
+}
+D=LF3(pars)%>%select(time,Circ)
+dd=d%>%select(time,Circ=ANC)%>%mutate(sd=sd)
+LF3cost <- function (pars) {
+  out=LF3(pars)%>%select(time,Circ)
+  modCost(model = out, obs = dd, err = "sd")
+}
+Pars=1.5*pars
+LF3cost2 <- function(lpars)  LF3cost(exp(lpars))
+Fit <- modFit(f = LF3cost2, p = log(Pars),method="Nelder-Mead") #crashes without log
+exp(coef(Fit))
+Pars
+pars
+summary(Fit)
+
+######### try adding in slope
+dput(fribergPars02)
+(pars=c(Circ0 = 5.05, ktr = 1.08229988726043,gam = 0.161, slope = 8.58))
+LF4=function(pars) {
+  evnt=ev(time=0,amt=180,cmt=1,Circ0=pars["Circ0"],ktr=pars["ktr"],gam=pars["gam"],slope=pars["slope"],
+          Prol_0=pars["Circ0"],Trans1_0=pars["Circ0"],Trans2_0=pars["Circ0"],
+          Trans3_0=pars["Circ0"],Circ_0=pars["Circ0"] )
+  as.data.frame(mod%>%ev(evnt)%>%mrgsim(start=0,end = END, delta = DELTA))
+}
+D=LF4(pars)%>%select(time,Circ)
+dd=d%>%select(time,Circ=ANC)%>%mutate(sd=sd)
+LF4cost <- function (pars) {
+  out=LF4(pars)%>%select(time,Circ)
+  modCost(model = out, obs = dd, err = "sd")
+}
+parsIC=2*pars
+LF4cost2 <- function(lpars)  LF4cost(exp(lpars))
+Fit <- modFit(f = LF4cost2, p = log(parsIC),method="Nelder-Mead") #crashes without log
+data.frame(parsIC,fit=exp(coef(Fit)),trueVals=pars)
+(s=summary(Fit))
+data.frame(point=exp(s$par[,1]),
+           lowCI=exp(s$par[,1]-1.96*s$par[,2]),
+           hiCI=exp(s$par[,1]+1.96*s$par[,2])  )
+
+
+
+########### BBMLE approach
+
+library(bbmle)
+pars=fribergPars02
+nLL<-function(Circ0,ktr,gam,slope,sigma) { # pass these globally: d,eventsdat,Aqss
+  # attach(as.list(IC))
+  Circ0=exp(Circ0)
+  ktr=exp(ktr)
+  gam=exp(gam)
+  slope=exp(slope)
+  sigma=exp(sigma)
+  x0=c(C1=0,C2=0,C3=0,Prol=Circ0,Trans1=Circ0,Trans2=Circ0,Trans3=Circ0,Circ=Circ0)
+  pars["Circ0"]=Circ0 
+  pars["ktr"]=ktr
+  pars["gam"]=gam
+  out=ode(x0,times=0:50,func="derivsFri02",
+          dllname = "myelo",initfunc = "parmsFri02",
+          ,events=list(data=evnt),parms=pars)
+  -sum(dnorm(d$ANC, mean=out[,"Circ"],sigma,log=TRUE)) #gets sigma estimate right at 0.002
+  # detach(as.list(IC))
+}
+
+IC=c(Circ0=5.05,ktr=1.083,gam=0.161,slope=8.58,sigma=0.05) 
+fit=c(1:3,5)
+fit=c(1:5)
+pert=1.5
+IC=c(Circ0=pert*5.05,ktr=pert*1.083,gam=pert*0.161,slope=8.58,sigma=0.05) 
+IC=log(IC)
+exp(IC)
+summary(M<-mle2(nLL,method="Nelder-Mead",
+                fixed=as.list(IC)[-fit],
+                start=as.list(IC),data=list(d=d),
+                control = list(maxit=50000, parscale=IC[fit]) ) )
+exp(coef(M))
 
 
 
