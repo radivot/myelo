@@ -159,7 +159,7 @@ data.frame(point=exp(s$par[,1]),
 
 
 
-########### BBMLE approach
+########### BBMLE approach using deSolve C
 library(bbmle)
 pars=fribergPars02
 nLL<-function(Circ0,ktr,gam,slope) { # pass these globally: d,pars
@@ -190,5 +190,35 @@ data.frame(IC=exp(IC),fit=exp(coef(M)),trueVals=IC0)
 data.frame(point=exp(s@coef[,1]),
            lowCI=exp(s@coef[,1]-1.96*s@coef[,2]),
            hiCI=exp(s@coef[,1]+1.96*s@coef[,2])  )
+######### END BBMLE with deSolve C
+
+######### FME with deSolve C
+pars=fribergPars02
+LF4des=function(pars) {
+  Circ0=pars[["Circ0"]]
+  x0=c(C1=0,C2=0,C3=0,Prol=Circ0,Trans1=Circ0,Trans2=Circ0,Trans3=Circ0,Circ=Circ0)
+  as.data.frame(ode(x0,times=seq(0,END,DELTA),func="derivsFri02",
+          dllname = "myelo",initfunc = "parmsFri02",
+          ,events=list(data=evnt),parms=pars))
+}
+D=LF4des(pars)%>%select(time,Circ)
+dd=d%>%select(time,Circ=ANC)%>%mutate(sd=sd)
+LF4desCost <- function (pars) {
+  out=LF4des(pars)%>%select(time,Circ)
+  modCost(model = out, obs = dd, err = "sd")
+}
+dput(pars)
+LF4desCost2 <- function(lpars)  LF4desCost(c(exp(lpars), k12 = 25.44, k21 = 36.24, 
+               k13 = 30.24, k31 = 2.016, k10 = 124.8, V1 = 7.4, mw = 0.808))
+parsIC <- pars[1:4] * 1
+parsIC <- pars[1:4] * 1.9 # crashes at 2, not sure why
+Fit <- modFit(f = LF4desCost2, p = log(parsIC),method="Nelder-Mead") 
+data.frame(parsIC,fit=exp(coef(Fit)),trueVals=pars[1:4])
+(s=summary(Fit))
+data.frame(point=exp(s$par[,1]),
+           lowCI=exp(s$par[,1]-1.96*s$par[,2]),
+           hiCI=exp(s$par[,1]+1.96*s$par[,2])  )
+######### END FME with deSolve C
+
 
 
