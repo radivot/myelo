@@ -220,5 +220,27 @@ data.frame(point=exp(s$par[,1]),
            hiCI=exp(s$par[,1]+1.96*s$par[,2])  )
 ######### END FME with deSolve C
 
+####### back to FME to display estimate distrubutions
+ini   <- LF4(parsIC)
+final <- LF4(exp(coef(Fit)))
+head(d)
+ini%>%ggplot(aes(x=time,y=Circ))+geom_line()+geom_point(data=d)+
+  geom_line(data=final,col="red",size=1)+tc(14)+gx
+# ggsave("~/Results/myelo/parsIC2xLF.png",width=5,height=5)
+# ggsave("~/GitHubs/myelo/docs/parsIC2xLF.png",width=5, height=4)
+
+
+
+var0 <- Fit$var_ms_unweighted
+cov0 <- summary(Fit)$cov.scaled * 2.4^2/5
+MCMC <- modMCMC(f = LF4cost2, p = Fit$par, niter = 2000, jump = cov0,
+              var0 = var0, wvar0 = 0.1, updatecov = 50)
+MCMC$pars <- exp(MCMC$pars)
+summary(MCMC)
+par(mar=c(4, 4, 3, 1) + .1)
+plot(MCMC, Full = TRUE)
+pairs(MCMC, nsample = 1000,cex.labels=1.4,cex=0.7)
+
+
 
 

@@ -336,3 +336,53 @@ gam   0.1612988 0.1600409 0.1625667
 slope 8.6507416 8.5071829 8.7967229
 ```
 
+
+The following code shows how far off the initial parameter curves are from the best fit
+```
+ini   <- LF4(parsIC)
+final <- LF4(exp(coef(Fit)))
+ini%>%ggplot(aes(x=time,y=Circ))+geom_line()+geom_point(data=d)+
+  geom_line(data=final,col="red",size=1)+tc(14)+gx
+```
+
+![](../docs/parsIC2xLF.png)
+
+
+The following code uses the best fit above, stored in Fit, to start MCMC calculations that 
+have already converged. The point is merely to display parameter estimate correlations. 
+
+```
+var0 <- Fit$var_ms_unweighted #see FME JSS 2010 paper for settings below
+cov0 <- summary(Fit)$cov.scaled * 2.4^2/5
+MCMC <- modMCMC(f = LF4cost2, p = Fit$par, niter = 2000, jump = cov0,
+              var0 = var0, wvar0 = 0.1, updatecov = 50) # takes ~20 secs 
+MCMC$pars <- exp(MCMC$pars)
+summary(MCMC)
+```
+
+A summary of the MCMC estimates is 
+
+```
+> summary(MCMC)
+           Circ0         ktr          gam      slope     var_Circ
+mean 5.040555474 1.076499442 0.1629303896 8.61084942 0.0026151684
+sd   0.008928224 0.004213426 0.0009074539 0.07201741 0.0005048224
+min  5.014045593 1.064036425 0.1603152664 8.41260989 0.0015073619
+max  5.071546842 1.088247595 0.1655922578 8.90807871 0.0050381118
+q025 5.034177877 1.073443169 0.1623054523 8.56441594 0.0022534848
+q050 5.040359154 1.076392692 0.1629642943 8.60854039 0.0025517252
+q075 5.046209901 1.079257286 0.1635638818 8.65706211 0.0028773164
+
+```
+
+Finally, the following code shows that the simulation converged and that 
+gamma and ktr are indeed negatively correlated, as was also seen 
+seen in the summary(Fit) output above, which showed a correlation of -0.8460.
+```
+par(mar=c(4, 4, 3, 1) + .1)
+plot(MCMC, Full = TRUE)
+pairs(MCMC, nsample = 1000,cex.labels=1.4,cex=0.7)
+```
+![](../docs/converge.png)
+![](../docs/pairs.png)
+
