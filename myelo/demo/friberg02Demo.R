@@ -77,7 +77,8 @@ mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
 END=50
 DELTA=1
 out=mod%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
-d=as.data.frame(out)
+d=as.data.frame(out)[-1,]
+d=d[!duplicated(d$time),]
 sd=0.05
 d$ANC=d$Circ+rnorm(dim(d)[1],sd=sd)
 d%>%ggplot(aes(x=time,y=Circ))+ geom_line(size=.1)+
@@ -94,7 +95,7 @@ LF=function(pars) {
   evnt=ev(time=0,amt=180,cmt=1,Circ0=pars["Circ0"],ktr=pars["ktr"],
           Prol_0=pars["Circ0"],Trans1_0=pars["Circ0"],Trans2_0=pars["Circ0"],
           Trans3_0=pars["Circ0"],Circ_0=pars["Circ0"] )
-  as.data.frame(mod%>%ev(evnt)%>%mrgsim(start=0,end = END, delta = DELTA))
+  as.data.frame(mod%>%ev(evnt)%>%mrgsim(start=0,end = END, delta = DELTA))[-1,]
 }
 D=LF(pars)%>%select(time,Circ)
 dd=d%>%select(time,Circ=ANC)%>%mutate(sd=sd)
@@ -116,7 +117,7 @@ LF3=function(pars) {
   evnt=ev(time=0,amt=180,cmt=1,Circ0=pars["Circ0"],ktr=pars["ktr"],gam = pars["gam"],
           Prol_0=pars["Circ0"],Trans1_0=pars["Circ0"],Trans2_0=pars["Circ0"],
           Trans3_0=pars["Circ0"],Circ_0=pars["Circ0"] )
-  as.data.frame(mod%>%ev(evnt)%>%mrgsim(start=0,end = END, delta = DELTA))
+  as.data.frame(mod%>%ev(evnt)%>%mrgsim(start=0,end = END, delta = DELTA))[-1,]
 }
 D=LF3(pars)%>%select(time,Circ)
 dd=d%>%select(time,Circ=ANC)%>%mutate(sd=sd)
@@ -139,7 +140,7 @@ LF4=function(pars) {
   evnt=ev(time=0,amt=180,cmt=1,Circ0=pars["Circ0"],ktr=pars["ktr"],gam=pars["gam"],slope=pars["slope"],
           Prol_0=pars["Circ0"],Trans1_0=pars["Circ0"],Trans2_0=pars["Circ0"],
           Trans3_0=pars["Circ0"],Circ_0=pars["Circ0"] )
-  as.data.frame(mod%>%ev(evnt)%>%mrgsim(start=0,end = END, delta = DELTA))
+  as.data.frame(mod%>%ev(evnt)%>%mrgsim(start=0,end = END, delta = DELTA))[-1,]
 }
 D=LF4(pars)%>%select(time,Circ)
 dd=d%>%select(time,Circ=ANC)%>%mutate(sd=sd)
@@ -159,39 +160,35 @@ data.frame(point=exp(s$par[,1]),
 
 
 ########### BBMLE approach
-
 library(bbmle)
 pars=fribergPars02
-nLL<-function(Circ0,ktr,gam,slope,sigma) { # pass these globally: d,eventsdat,Aqss
+nLL<-function(Circ0,ktr,gam,slope) { # pass these globally: d,pars
   # attach(as.list(IC))
   Circ0=exp(Circ0)
   ktr=exp(ktr)
   gam=exp(gam)
   slope=exp(slope)
-  sigma=exp(sigma)
   x0=c(C1=0,C2=0,C3=0,Prol=Circ0,Trans1=Circ0,Trans2=Circ0,Trans3=Circ0,Circ=Circ0)
   pars["Circ0"]=Circ0 
   pars["ktr"]=ktr
   pars["gam"]=gam
-  out=ode(x0,times=0:50,func="derivsFri02",
+  pars["slope"]=slope
+  out=ode(x0,times=seq(0,END,DELTA),func="derivsFri02",
           dllname = "myelo",initfunc = "parmsFri02",
           ,events=list(data=evnt),parms=pars)
-  -sum(dnorm(d$ANC, mean=out[,"Circ"],sigma,log=TRUE)) #gets sigma estimate right at 0.002
-  # detach(as.list(IC))
+  y.pred=out[,"Circ"]
+  sigma  <- sqrt(sum((d$ANC-y.pred)^2)/length(d$ANC))
+  -sum(dnorm(d$ANC, mean=out[,"Circ"],sd=sigma,log=TRUE)) 
 }
 
-IC=c(Circ0=5.05,ktr=1.083,gam=0.161,slope=8.58,sigma=0.05) 
-fit=c(1:3,5)
-fit=c(1:5)
-pert=1.5
-IC=c(Circ0=pert*5.05,ktr=pert*1.083,gam=pert*0.161,slope=8.58,sigma=0.05) 
-IC=log(IC)
-exp(IC)
-summary(M<-mle2(nLL,method="Nelder-Mead",
-                fixed=as.list(IC)[-fit],
-                start=as.list(IC),data=list(d=d),
-                control = list(maxit=50000, parscale=IC[fit]) ) )
-exp(coef(M))
-
+IC0=c(Circ0=5.05,ktr=1.083,gam=0.161,slope=8.58) 
+IC=log(2*IC0)
+(s=summary(M<-mle2(nLL,method="Nelder-Mead",
+                start=as.list(IC),
+                control = list(maxit=50000, parscale=IC) ) ) )
+data.frame(IC=exp(IC),fit=exp(coef(M)),trueVals=IC0)
+data.frame(point=exp(s@coef[,1]),
+           lowCI=exp(s@coef[,1]-1.96*s@coef[,2]),
+           hiCI=exp(s@coef[,1]+1.96*s@coef[,2])  )
 
 

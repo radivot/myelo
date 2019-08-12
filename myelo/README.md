@@ -185,16 +185,16 @@ mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
 To see if we can recover parameters from a simulation, we first simulate some data
 
 ```
-END=50
-DELTA=.1
-sd=0.05
 (e=ev(time=0,amt=180,cmt=1)) 
+END=50
+DELTA=1
 out=mod%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
-d=as.data.frame(out)
+d=as.data.frame(out)[-1,]
+d=d[!duplicated(d$time),]
+sd=0.05
 d$ANC=d$Circ+rnorm(dim(d)[1],sd=sd)
 d%>%ggplot(aes(x=time,y=Circ))+ geom_line(size=.1)+
   geom_point(aes(x=time,y=ANC),size=1)+gx+tc(14)+sbb
-ggsave("~/GitHubs/myelo/docs/noiseData.png",width=5, height=4)
 ```
 ![](../docs/noiseData.png)
 
@@ -208,7 +208,7 @@ LF4=function(pars) {
   evnt=ev(time=0,amt=180,cmt=1,Circ0=pars["Circ0"],ktr=pars["ktr"],gam=pars["gam"],slope=pars["slope"],
           Prol_0=pars["Circ0"],Trans1_0=pars["Circ0"],Trans2_0=pars["Circ0"],
           Trans3_0=pars["Circ0"],Circ_0=pars["Circ0"] )
-  as.data.frame(mod%>%ev(evnt)%>%mrgsim(start=0,end = END, delta = DELTA))
+  as.data.frame(mod%>%ev(evnt)%>%mrgsim(start=0,end = END, delta = DELTA))[-1,]
 }
 D=LF4(pars)%>%select(time,Circ)
 dd=d%>%select(time,Circ=ANC)%>%mutate(sd=sd)
@@ -229,41 +229,110 @@ data.frame(point=exp(s$par[,1]),
 The output of this is shown below.
 
 ```
-> data.frame(parsIC,fit=exp(coef(Fit)),trueVals=pars)
        parsIC       fit trueVals
-Circ0 10.1000 5.0541353   5.0500
-ktr    2.1646 1.0809904   1.0823
-gam    0.3220 0.1611887   0.1610
-slope 17.1600 8.5477287   8.5800
+Circ0 10.1000 5.0501892   5.0500
+ktr    2.1646 1.0795027   1.0823
+gam    0.3220 0.1613089   0.1610
+slope 17.1600 8.6592076   8.5800
 > (s=summary(Fit))
 
 Parameters:
-        Estimate Std. Error  t value Pr(>|t|)    
-Circ0  1.6202068  0.0005684  2850.42   <2e-16 ***
-ktr    0.0778777  0.0013110    59.41   <2e-16 ***
-gam   -1.8251797  0.0018221 -1001.68   <2e-16 ***
-slope  2.1456656  0.0028347   756.94   <2e-16 ***
+       Estimate Std. Error t value Pr(>|t|)    
+Circ0  1.619426   0.001707  948.47   <2e-16 ***
+ktr    0.076500   0.003939   19.42   <2e-16 ***
+gam   -1.824434   0.005461 -334.11   <2e-16 ***
+slope  2.158623   0.008585  251.43   <2e-16 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-Residual standard error: 1.025 on 498 degrees of freedom
+Residual standard error: 0.9787 on 47 degrees of freedom
 
 Parameter correlation:
-        Circ0     ktr      gam    slope
-Circ0  1.0000  0.2437 -0.44243 -0.12102
-ktr    0.2437  1.0000 -0.84473  0.23152
-gam   -0.4424 -0.8447  1.00000 -0.09001
-slope -0.1210  0.2315 -0.09001  1.00000
+        Circ0     ktr     gam   slope
+Circ0  1.0000  0.2436 -0.4412 -0.1203
+ktr    0.2436  1.0000 -0.8460  0.2438
+gam   -0.4412 -0.8460  1.0000 -0.1013
+slope -0.1203  0.2438 -0.1013  1.0000
 > data.frame(point=exp(s$par[,1]),
 +            lowCI=exp(s$par[,1]-1.96*s$par[,2]),
 +            hiCI=exp(s$par[,1]+1.96*s$par[,2])  )
-          point    lowCI      hiCI
-Circ0 5.0541353 5.048508 5.0597692
-ktr   1.0809904 1.078216 1.0837716
-gam   0.1611887 0.160614 0.1617654
-slope 8.5477287 8.500370 8.5953517
+          point     lowCI      hiCI
+Circ0 5.0501892 5.0333168 5.0671182
+ktr   1.0795027 1.0712001 1.0878696
+gam   0.1613089 0.1595917 0.1630446
+slope 8.6592076 8.5147167 8.8061505
 ```
 
 
+Using deSolve C code in myelo and the R package bbmle, the same optimization is 
+implemented as follows
 
+```
+library(bbmle)
+pars=fribergPars02
+nLL<-function(Circ0,ktr,gam,slope) { # pass these globally: d,pars
+  Circ0=exp(Circ0)
+  ktr=exp(ktr)
+  gam=exp(gam)
+  slope=exp(slope)
+  x0=c(C1=0,C2=0,C3=0,Prol=Circ0,Trans1=Circ0,Trans2=Circ0,Trans3=Circ0,Circ=Circ0)
+  pars["Circ0"]=Circ0 
+  pars["ktr"]=ktr
+  pars["gam"]=gam
+  pars["slope"]=slope
+  out=ode(x0,times=seq(0,END,DELTA),func="derivsFri02",
+          dllname = "myelo",initfunc = "parmsFri02",
+          ,events=list(data=evnt),parms=pars)
+  y.pred=out[,"Circ"]
+  sigma  <- sqrt(sum((d$ANC-y.pred)^2)/length(d$ANC))
+  -sum(dnorm(d$ANC, mean=out[,"Circ"],sd=sigma,log=TRUE)) 
+}
+
+IC0=c(Circ0=5.05,ktr=1.083,gam=0.161,slope=8.58) 
+IC=log(2*IC0)
+(s=summary(M<-mle2(nLL,method="Nelder-Mead",
+                start=as.list(IC),
+                control = list(maxit=50000, parscale=IC) ) ) )
+data.frame(IC=exp(IC),fit=exp(coef(M)),trueVals=IC0)
+data.frame(point=exp(s@coef[,1]),
+           lowCI=exp(s@coef[,1]-1.96*s@coef[,2]),
+           hiCI=exp(s@coef[,1]+1.96*s@coef[,2])  )
+```
+
+
+Comparable CI are seen in the outputs below
+
+
+```
+Maximum likelihood estimation
+
+Call:
+mle2(minuslogl = nLL, start = as.list(IC), method = "Nelder-Mead", 
+    control = list(maxit = 50000, parscale = IC))
+
+Coefficients:
+        Estimate Std. Error  z value     Pr(z)    
+Circ0  1.6194619  0.0022869  708.151 < 2.2e-16 ***
+ktr    0.0769291  0.0023961   32.106 < 2.2e-16 ***
+gam   -1.8244965  0.0039945 -456.749 < 2.2e-16 ***
+slope  2.1576451  0.0085379  252.715 < 2.2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+-2 log L: -167.2652 
+> data.frame(IC=exp(IC),fit=exp(coef(M)),trueVals=IC0)
+          IC       fit trueVals
+Circ0 10.100 5.0503721    5.050
+ktr    2.166 1.0799655    1.083
+gam    0.322 0.1612988    0.161
+slope 17.160 8.6507416    8.580
+> data.frame(point=exp(s@coef[,1]),
++            lowCI=exp(s@coef[,1]-1.96*s@coef[,2]),
++            hiCI=exp(s@coef[,1]+1.96*s@coef[,2])  )
+          point     lowCI      hiCI
+Circ0 5.0503721 5.0277854 5.0730602
+ktr   1.0799655 1.0749054 1.0850494
+gam   0.1612988 0.1600409 0.1625667
+slope 8.6507416 8.5071829 8.7967229
+```
 
