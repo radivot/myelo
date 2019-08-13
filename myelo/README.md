@@ -360,7 +360,7 @@ MCMC$pars <- exp(MCMC$pars)
 summary(MCMC)
 ```
 
-A summary of the MCMC estimates is 
+### A summary of the MCMC estimates is 
 
 ```
 > summary(MCMC)
@@ -375,9 +375,7 @@ q075 5.046209901 1.079257286 0.1635638818 8.65706211 0.0028773164
 
 ```
 
-Finally, the following code shows that the simulation converged and that 
-gamma and ktr are indeed negatively correlated, as was also seen 
-seen in the summary(Fit) output above, which showed a correlation of -0.8460.
+### Finally, the following code shows that the simulation converged and that gamma and ktr are indeed negatively correlated, as was also seen seen in the summary(Fit) output above, which showed a correlation of -0.8460.
 ```
 par(mar=c(4, 4, 3, 1) + .1)
 plot(MCMC, Full = TRUE)
@@ -388,8 +386,7 @@ pairs(MCMC, nsample = 1000,cex.labels=1.4,cex=0.7)
 
 
 
-Two-fold increases and decreases in a parameter value can be explored using mrgsolve's
-idata_set() as follows:
+## Two-fold increases and decreases in a parameter value can be explored using mrgsolve's idata_set() as follows:
 
 ```
 DELTA=.1
@@ -408,6 +405,8 @@ out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
 # ggsave("~/GitHubs/myelo/docs/circ0Sens.png",width=5, height=4)
 ```
 
+#### Circulating neutrophil counts (Circ) after 2-fold changes in initial (Circ_0) and  setpoint (Circ0) values.
+
 ![](../docs/circ0Sens.png)
 
 ```
@@ -416,6 +415,9 @@ out=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
 out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
 # ggsave("~/GitHubs/myelo/docs/ktrSens.png",width=5, height=4)
 ```
+
+#### After 2-fold changes in time scale parameter ktr 
+
 ![](../docs/ktrSens.png)
 
 ```
@@ -424,6 +426,9 @@ out=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
 out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
 # ggsave("~/GitHubs/myelo/docs/gamSens.png",width=5, height=4)
 ```
+
+#### 2-fold changes in control tuning parameter gamma. 
+
 ![](../docs/gamSens.png)
 
 ```
@@ -432,6 +437,9 @@ out=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
 out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
 # ggsave("~/GitHubs/myelo/docs/slopeSens.png",width=5, height=4)
 ```
-![](../docs/gamSens.png)
+
+#### 2-fold changes in cell killing parameter slope. 
+
+![](../docs/slopeSens.png)
 
 
