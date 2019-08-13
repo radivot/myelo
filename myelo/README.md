@@ -405,7 +405,9 @@ fixout=function(out) {
   d$ID=as_factor(d$ID)
   d
 }
-out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
+lb=labs(col = "Circ0")
+scd = scale_color_discrete(name = "Circ0", labels = idata$Circ0)
+out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+gy+tc(14)+lb+scd
 # ggsave("~/GitHubs/myelo/docs/circ0Sens.png",width=5, height=4)
 ```
 
@@ -415,8 +417,10 @@ out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
 
 ```
 idata=data.frame(ID=1:3,ktr=1.083*span)
+lb=labs(col = "ktr")
+scd = scale_color_discrete(name = "ktr", labels = idata$ktr)
 out=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
-out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
+out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+gy+tc(14)+lb+scd
 # ggsave("~/GitHubs/myelo/docs/ktrSens.png",width=5, height=4)
 ```
 
@@ -426,8 +430,10 @@ out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
 
 ```
 idata=data.frame(ID=1:3,gam=0.161*span)
+lb=labs(col = "gam")
+scd = scale_color_discrete(name = "gam", labels = idata$gam)
 out=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
-out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
+out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+gy+tc(14)+lb+scd
 # ggsave("~/GitHubs/myelo/docs/gamSens.png",width=5, height=4)
 ```
 
@@ -437,8 +443,10 @@ out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
 
 ```
 idata=data.frame(ID=1:3,slope=8.58*span)
+lb=labs(col = "slope")
+scd = scale_color_discrete(name = "slope", labels = idata$slope)
 out=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
-out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
+out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+gy+tc(14)+lb+scd
 # ggsave("~/GitHubs/myelo/docs/slopeSens.png",width=5, height=4)
 ```
 
