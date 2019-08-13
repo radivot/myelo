@@ -386,3 +386,52 @@ pairs(MCMC, nsample = 1000,cex.labels=1.4,cex=0.7)
 ![](../docs/converge.png)
 ![](../docs/pairs.png)
 
+
+
+Two-fold increases and decreases in a parameter value can be explored using mrgsolve's
+idata_set() as follows:
+
+```
+DELTA=.1
+(e=ev(time=0,amt=180,cmt=1)) 
+Circ0=5.05
+ic=c(Circ0=Circ0,Prol_0=Circ0,Trans1_0=Circ0,Trans2_0=Circ0,Trans3_0=Circ0,Circ_0=Circ0)
+span=c(1/2, 1, 2)
+idata=data.frame(ID=1:3,span%*%t(ic))
+out=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
+fixout=function(out) {
+  d=as.data.frame(out)[-1,]
+  d$ID=as_factor(d$ID)
+  d
+}
+out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
+# ggsave("~/GitHubs/myelo/docs/circ0Sens.png",width=5, height=4)
+```
+
+![](../docs/circ0Sens.png)
+
+```
+idata=data.frame(ID=1:3,ktr=1.083*span)
+out=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
+out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
+# ggsave("~/GitHubs/myelo/docs/ktrSens.png",width=5, height=4)
+```
+![](../docs/ktrSens.png)
+
+```
+idata=data.frame(ID=1:3,gam=0.161*span)
+out=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
+out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
+# ggsave("~/GitHubs/myelo/docs/gamSens.png",width=5, height=4)
+```
+![](../docs/gamSens.png)
+
+```
+idata=data.frame(ID=1:3,slope=8.58*span)
+out=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
+out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
+# ggsave("~/GitHubs/myelo/docs/slopeSens.png",width=5, height=4)
+```
+![](../docs/gamSens.png)
+
+
