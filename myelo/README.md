@@ -18,7 +18,6 @@ provide a model of 5 neutrophil lineage cell state variables, one proliferating,
 3 transitioning through maturation stages, and one circulating in  blood. 
 ![](../docs/friberg02graph.png)
 
-
 In R their model is 
 ```
 friberg02<-function(Time, State, Pars) {
@@ -132,6 +131,7 @@ plot(yout)
 ```
 ![](../docs/fri02deSolve.png)
 
+## mrgsolve
 
 Using Metrum Research Group's mrgsolve, such C code is automatically generated and compiled using this neat R code.
 ```
@@ -165,6 +165,7 @@ which generates
 ![](../docs/mrgFri02.png)
 ![](../docs/waves.png)
 
+## Events 
 
 mrgsolve also offers nice Rx short hand as follows: 
 ```
@@ -182,6 +183,8 @@ mod%>%ev(e)%>%mrgsim(end = 300, delta = 0.1)%>%plot(xlab="Days")
 ```
 ![](../docs/infus12.png)
 
+
+## Simulated Data Fitting
 To see if we can recover parameters from a simulation, we first simulate some data
 
 ```
@@ -264,6 +267,7 @@ slope 8.6592076 8.5147167 8.8061505
 ```
 
 
+## Using bbmle and deSolve
 Using deSolve C code in myelo and the R package bbmle, the same optimization is 
 implemented as follows
 
@@ -347,7 +351,7 @@ ini%>%ggplot(aes(x=time,y=Circ))+geom_line()+geom_point(data=d)+
 
 ![](../docs/parsIC2xLF.png)
 
-
+## FME MCMC
 The following code uses the best fit above, stored in Fit, to start MCMC calculations that 
 have already converged. The point is merely to display parameter estimate correlations. 
 
@@ -360,7 +364,7 @@ MCMC$pars <- exp(MCMC$pars)
 summary(MCMC)
 ```
 
-### A summary of the MCMC estimates is 
+A summary of the MCMC estimates is 
 
 ```
 > summary(MCMC)
@@ -375,7 +379,7 @@ q075 5.046209901 1.079257286 0.1635638818 8.65706211 0.0028773164
 
 ```
 
-### Finally, the following code shows that the simulation converged and that gamma and ktr are indeed negatively correlated, as was also seen seen in the summary(Fit) output above, which showed a correlation of -0.8460.
+Finally, the following code shows that the simulation converged and that gamma and ktr are indeed negatively correlated, as was also seen seen in the summary(Fit) output above, which showed a correlation of -0.8460.
 ```
 par(mar=c(4, 4, 3, 1) + .1)
 plot(MCMC, Full = TRUE)
@@ -405,7 +409,7 @@ out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
 # ggsave("~/GitHubs/myelo/docs/circ0Sens.png",width=5, height=4)
 ```
 
-#### Circulating neutrophil counts (Circ) after 2-fold changes in initial (Circ_0) and  setpoint (Circ0) values.
+### Circulating neutrophil counts (Circ) after 2-fold changes in initial (Circ_0) and  setpoint (Circ0) values
 
 ![](../docs/circ0Sens.png)
 
@@ -416,7 +420,7 @@ out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
 # ggsave("~/GitHubs/myelo/docs/ktrSens.png",width=5, height=4)
 ```
 
-#### After 2-fold changes in time scale parameter ktr 
+###  2-fold changes in time scale parameter ktr 
 
 ![](../docs/ktrSens.png)
 
@@ -427,7 +431,7 @@ out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
 # ggsave("~/GitHubs/myelo/docs/gamSens.png",width=5, height=4)
 ```
 
-#### 2-fold changes in control tuning parameter gamma. 
+### 2-fold changes in control tuning parameter gamma 
 
 ![](../docs/gamSens.png)
 
@@ -438,7 +442,7 @@ out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+tc(14)
 # ggsave("~/GitHubs/myelo/docs/slopeSens.png",width=5, height=4)
 ```
 
-#### 2-fold changes in cell killing parameter slope. 
+### 2-fold changes in cell killing parameter slope 
 
 ![](../docs/slopeSens.png)
 
