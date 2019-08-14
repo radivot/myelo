@@ -233,8 +233,10 @@ ini%>%ggplot(aes(x=time,y=Circ))+geom_line()+geom_point(data=d)+
 
 var0 <- Fit$var_ms_unweighted
 cov0 <- summary(Fit)$cov.scaled * 2.4^2/5
-MCMC <- modMCMC(f = LF4cost2, p = Fit$par, niter = 2000, jump = cov0,
-              var0 = var0, wvar0 = 0.1, updatecov = 50)
+# MCMC <- modMCMC(f = LF4cost2, p = Fit$par, niter = 2000, jump = cov0,
+#               var0 = var0, wvar0 = 0.1, updatecov = 50)
+# save(MCMC,file="~/Results/myelo/mcmc.RData")
+load("~/Results/myelo/mcmc.RData")
 MCMC$pars <- exp(MCMC$pars)
 summary(MCMC)
 par(mar=c(4, 4, 3, 1) + .1)
@@ -258,26 +260,36 @@ fixout=function(out) {
 lb=labs(col = "Circ0")
 scd = scale_color_discrete(name = "Circ0", labels = idata$Circ0)
 out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+gy+tc(14)+lb+scd
-ggsave("~/GitHubs/myelo/docs/circ0Sens.png",width=5, height=4)
+# ggsave("~/GitHubs/myelo/docs/circ0Sens.png",width=5, height=4)
 
 idata=data.frame(ID=1:3,ktr=1.083*span)
 lb=labs(col = "ktr")
 scd = scale_color_discrete(name = "ktr", labels = idata$ktr)
 out=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
 out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+gy+tc(14)+lb+scd
-ggsave("~/GitHubs/myelo/docs/ktrSens.png",width=5, height=4)
+# ggsave("~/GitHubs/myelo/docs/ktrSens.png",width=5, height=4)
 
 idata=data.frame(ID=1:3,gam=0.161*span)
 lb=labs(col = "gam")
 scd = scale_color_discrete(name = "gam", labels = idata$gam)
 out=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
 out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+gy+tc(14)+lb+scd
-ggsave("~/GitHubs/myelo/docs/gamSens.png",width=5, height=4)
+# ggsave("~/GitHubs/myelo/docs/gamSens.png",width=5, height=4)
 
 idata=data.frame(ID=1:3,slope=8.58*span)
 lb=labs(col = "slope")
 scd = scale_color_discrete(name = "slope", labels = idata$slope)
 out=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
 out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+gy+tc(14)+lb+scd
-ggsave("~/GitHubs/myelo/docs/slopeSens.png",width=5, height=4)
+# ggsave("~/GitHubs/myelo/docs/slopeSens.png",width=5, height=4)
+
+
+######### steady state offset of control?
+span=c(1/1000000)
+idata=data.frame(ID=1:length(span),gam=0.161*span)
+lb=labs(col = "gam")
+scd = scale_color_discrete(name = "gam", labels = idata$gam)
+D=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=0,end=100000000,delta=1000)%>%fixout
+D%>%filter(time>99999999)
+####### no!!! you can always go out to larger times to hit the setpoint Circ0 with smaller gam
 
