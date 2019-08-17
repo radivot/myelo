@@ -24,7 +24,7 @@ code='
 $PROB Characterization of Endogenous G-CSF and the Inverse Correlation to 
 Chemotherapy-Induced Neutropenia in Patients with Breast Cancer Using Population Modeling 
 Angelica L. Quartino & Mats O. Karlsson & Henrik Lindman & Lena E. Friberg
-Pharm Res (2014) 31:3390–3403
+Pharm Res (2014) 31:3390-3403
 Only doing Docetaxel as in Fri02, so keeping PK from there.
 
 $PARAM Circ0=3.53,ktr=0.9022556,kcirc=2.376505,gam=0.444,beta=0.234,slope=17.2
