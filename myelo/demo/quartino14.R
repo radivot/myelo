@@ -54,11 +54,8 @@ dxdt_GCSFcort=-kcort*GCSFcort;
 $CAPTURE FBprol, FBtr 
 '
 mod <- mread("quart14", "~/tmp", code)
-# str(mod)
-(e=ev(time=3,amt=0,cmt=1))
-
-(e=ev(time=0,amt=80*1.8,cmt=1)) 
-out=mod%>%ev(e)%>%mrgsim(start=0,end = 20, delta = 1)
+(e=ev(time=10,amt=80*1.8,cmt=1)) 
+out=mod%>%ev(e)%>%mrgsim(start=0,end = 40, delta = 1)
 out%>%plot(xlab="Days")
 tail(out)
 d=as.data.frame(out)

@@ -16,4 +16,5 @@ quartino14        Simulates G-CSF model of Quartino et al (2014)
 choPhelps18        Simulates Melphalan model of Cho ... Phelps (2018)
 hoParker13        Model of Ho ... Parker (2013)
 kloft06        Model of Kloft et al (2006) [refits Fri02 model]
+brekkan18        Model of Brekkan et al (2018) [updates quartino14 to PEG-GCSF]
 
