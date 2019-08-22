@@ -1,5 +1,5 @@
 library(tidyverse)
-library(myelo)
+# library(myelo)
 library(mrgsolve)
 (MTT=133/24)
 (ktr=5/MTT)
@@ -55,7 +55,7 @@ $CAPTURE FBprol, FBtr
 '
 mod <- mread("quart14", "~/tmp", code)
 (e=ev(time=10,amt=80*1.8,cmt=1)) 
-out=mod%>%ev(e)%>%mrgsim(start=0,end = 40, delta = 1)
+out=mod%>%ev(e)%>%mrgsim(start=0,end = 50, delta = 1)
 out%>%plot(xlab="Days")
 tail(out)
 d=as.data.frame(out)
@@ -64,7 +64,7 @@ gx=xlab("Days")
 sbb=theme(strip.background=element_blank())
 tc=function(sz) theme_classic(base_size=sz)
 D%>%ggplot(aes(x=time,y=Value,col=Cell))+geom_line(size=1)+gx+tc(14)+sbb
-# ggsave("~/GitHubs/myelo/docs/waves.png",width=5, height=4)
+# ggsave("~/GitHubs/myelo/docs/quart14waves.png",width=5, height=4)
 
 
 
