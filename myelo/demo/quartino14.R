@@ -12,7 +12,7 @@ GCSF0=24.3 #ng/ml
 (kcort=log(2)/(25.5/24))
  
 Circ0=3.53
-kcirc*Circ0/ktr
+trans4_0=kcirc*Circ0/ktr
 
 # $INIT C1=0,C2=0,C3=0,Prol=9.297876,Trans1=9.297876,Trans2=9.297876
 # Trans3=9.297876,Trans4=9.297876,Circ=3.53
@@ -54,7 +54,8 @@ dxdt_GCSFcort=-kcort*GCSFcort;
 $CAPTURE FBprol, FBtr 
 '
 mod <- mread("quart14", "~/tmp", code)
-(e=ev(time=10,amt=80*1.8,cmt=1)) 
+tstart=10
+(e=ev(time=tstart,amt=80*1.8,cmt=1)) 
 out=mod%>%ev(e)%>%mrgsim(start=0,end = 50, delta = 1)
 out%>%plot(xlab="Days")
 tail(out)
@@ -65,6 +66,113 @@ sbb=theme(strip.background=element_blank())
 tc=function(sz) theme_classic(base_size=sz)
 D%>%ggplot(aes(x=time,y=Value,col=Cell))+geom_line(size=1)+gx+tc(14)+sbb
 # ggsave("~/GitHubs/myelo/docs/quart14waves.png",width=5, height=4)
+
+# simulated data
+tstart=10
+(e=ev(time=tstart,amt=80*1.8,cmt=1)) 
+END=50
+DELTA=1
+out=mod%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
+d=as.data.frame(out)%>%filter(!(time==tstart&C1==0))
+sd=0.05
+d$ANC=d$Circ+rnorm(dim(d)[1],sd=sd)
+d%>%ggplot(aes(x=time,y=Circ))+ geom_line(size=.1)+
+  geom_point(aes(x=time,y=ANC),size=1)+gx+tc(14)+sbb
+ggsave("~/GitHubs/myelo/docs/quart14noiseData.png",width=5, height=4)
+
+# Try fitting 4 params that could be fitted using Friberg 2002 model
+library(FME)
+# (pars=c(Circ0 = 5.05, ktr = 1.08229988726043,gam = 0.161, slope = 8.58)) # fri02 values
+# (pars=c(    Circ0=3.53, ktr=0.9022556,         gam=0.444,   slope=17.2))  
+# Q=function(pars) {
+#   evnt=ev(time=tstart,amt=80*1.8,cmt=1,Circ0=pars["Circ0"],ktr=pars["ktr"],
+#           gam=pars["gam"],
+#           slope=pars["slope"],
+#           Prol_0=pars["Circ0"],Trans1_0=pars["Circ0"],Trans2_0=pars["Circ0"],
+#           Trans3_0=pars["Circ0"],Trans4_0=pars["Circ0"],Circ_0=pars["Circ0"] )
+#   as.data.frame(mod%>%ev(evnt)%>%mrgsim(start=0,end = END, delta = DELTA))%>%filter(!(time==tstart&C1==0))
+# }  # this Q would not move toward true values
+
+# (pars=c(    Circ0=3.53, ktr=0.9022556,         gam=0.444,   beta=0.234))  
+# Q=function(pars) {
+#   evnt=ev(time=tstart,amt=80*1.8,cmt=1,Circ0=pars["Circ0"],ktr=pars["ktr"],
+#           gam=pars["gam"],
+#           beta=pars["beta"],
+#           Prol_0=pars["Circ0"],Trans1_0=pars["Circ0"],Trans2_0=pars["Circ0"],
+#           Trans3_0=pars["Circ0"],Trans4_0=pars["Circ0"],Circ_0=pars["Circ0"] )
+#   as.data.frame(mod%>%ev(evnt)%>%mrgsim(start=0,end = END, delta = DELTA))%>%filter(!(time==tstart&C1==0))
+# } #better but still not good
+
+
+#drop to two parameters
+(pars=c(    Circ0=3.53, ktr=0.9022556))  
+Q=function(pars) {
+  evnt=ev(time=tstart,amt=80*1.8,cmt=1,Circ0=pars["Circ0"],ktr=pars["ktr"],
+          Prol_0=pars["Circ0"],Trans1_0=pars["Circ0"],Trans2_0=pars["Circ0"],
+          Trans3_0=pars["Circ0"],Trans4_0=pars["Circ0"],Circ_0=pars["Circ0"] )
+  as.data.frame(mod%>%ev(evnt)%>%mrgsim(start=0,end = END, delta = DELTA))%>%filter(!(time==tstart&C1==0))
+} 
+
+
+Q(pars)%>%select(time,Circ)%>%head(12)  # test that Q works
+(dd=d%>%select(time,Circ=ANC)%>%mutate(sd=sd))%>%head(12)
+Qcost <- function (pars) {
+  out=Q(pars)%>%select(time,Circ)
+  modCost(model = out, obs = dd, err = "sd")
+}
+parsIC=1.3*pars
+Qcost2 <- function(lpars)  Qcost(exp(lpars))
+Fit <- modFit(f = Qcost2, p = log(parsIC),method="Nelder-Mead")
+Fit <- modFit(f = Qcost2, p = log(parsIC)) 
+data.frame(parsIC,fit=exp(coef(Fit)),trueVals=pars)
+
+(s=summary(Fit))
+data.frame(point=exp(s$par[,1]),
+           lowCI=exp(s$par[,1]-1.96*s$par[,2]),
+           hiCI=exp(s$par[,1]+1.96*s$par[,2])  )
+
+
+##### Perturbation Study
+DELTA=.1
+(e=ev(time=tstart,amt=80*1.8,cmt=1)) 
+Circ0=3.53 
+ktr=0.9022556
+(kcirc=log(2)/(7/24))
+(trans0=kcirc*Circ0/ktr)
+
+ic=c(Circ0=Circ0,Prol_0=trans0,Trans1_0=trans0,Trans2_0=trans0,Trans3_0=trans0,Trans4_0=trans0,Circ_0=Circ0)
+span=c(1/2, 1, 2)
+idata=data.frame(ID=1:3,span%*%t(ic))
+out=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=tstart,end=END,delta=DELTA)
+fixout=function(out) {
+  d$ID=as_factor(d$ID)
+  d%>%filter(!(time==tstart&C1==0))
+}
+lb=labs(col = "Circ0")
+scd = scale_color_discrete(name = "Circ0", labels = idata$Circ0)
+out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+gy+tc(14)+lb+scd
+# ggsave("~/GitHubs/myelo/docs/circ0Sens.png",width=5, height=4)
+
+idata=data.frame(ID=1:3,ktr=0.9022556*span)
+lb=labs(col = "ktr")
+scd = scale_color_discrete(name = "ktr", labels = idata$ktr)
+out=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
+out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+gy+tc(14)+lb+scd
+# ggsave("~/GitHubs/myelo/docs/ktrSens.png",width=5, height=4)
+
+idata=data.frame(ID=1:3,gam=0.444*span)   
+lb=labs(col = "gam")
+scd = scale_color_discrete(name = "gam", labels = idata$gam)
+out=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
+out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+gy+tc(14)+lb+scd
+# ggsave("~/GitHubs/myelo/docs/gamSens.png",width=5, height=4)
+
+idata=data.frame(ID=1:3,slope=17.2*span)
+lb=labs(col = "slope")
+scd = scale_color_discrete(name = "slope", labels = idata$slope)
+out=mod%>%idata_set(idata)%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
+out%>%fixout%>%ggplot(aes(x=time,y=Circ,col=ID))+ geom_line(size=1)+gx+gy+tc(14)+lb+scd
+# ggsave("~/GitHubs/myelo/docs/slopeSens.png",width=5, height=4)
 
 
 

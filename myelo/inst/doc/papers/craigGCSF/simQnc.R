@@ -66,7 +66,10 @@ tail(D,2)
 d=D%>%select(time,Q,Aq)%>%gather(key="Lab",value="Value",-time)
 d%>%ggplot(aes(x=time,y=Value))+facet_grid(Lab~.,scales = "free")+geom_line(size=1)+gx+tc(14)+sbb#+cc
 ggsave("~/Results/myelo/Qnc2x6.pdf",width=5, height=5)
-
+head(d)
+d%>%filter(Lab=="Q",time<350)%>%ggplot(aes(x=time,y=Value))+geom_line(size=1)+gx+tc(14)+sbb+ylab("Q")#+cc
+ggsave("~/Results/myelo/Qnc2x6qOnly.pdf",width=5, height=4)
+ggsave("~/Results/myelo/Qnc2x6qOnly.png",width=5, height=4)
 
 
 

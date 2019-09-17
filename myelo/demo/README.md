@@ -88,3 +88,19 @@ tc=function(sz) theme_classic(base_size=sz)
 D%>%ggplot(aes(x=time,y=Value,col=Cell))+geom_line(size=1)+gx+tc(14)+sbb
 ```
 ![](../../docs/quart14waves.png)
+
+
+## Simulated Data Fitting
+We now see if we can recover parameters from simulated data
+```
+(e=ev(time=0,amt=80*1.8,cmt=1)) 
+END=50
+DELTA=1
+out=mod%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
+d=as.data.frame(out)[-1,]
+sd=0.05
+d$ANC=d$Circ+rnorm(dim(d)[1],sd=sd)
+d%>%ggplot(aes(x=time,y=Circ))+ geom_line(size=.1)+
+  geom_point(aes(x=time,y=ANC),size=1)+gx+tc(14)+sbb
+```
+![](../docs/quart14noiseData.png)

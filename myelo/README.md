@@ -193,7 +193,6 @@ END=50
 DELTA=1
 out=mod%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
 d=as.data.frame(out)[-1,]
-d=d[!duplicated(d$time),]
 sd=0.05
 d$ANC=d$Circ+rnorm(dim(d)[1],sd=sd)
 d%>%ggplot(aes(x=time,y=Circ))+ geom_line(size=.1)+
@@ -213,7 +212,8 @@ LF4=function(pars) {
           Trans3_0=pars["Circ0"],Circ_0=pars["Circ0"] )
   as.data.frame(mod%>%ev(evnt)%>%mrgsim(start=0,end = END, delta = DELTA))[-1,]
 }
-D=LF4(pars)%>%select(time,Circ)
+LF4(pars)%>%select(time,Circ)%>%head  # test that LF4() works
+
 dd=d%>%select(time,Circ=ANC)%>%mutate(sd=sd)
 LF4cost <- function (pars) {
   out=LF4(pars)%>%select(time,Circ)

@@ -78,7 +78,7 @@ END=50
 DELTA=1
 out=mod%>%ev(e)%>%mrgsim(start=0,end=END,delta=DELTA)
 d=as.data.frame(out)[-1,]
-d=d[!duplicated(d$time),]
+# d=d[!duplicated(d$time),]
 sd=0.05
 d$ANC=d$Circ+rnorm(dim(d)[1],sd=sd)
 d%>%ggplot(aes(x=time,y=Circ))+ geom_line(size=.1)+
