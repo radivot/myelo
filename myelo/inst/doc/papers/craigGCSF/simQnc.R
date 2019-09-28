@@ -56,7 +56,7 @@ events2$time=events2$time+150
 (eventsdat2=as.data.frame(bind_rows(events1,events2)))
 
 x0=c(Q = 1.10216835127603, Aq = 1.5116)
-system.time(yout <- dede(x0,times = seq(-20,500,by=0.01), func = "derivsCraig16Qnc",	parms = parsQ,
+system.time(yout <- dede(x0,times = seq(-20,320,by=0.1), func = "derivsCraig16Qnc",	parms = parsQ,
                          dllname = "myelo",initfunc = "parmsCraig16Qnc",
                          events=list(data=eventsdat2),method="lsoda",  #method made no diff
                          nout = 2, outnames = c("Qts","Aqts"))    )
