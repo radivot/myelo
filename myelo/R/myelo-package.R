@@ -368,7 +368,7 @@ NULL
 #'
 #'This is a dataframe of parameter values for 21 CML patients.
 #'
-#'@name glauchePars02
+#'@name glauchePars20
 #'@docType data
 #'@format A dataframe of parameter values.  \describe{ See paper }
 #'@note Coding supported by the Cleveland Clinic Foundation.
@@ -383,7 +383,7 @@ NULL
 #'@examples
 #'
 #'library(myelo)
-#'glauchePars02
+#'glauchePars20
 #'
 NULL
 
