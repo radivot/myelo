@@ -9,8 +9,7 @@ This model captures quiescent (x) and dividing (y) CML cells interacting with an
 The differential equations of this model are:
 ![](../docs/hahnelDEQs.png)
 
-The following code runs the model for 10 years (120 months) from an initial condition of y(0)=1 yielding
-![](../docs/hahnel.png)
+The following code runs the model for 10 years (120 months) from an initial condition of y(0)=1. 
 
 ```
 library(myelo)  
@@ -24,7 +23,7 @@ glauche20<-function(Time, State, Pars) {
   with(as.list(c(Time, State, Pars)),{
     dX = -pxy*X + pyx*Y 
     dY =  pxy*X - pyx*Y + py*Y*(1-Y/Ky)   -  m*Y*Z 
-    dZ =  rz    -   a*Z                   + pz*Y*Z/(Kz^2+Y^2)  
+    dZ =  rz    -   a*Z                   + pz*Y*Z/(Kz^2+Y^2) 
     list(c(dX,dY,dZ),c(ratio=2+log10(Y/Ky)))
   })
 }
@@ -35,16 +34,8 @@ fsim=function(x) {
 }
 d=d%>%mutate(out=map(data,fsim))
 head(d$out[[1]])
-for (i in 1:21) plot(d$out[[i]],which=c("ratio"),xlab="Months",ylab="2+log10(Y/Ky)",main=paste("Patient",i))  
-as_tibble(d$out[[1]])%>%select(time,ratio)
 d=d%>%mutate(D=map(out,function(x) as_tibble(x)%>%select(time,ratio)
                    %>%mutate(time=as.numeric(time),ratio=as.numeric(ratio))))
-pdf("~/Results/CML/hahnel.pdf",width=4,height=4)
-# png("~/Results/CML/hahnel.png") #only last plot shows up
-# ?plot.deSolve
-# par(mfrow=c(6,2))
-for (i in 1:21) plot(d$out[[i]],which=c("ratio"),xlab="Months",ylab="2+log10(Y/Ky)",main=paste("Patient",i))  
-dev.off()
 dd=d%>%select(id,D)
 dd=dd%>%unnest(cols=D)
 dd$id=as_factor(dd$id)
@@ -55,6 +46,9 @@ sbb=theme(strip.background=element_blank())
 dd%>%ggplot(aes(x=time,y=ratio))+facet_grid(id~.)+geom_line(size=1)+gx+gy+tc(14)+sbb 
 ggsave("~/Results/CML/hahnel.png",width=4,height=12)
 ```
+
+Running this code generates the following plot
+![](../docs/hahnel.png)
 
 
 

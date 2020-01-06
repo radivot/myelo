@@ -11,6 +11,7 @@ glauche20<-function(Time, State, Pars) {
     dY =  pxy*X - pyx*Y + py*Y*(1-Y/Ky)   -  m*Y*Z 
     dZ =  rz    -   a*Z                   + pz*Y*Z/(Kz^2+Y^2)  
     list(c(dX,dY,dZ),c(ratio=2+log10(Y/Ky)))
+    # list(c(dX,dY,dZ),c(ratio=2+log10(Y/(Y+2*(Ky-Y))))) #more correct, but also more clutter
   })
 }
 
