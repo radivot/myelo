@@ -3,7 +3,7 @@
 \docType{data}
 \name{fribergPars02}
 \alias{fribergPars02}
-\title{Model parameters  of Morgan Craig et al BMB 2016}
+\title{Model parameters  of Friberg et al JCO 2002}
 \format{A vector of parameter values.  \describe{ See description in comments
  in fribergPars02.R of the doc folder. }}
 \source{
@@ -12,7 +12,7 @@ for docetaxel PK, the first column of table II of the second paper.
 }
 \description{
 This is a numeric vector that holds the parameter values of the neutrophil
-chemo GCSF model of Morgan Craig et al BMB 2016
+chemo  model of Friberg et al JCO 2002
 }
 \note{
 Coding supported by the Cleveland Clinic Foundation.

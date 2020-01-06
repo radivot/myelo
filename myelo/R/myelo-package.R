@@ -332,10 +332,10 @@ NULL
 
 
 
-#'Model parameters  of Morgan Craig et al BMB 2016
+#'Model parameters  of Friberg et al JCO 2002
 #'
 #'This is a numeric vector that holds the parameter values of the neutrophil
-#'chemo GCSF model of Morgan Craig et al BMB 2016
+#'chemo  model of Friberg et al JCO 2002
 #'
 #'@name fribergPars02
 #'@docType data
@@ -361,6 +361,32 @@ NULL
 #'fribergPars02
 #'
 NULL
+
+
+
+#'Model parameters  of Tom Hahnel ... Ingmar Glauche, Bioarxiv 2020
+#'
+#'This is a dataframe of parameter values for 21 CML patients.
+#'
+#'@name glauchePars02
+#'@docType data
+#'@format A dataframe of parameter values.  \describe{ See paper }
+#'@note Coding supported by the Cleveland Clinic Foundation.
+#'@references Tom Hahnel, Christoph Baldow, Artur C. Fassoni , Joelle Guilhot , Francois Guilhot , Susanne
+# Saussele , Satu Mustjoki , Stefanie Jilg , Philipp J. Jost , Stephanie Dulucq , Francois-Xavier
+# Mahon, Ingo Roeder, Ingmar Glauche
+#'Inferring immunological control mechanisms from TKI dose alterations in CML patients, 
+#' \emph{BioArxiv},  \bold{http://dx.doi.org/10.1101/722546},   (2020)
+#' 
+#'@source Supplement of Bioarxiv paper. 
+#'@keywords datasets
+#'@examples
+#'
+#'library(myelo)
+#'glauchePars02
+#'
+NULL
+
 
 
 
