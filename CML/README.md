@@ -1,13 +1,17 @@
+# CML models in myelo
+The R package houses models of myeloid hematopoiesis. The focus here is on CML.
+
+
 # Inferring immunological control mechanisms from TKI dose alterations in CML patients (Hahnel et 2020)
 
 This model captures quiscent (x) and dividing (y) CML cells interacting with anti-CML immune cells (z). 
-![](docs/glauche.png)
+![](../docs/glauche.png)
 
 The differential equations of this model are:
-![](docs/hanelDEQs.png)
+![](../docs/hanelDEQs.png)
 
 The following code runs the model for 10 years (120 months) from an initial condition of y(0)=1 yielding
-![](docs/hahnel.png)
+![](../docs/hahnel.png)
 
 ```
 library(myelo)  
@@ -59,12 +63,12 @@ ggsave("~/Results/CML/hahnel.png",width=4,height=12)
 
 This model captures CML cells (C) interacting with naive T cells (Tn) and effector T cells (Te). 
 The differential equations of this model are:
-![](docs/moore04model.png)
+![](../docs/moore04model.png)
 
 
 The following code reproduces Figures 6-8 in [Moore and Li 2004](https://www.ncbi.nlm.nih.gov/pubmed/15038986) 
 
-![](docs/fig6to8.png)
+![](../docs/fig6to8.png)
 
 
 ```
@@ -112,7 +116,7 @@ D%>%filter(x=="Fig.8")%>%
 ggsave("~/Results/CML/fig8.png",height=3,width=3)
 
 ```
-![](docs/fig8.png)
+![](../docs/fig8.png)
 
 
 We can now examine time courses of naive T cells
@@ -123,7 +127,7 @@ D%>%ggplot(aes(x=time,y=Tn,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+cc
 ggsave("~/Results/CML/naive.png",height=3,width=3.5)
 
 ```
-![](docs/naive.png)
+![](../docs/naive.png)
 
 and effector T cells
 ```
@@ -132,7 +136,7 @@ D%>%ggplot(aes(x=time,y=Te,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+cc
 ggsave("~/Results/CML/effector.png",height=3,width=3)
 
 ```
-![](docs/effector.png)
+![](../docs/effector.png)
 
 It seems the initial effecter T cell population is far higher than it should be. The following code zooms in on the first 3 time points
 ```
