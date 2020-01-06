@@ -1,14 +1,13 @@
-# CML models in myelo
-The R package houses models of myeloid hematopoiesis. The focus here is on CML.
+# CML models
 
 
-# Inferring immunological control mechanisms from TKI dose alterations in CML patients (Hahnel et 2020)
+## Inferring immunological control mechanisms from TKI dose alterations in CML patients (Hahnel et 2020)
 
-This model captures quiscent (x) and dividing (y) CML cells interacting with anti-CML immune cells (z). 
+This model captures quiescent (x) and dividing (y) CML cells interacting with anti-CML immune cells (z). 
 ![](../docs/glauche.png)
 
 The differential equations of this model are:
-![](../docs/hanelDEQs.png)
+![](../docs/hahnelDEQs.png)
 
 The following code runs the model for 10 years (120 months) from an initial condition of y(0)=1 yielding
 ![](../docs/hahnel.png)
@@ -59,7 +58,7 @@ ggsave("~/Results/CML/hahnel.png",width=4,height=12)
 
 
 
-# A mathematical model for chronic myelogenous leukemia (CML) and T cell interaction (Moore and Li 2004)
+## A mathematical model for chronic myelogenous leukemia (CML) and T cell interaction (Moore and Li 2004)
 
 This model captures CML cells (C) interacting with naive T cells (Tn) and effector T cells (Te). 
 The differential equations of this model are:
