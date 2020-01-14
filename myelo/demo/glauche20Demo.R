@@ -38,6 +38,6 @@ tc=function(sz) theme_classic(base_size=sz)
 gx=xlab("Months")
 gy=ylab("2+log10(Y/Ky)")
 sbb=theme(strip.background=element_blank())
-dd%>%ggplot(aes(x=time,y=ratio))+facet_grid(id~.)+geom_line(size=1)+gx+gy+tc(14)+sbb 
-ggsave("~/Results/CML/hahnel.png",width=4,height=12)
+dd%>%ggplot(aes(x=time,y=ratio))+facet_wrap(id~.,ncol=3)+geom_line(size=1)+gx+gy+tc(14)+sbb 
+ggsave("~/Results/CML/hahnel2.png",width=4,height=6)
 
