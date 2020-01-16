@@ -30,7 +30,7 @@ library(tidyverse)
 pts=rbind(pt1,pt2,pt3,pt4,pt5,pt6,pt7,pt8,pt9,pt10,pt11,pt12,pt13,pt14,pt15,pt16,pt17,pt18,pt19,pt20,pt21)
 colnames(pts)=c("pyx","pxy","TKI","pz","Kz","CessT")
 pts=as.data.frame(pts)
-pts$py=1.68 # cells/month
+pts$py=1.658 # cells/month
 pts$Ky=1e6 # cells
 pts$a=2 # 1/month (apoptosis rate constant)
 pts$rz=200 # cells/month
