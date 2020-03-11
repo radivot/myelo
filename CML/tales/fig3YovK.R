@@ -34,4 +34,6 @@ sbb=theme(strip.background=element_blank())
 dd%>%ggplot(aes(x=time,y=ratio))+facet_wrap(id~.,ncol=3)+geom_line(size=1)+gx+gy+tc(14)+sbb+tms 
 ggsave("~/Results/twoCities/hahnYovK.pdf",width=6,height=7)
 # ggsave("~/Results/twoCities/hahnYovK.png",width=4,height=6)
-
+library(WriteXLS)
+tb1=glauchePars20%>%select(-CessT,-TKI)%>%rename(Patient=id) #%>%head()
+WriteXLS(list(hahnel=tb1), ExcelFileName="~/Results/twoCities/hahnelPars.xlsx")
