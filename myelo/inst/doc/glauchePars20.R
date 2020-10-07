@@ -30,12 +30,17 @@ library(tidyverse)
 pts=rbind(pt1,pt2,pt3,pt4,pt5,pt6,pt7,pt8,pt9,pt10,pt11,pt12,pt13,pt14,pt15,pt16,pt17,pt18,pt19,pt20,pt21)
 colnames(pts)=c("pyx","pxy","TKI","pz","Kz","CessT")
 pts=as.data.frame(pts)
+pts$pzOvKz=round(pts$pz/(pts$Kz)^2,2)
 pts$py=1.658 # cells/month
 pts$Ky=1e6 # cells
 pts$a=2 # 1/month (apoptosis rate constant)
 pts$rz=200 # cells/month
 pts$m=1e-4 # 1/(cell*month)
 pts$id=rownames(pts)
+(x=pts%>%arrange(pzOvKz))
+(x=pts%>%arrange(pz))
+hist(x$pzOvKz,50)
+pts$pzOvKz=NULL
 glauchePars20=pts%>%select(id,everything())
 save(glauchePars20,file="glauchePars20.rda")
 as_tibble(glauchePars20%>%select(-TKI,-CessT))%>%print(n=21)
