@@ -1,3 +1,3 @@
 # CML models
 
-Subdirectories here correspond to different paper. 
+See subdirectories for R codes for different papers. 
