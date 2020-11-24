@@ -4,8 +4,10 @@
 \name{craigIC}
 \alias{craigIC}
 \title{Initial states of model of Morgan Craig et al BMB 2016}
-\format{A vector of 43 parameter values.  \describe{ See description in comments
- in craigPars.R of the doc folder. }}
+\format{
+A vector of 43 parameter values.  \describe{ See description in comments
+ in craigPars.R of the doc folder. }
+}
 \source{
 Values were taken from Table 4-6 of this  paper.
 }

@@ -4,7 +4,8 @@
 \name{auwera}
 \alias{auwera}
 \title{G-CSF Dynamic Response Data of van der Auwera et al. 2001}
-\format{A data frame that includes time in hours and 8 variables.  \describe{
+\format{
+A data frame that includes time in hours and 8 variables.  \describe{
 \item{hours}{Time points in hours after subcutanteous filgrastim injection.}
 \item{gcsf5}{GCSF time course in ng/mL after a 5 ug/kg injection.} 
 \item{gcsf10}{GCSF time course in ng/mL after a 10 ug/kg injection.} 
@@ -13,7 +14,8 @@
 \item{cfugm5}{The number of CFUGM per 10^5 cells after 7 daily 5 ug/kg injections.}
 \item{cfugm10}{The number of CFUGM per 10^5 cells after 7 daily 10 ug/kg injections.}
 \item{anc5}{Absolute Neutrophil Count (ANC) per cubic mm time course after a 5 ug/kg injection.} 
-\item{anc10}{ANC per cubic mm time course after a 10 ug/kg injection.} }}
+\item{anc10}{ANC per cubic mm time course after a 10 ug/kg injection.} }
+}
 \source{
 The data were obtained from Figures 1,2,3, and 5 of vander Auwera et al. by first copying
 into powerpoint, then saving as a gif, and then using PlotDigitizer.

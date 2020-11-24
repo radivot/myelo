@@ -4,8 +4,10 @@
 \name{zhugePars19}
 \alias{zhugePars19}
 \title{Model parameter values of Zhuge et al. JTB 2019}
-\format{A vector of parameter values.  \describe{
-See description in comments in zhugePars19.R of the doc folder. }}
+\format{
+A vector of parameter values.  \describe{
+See description in comments in zhugePars19.R of the doc folder. }
+}
 \source{
 The parameter values were taken from Table 1 of this 2019 paper.
 }

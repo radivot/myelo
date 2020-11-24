@@ -4,8 +4,10 @@
 \name{scholzPars}
 \alias{scholzPars}
 \title{Model parameter values of Scholz et al. TBMM 2012}
-\format{A vector of parameter values.  \describe{
-See description in comments in sholzPars.R of the doc folder. }}
+\format{
+A vector of parameter values.  \describe{
+See description in comments in sholzPars.R of the doc folder. }
+}
 \source{
 The parameter values were taken from the supplement PDF of the TBMM 2012 paper.
 }

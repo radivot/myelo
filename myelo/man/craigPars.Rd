@@ -4,8 +4,10 @@
 \name{craigPars}
 \alias{craigPars}
 \title{Shortlist of parameters  of Morgan Craig et al BMB 2016}
-\format{A vector of 43 parameter values.  \describe{ See description in comments
- in craigPars.R of the doc folder. }}
+\format{
+A vector of 43 parameter values.  \describe{ See description in comments
+ in craigPars.R of the doc folder. }
+}
 \source{
 The parameter values were taken from Table 4-6 of this  paper.
 }

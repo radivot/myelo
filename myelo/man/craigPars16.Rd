@@ -4,8 +4,10 @@
 \name{craigPars16}
 \alias{craigPars16}
 \title{Model parameters  of Morgan Craig et al BMB 2016}
-\format{A vector of parameter values.  \describe{ See description in comments
- in craigPars16.R of the doc folder. }}
+\format{
+A vector of parameter values.  \describe{ See description in comments
+ in craigPars16.R of the doc folder. }
+}
 \source{
 The parameter values were taken from Table 4-6 of this  paper.
 }

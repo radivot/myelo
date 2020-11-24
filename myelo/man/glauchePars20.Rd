@@ -4,7 +4,9 @@
 \name{glauchePars20}
 \alias{glauchePars20}
 \title{Model parameters  of Tom Hahnel ... Ingmar Glauche, Bioarxiv 2020}
-\format{A dataframe of parameter values.  \describe{ See paper }}
+\format{
+A dataframe of parameter values.  \describe{ See paper }
+}
 \source{
 Supplement of Bioarxiv paper.
 }

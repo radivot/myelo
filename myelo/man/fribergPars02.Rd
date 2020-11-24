@@ -4,8 +4,10 @@
 \name{fribergPars02}
 \alias{fribergPars02}
 \title{Model parameters  of Friberg et al JCO 2002}
-\format{A vector of parameter values.  \describe{ See description in comments
- in fribergPars02.R of the doc folder. }}
+\format{
+A vector of parameter values.  \describe{ See description in comments
+ in fribergPars02.R of the doc folder. }
+}
 \source{
 The parameter values were taken from the first row of Table 4 in the first paper and
 for docetaxel PK, the first column of table II of the second paper.

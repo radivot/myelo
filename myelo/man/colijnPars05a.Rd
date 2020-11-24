@@ -4,8 +4,10 @@
 \name{colijnPars05a}
 \alias{colijnPars05a}
 \title{Model parameter values of Colijn and Mackey Periodic CML model (JTB 2005, part I)}
-\format{A vector of parameter values.  \describe{
-See description in comments in colijnPars05a.R of the doc folder. }}
+\format{
+A vector of parameter values.  \describe{
+See description in comments in colijnPars05a.R of the doc folder. }
+}
 \source{
 The parameter values were taken from Table 1 of this  paper.
 }

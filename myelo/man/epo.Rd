@@ -4,14 +4,16 @@
 \name{epo}
 \alias{epo}
 \title{Erythropoietin (Epo) Dynamic Response Data of Becker et al. Science 2010}
-\format{A data frame that includes time and 3 variables.  \describe{
+\format{
+A data frame that includes time and 3 variables.  \describe{
 \item{time}{The time point in minutes after Epo addition.}
 \item{epo.e}{The counts per minute (cpm) of Epo external to the cell,
 degraded or intact, but free, see \link{raue10}.} 
 \item{epo.m}{The
 cpm of Epo bound to the Epo Receptor (EpoR) on the cell's plasma membrane.}
 \item{epo.i}{The cpm of Epo internal to the cell, either on an
-internal EpoR or degraded and free.}  }}
+internal EpoR or degraded and free.}  }
+}
 \source{
 The data were taken from the excel file in the zip download of Epo
 receptor model under \bold{Applications} at

@@ -4,8 +4,10 @@
 \name{brooksPars}
 \alias{brooksPars}
 \title{Model parameter values of Brooks et al. JTB 2012}
-\format{A vector of parameter values.  \describe{
-See description in comments in brooksPars.R of the doc folder. }}
+\format{
+A vector of parameter values.  \describe{
+See description in comments in brooksPars.R of the doc folder. }
+}
 \source{
 The parameter values were taken from Table 1 of the PDF of the JTB 2012 paper.
 }

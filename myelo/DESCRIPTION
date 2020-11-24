@@ -17,4 +17,4 @@ Depends: R (>= 3.5.0)
 License: GPL-2
 LazyData: yes
 URL: http://epbi-radivot.cwru.edu/myelo/myelo.html
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
