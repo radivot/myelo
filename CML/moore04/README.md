@@ -1,13 +1,13 @@
-## A mathematical model for chronic myelogenous leukemia (CML) and T cell interaction (Moore and Li 2004)
+## A mathematical model for chronic myelogenous leukemia (CML) and T cell interaction (Moore and Li, JTB 2004)
 
 This model captures CML cells (C) interacting with naive T cells (Tn) and effector T cells (Te). 
 The differential equations of this model are:
-![](../docs/moore04model.png)
+![](../../docs/moore04model.png)
 
 
-The following code reproduces Figures 6-8 in [Moore and Li 2004](https://www.ncbi.nlm.nih.gov/pubmed/15038986) 
+The following code reproduces Figures 6-8 in [Moore and Li, JTB 2004](https://www.ncbi.nlm.nih.gov/pubmed/15038986) 
 
-![](../docs/fig6to8.png)
+![](../../docs/fig6to8.png)
 
 
 ```
@@ -55,7 +55,7 @@ D%>%filter(x=="Fig.8")%>%
 ggsave("~/Results/CML/fig8.png",height=3,width=3)
 
 ```
-![](../docs/fig8.png)
+![](../../docs/fig8.png)
 
 
 We can now examine time courses of naive T cells
@@ -66,7 +66,7 @@ D%>%ggplot(aes(x=time,y=Tn,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+cc
 ggsave("~/Results/CML/naive.png",height=3,width=3.5)
 
 ```
-![](../docs/naive.png)
+![](../../docs/naive.png)
 
 and effector T cells
 ```
@@ -75,7 +75,7 @@ D%>%ggplot(aes(x=time,y=Te,color=x))+geom_line(size=1)+gx+gy+tc(14)+ltb+ltp+cc
 ggsave("~/Results/CML/effector.png",height=3,width=3)
 
 ```
-![](../docs/effector.png)
+![](../../docs/effector.png)
 
 It seems the initial effecter T cell population is far higher than it should be. The following code zooms in on the first 3 time points
 ```

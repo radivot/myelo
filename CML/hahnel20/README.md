@@ -5,10 +5,10 @@
 
 
 This model captures quiescent (x) and dividing (y) CML cells interacting with anti-CML immune cells (z). 
-![](../docs/glauche.png)
+![](../../docs/glauche.png)
 
 The differential equations of this model are:
-![](../docs/hahnelDEQs.png)
+![](../../docs/hahnelDEQs.png)
 
 The following code runs the model for 10 years (120 months) from an initial condition of y(0)=1. 
 
@@ -49,7 +49,7 @@ ggsave("~/Results/CML/hahnel.png",width=4,height=12)
 ```
 
 Running this code generates the following plot
-![](../docs/hahnel.png)
+![](../../docs/hahnel.png)
 
 
 
