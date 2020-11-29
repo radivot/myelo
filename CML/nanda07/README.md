@@ -168,3 +168,10 @@ ggsave("CML/immuno/outs/nandaFig2aCU12.png",height=3,width=4)
 ```
 
 The control efforts do not match the paper exactly, but their impacts on C are fairly similar. 
+
+Note 1: attempts to replace bvpshoot() with bvptwp() and bvpcol() failed with errors. 
+
+Note 2: The C++ program PSOPT (see user.cxx in this folder) also failed, though it at least produced these plots.  
+![](../../docs/nanda_controls.png)
+![](../../docs/nanda_states.png)
+
