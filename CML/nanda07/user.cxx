@@ -165,7 +165,7 @@ int main(void)
 
 
 
-    problem.phases(1).bounds.upper.controls(0) = 1.0;
+    problem.phases(1).bounds.upper.controls(0) = 0.9;
     problem.phases(1).bounds.upper.controls(1) = 2.5;
 
 
@@ -243,8 +243,8 @@ int main(void)
     algorithm.scaling                     = "automatic";
     algorithm.derivatives                 = "automatic";
 //    algorithm.mesh_refinement             = "automatic";
-    algorithm.collocation_method          = "trapezoidal";
-//    algorithm.collocation_method          = "Hermite-Simpson";  //bioreactor
+//    algorithm.collocation_method          = "trapezoidal";
+    algorithm.collocation_method          = "Hermite-Simpson";  //bioreactor
 //    algorithm.defect_scaling              = "jacobian-based";  //commented in both
 //    algorithm.diff_matrix                 = "central-differences"; //comment in bio, not in max
     algorithm.ode_tolerance               = 1.e-6;  // in max but not in bio

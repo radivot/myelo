@@ -168,10 +168,15 @@ ggsave("CML/immuno/outs/nandaFig2aCU12.png",height=3,width=4)
 ```
 
 The control efforts do not match the paper exactly, but their impacts on C are fairly similar. 
+Note: replacing bvpshoot() with bvptwp() and bvpcol() threw errors. 
 
-Note 1: attempts to replace bvpshoot() with bvptwp() and bvpcol() failed with errors. 
+The C++ program PSOPT (see user.cxx in this folder) produced these plots.  
 
-Note 2: The C++ program PSOPT (see user.cxx in this folder) also failed, though it at least produced these plots.  
 ![](../../docs/nanda_controls.png)
+
+
+Here u1 and u2 match the paper better in that they start high and fall, but drop timings
+are sooner here, which may explain CML cells rising at large times. 
+
 ![](../../docs/nanda_states.png)
 
