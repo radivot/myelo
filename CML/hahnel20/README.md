@@ -1,8 +1,4 @@
-# CML models
-
-
 ## Model-based inference and classification of immunological control mechanisms from TKI cessation and dose reduction in CML patients. Hahnel et al, Cancer Research (2020).
-
 
 This model captures quiescent (x) and dividing (y) CML cells interacting with anti-CML immune cells (z). 
 ![](../../docs/glauche.png)
