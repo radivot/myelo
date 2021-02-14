@@ -65,6 +65,7 @@ ggsave("~/Results/CML/hahnelFigS2.png",width=4,height=12)
 
 ![](../../docs/hahnelFigS2.png)
 
+
 First values of these time courses can be used to reproduce the histogram in Figure S1E.
 
 
@@ -89,10 +90,33 @@ ggsave("~/Results/CML/hahnelFigS1E.png",width=3,height=3)
 ![](../../docs/hahnelFigS1E.png)
 
 
+WebPlotDigitizer was also used to digitize values in Figure S5 after TKI cessation. Calling this time 0 yields the following plots of CML rebounding, or not.   
+
+```
+rm(list=ls())
+library(myelo)
+library(tidyverse)
+head(hahnelFigS5)
+(d=hahnelFigS5%>%mutate(Censored=c("No","Yes")[UL+1]))
+d=d%>%group_by(Pt)%>%nest()
+myfun=function(x) x%>%mutate(Months=Months-Months[1])
+d=d%>%mutate(data=map(data,myfun))
+d=d%>%unnest(data)
+tc=function(sz) theme_classic(base_size=sz)
+gy=ylab("BCR-ABL Percent")
+gx=xlab("Months after TKI Cessation")
+sbb=theme(strip.background=element_blank())
+d%>%ggplot(aes(x=Months,y=Prct,col=Censored))+facet_wrap(Pt~.,ncol=2)+geom_line(size=1)+geom_point(size=1)+
+  gx+gy+tc(14)+sbb+scale_y_log10()+theme(legend.position="top") 
+ggsave("~/Results/CML/hahnelFigS5.png",width=4,height=12)
+```
+
+![](../../docs/hahnelFigS5.png)
+There is a broad range of relapse slopes. 
+
+
 
 In the adjacent folder REB20, the first differential equation above, and the first two terms of the second, are dropped, as while they are needed to capture the biphasic exponential decay of CML load while on TKI, they are not needed to represent initial  CML clone growth and trapping by the immune system in A-bomb survivors. 
-
-
 
 
 

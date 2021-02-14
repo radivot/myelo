@@ -394,7 +394,7 @@ NULL
 #'@name hahnelFigS2
 #'@docType data
 #'@format Months is times from Dx, Prct is BCR-ABL1 percentage, Pt is patient ID, and UL is 1 if 
-#'Prct is the upper limit of a left-censored (below detection limit) value, else 0  \describe{ See paper }
+#'Prct is the upper limit of a left-censored measurement, else 0  \describe{ See paper }
 #'@note Coding supported by the Cleveland Clinic Foundation.
 #'@references Tom Hahnel et al. Model-Based Inference and Classification of 
 #'Immunologic Control Mechanisms from TKI Cessation and Dose Reduction in Patients with CML
@@ -405,10 +405,32 @@ NULL
 #'@examples
 #'
 #'library(myelo)
-#'glauchePars20
+#'head(hahnelFigS2)
 #'
 NULL
 
+
+#'TFR (post-stopping TKI) Data in Figure S5 of Hahnel et al 
+#'
+#'This is a dataframe of BCR-ABL percentages for 21 CML patients.
+#'
+#'@name hahnelFigS5
+#'@docType data
+#'@format Months is time from Dx, Prct is BCR-ABL1 percentage, Pt is patient ID, and UL is 1 if 
+#'Prct is the upper limit of a left-censored measurement, else 0  \describe{ See paper }
+#'@note Coding supported by the Cleveland Clinic Foundation.
+#'@references Tom Hahnel et al. Model-Based Inference and Classification of 
+#'Immunologic Control Mechanisms from TKI Cessation and Dose Reduction in Patients with CML
+#' \emph{Cancer Research},  \bold{DOI: 10.1158/0008-5472.CAN-19-2175}, 2020;80:2394-406 
+#' 
+#'@source Supplemental Figure S5. 
+#'@keywords datasets
+#'@examples
+#'
+#'library(myelo)
+#'head(hahnelFigS5)
+#'
+NULL
 
 
 
