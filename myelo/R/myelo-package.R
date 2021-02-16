@@ -434,7 +434,7 @@ NULL
 
 
 
-#'TFR Data (post-stopping ponatinib) in Figure 2 of S. Claudiani et al 2020
+#'TFR Data (post-stopping ponatinib) in Figure 1 of S. Claudiani et al 2020
 #'
 #'This is a dataframe of BCR-ABL percentages for 3 CML patients stopping ponatinib.
 #'
@@ -447,7 +447,7 @@ NULL
 #'myeloid leukemia patients with previous BCR-ABL1 kinase domain mutations
 #' \emph{Haematologica}, 2020 (\bold{105}): e227 
 #' 
-#'@source  Figure 2 (patients 4, 9 and 10). 
+#'@source  Figure 1 (patients 4, 9 and 10). 
 #'@keywords datasets
 #'@examples
 #'
