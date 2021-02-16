@@ -434,6 +434,30 @@ NULL
 
 
 
+#'TFR Data (post-stopping ponatinib) in Figure 2 of S. Claudiani et al 2020
+#'
+#'This is a dataframe of BCR-ABL percentages for 3 CML patients stopping ponatinib.
+#'
+#'@name claudianiPon
+#'@docType data
+#'@format Months is time from Dx, Prct is BCR-ABL1 percentage, Pt is patient ID
+#'@note Coding supported by the Cleveland Clinic Foundation.
+#'
+#'@references Simone Claudiani et al. Prolonged treatment-free remission in chronic 
+#'myeloid leukemia patients with previous BCR-ABL1 kinase domain mutations
+#' \emph{Haematologica}, 2020 (\bold{105}): e227 
+#' 
+#'@source  Figure 2 (patients 4, 9 and 10). 
+#'@keywords datasets
+#'@examples
+#'
+#'library(myelo)
+#'head(claudianiPon)
+#'
+NULL
+
+
+
 #'Models of myeloid hematopoiesis
 #'
 #'This package aims to make analyses of models of myeloid hematopoiesis more 
