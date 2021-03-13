@@ -41,8 +41,25 @@ pts$id=rownames(pts)
 (x=pts%>%arrange(pz))
 hist(x$pzOvKz,50)
 pts$pzOvKz=NULL
-glauchePars20=pts%>%select(id,everything())
+# Classes
+# A: 6  HM-like no stable subclinical steady state  (all 6 recurred), no bands in hahnel S5
+A=c(2,3,7,9,18,19)  ;length(A)
+# B  8  N-like very stable subclinical steady states 
+B=c(6, 12,13,14,15,16, 20, 21);length(B)#table S2 (wide bands in S5),REB figure 2 (never form CML if start over) 
+# C  7  HF-like labile stable subclinical steady states (4 of 7 recurred)
+C=c(1,4,5,8,10,11,17); length(C)  # difference, narrow bands, could go either way
+pts$cls="A";pts$cls[B]="B";pts$cls[C]="C"
+pts$grp="HM";pts$grp[B]="N";pts$grp[C]="HF"
+glauchePars20=pts%>%select(id,cls,grp,everything())
 save(glauchePars20,file="glauchePars20.rda")
+
+
+d=glauchePars20%>%mutate(A=rz-a*py/m,B=pz*py/m,C=Kz^2*(rz-a*py/m) )
+d=d%>%mutate(UL=(-B-sqrt(B^2-4*A*C))/(2*A),LL=(-B+sqrt(B^2-4*A*C))/(2*A),lGap=log10(UL)-log10(LL))
+d=d%>%mutate(lGap=ifelse(is.nan(lGap),-1,lGap))
+d%>%ggplot(aes(x=1:21,y=lGap,col=cls))+geom_point() # separable in diff of logs, 20 and 21 are more C like
+
+
 as_tibble(glauchePars20%>%select(-TKI,-CessT))%>%print(n=21)
 library(tools)
 showNonASCIIfile("inst/doc/glauchePars20.r") 
