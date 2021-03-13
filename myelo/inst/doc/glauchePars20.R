@@ -48,16 +48,19 @@ A=c(2,3,7,9,18,19)  ;length(A)
 B=c(6, 12,13,14,15,16, 20, 21);length(B)#table S2 (wide bands in S5),REB figure 2 (never form CML if start over) 
 # C  7  HF-like labile stable subclinical steady states (4 of 7 recurred)
 C=c(1,4,5,8,10,11,17); length(C)  # difference, narrow bands, could go either way
-pts$cls="A";pts$cls[B]="B";pts$cls[C]="C"
-pts$grp="HM";pts$grp[B]="N";pts$grp[C]="HF"
-glauchePars20=pts%>%select(id,cls,grp,everything())
+# pts$abc="A";pts$abc[B]="B";pts$abc[C]="C"
+pts$grp="A_hm";pts$grp[B]="B_n";pts$grp[C]="C_hf"
+glauchePars20=pts%>%select(id,grp,everything())
+glauchePars20=glauchePars20%>%mutate(A=rz-a*py/m,B=pz*py/m,C=Kz^2*(rz-a*py/m) )
+glauchePars20=glauchePars20%>%mutate(Uss=round((-B-sqrt(B^2-4*A*C))/(2*A)),
+                                     Sss=round((-B+sqrt(B^2-4*A*C))/(2*A),1),
+                                     lGap=round(log10(Uss)-log10(Sss),2) )
+glauchePars20=glauchePars20%>%mutate(lGap=ifelse(is.nan(lGap),-1,lGap))%>%select(-A,-B,-C)
+glauchePars20
+glauchePars20=as_tibble(glauchePars20)
+glauchePars20
 save(glauchePars20,file="glauchePars20.rda")
-
-
-d=glauchePars20%>%mutate(A=rz-a*py/m,B=pz*py/m,C=Kz^2*(rz-a*py/m) )
-d=d%>%mutate(UL=(-B-sqrt(B^2-4*A*C))/(2*A),LL=(-B+sqrt(B^2-4*A*C))/(2*A),lGap=log10(UL)-log10(LL))
-d=d%>%mutate(lGap=ifelse(is.nan(lGap),-1,lGap))
-d%>%ggplot(aes(x=1:21,y=lGap,col=cls))+geom_point() # separable in diff of logs, 20 and 21 are more C like
+glauchePars20%>%ggplot(aes(x=1:21,y=lGap,col=grp))+geom_point() # separable in diff of logs, 20 and 21 are more C like
 
 
 as_tibble(glauchePars20%>%select(-TKI,-CessT))%>%print(n=21)
