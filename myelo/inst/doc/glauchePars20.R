@@ -63,6 +63,7 @@ save(glauchePars20,file="glauchePars20.rda")
 glauchePars20%>%ggplot(aes(x=1:21,y=lGap,col=grp))+geom_point() # separable in diff of logs, 20 and 21 are more C like
 
 
+
 as_tibble(glauchePars20%>%select(-TKI,-CessT))%>%print(n=21)
 library(tools)
 showNonASCIIfile("inst/doc/glauchePars20.r") 
