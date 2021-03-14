@@ -30,17 +30,13 @@ library(tidyverse)
 pts=rbind(pt1,pt2,pt3,pt4,pt5,pt6,pt7,pt8,pt9,pt10,pt11,pt12,pt13,pt14,pt15,pt16,pt17,pt18,pt19,pt20,pt21)
 colnames(pts)=c("pyx","pxy","TKI","pz","Kz","CessT","Y0")
 pts=as.data.frame(pts)
-pts$pzOvKz=round(pts$pz/(pts$Kz)^2,2)
 pts$py=1.658 # cells/month
 pts$Ky=1e6 # cells
 pts$a=2 # 1/month (apoptosis rate constant)
 pts$rz=200 # cells/month
 pts$m=1e-4 # 1/(cell*month)
 pts$id=rownames(pts)
-(x=pts%>%arrange(pzOvKz))
 (x=pts%>%arrange(pz))
-hist(x$pzOvKz,50)
-pts$pzOvKz=NULL
 # Classes
 # A: 6  HM-like no stable subclinical steady state  (all 6 recurred), no bands in hahnel S5
 A=c(2,3,7,9,18,19)  ;length(A)
@@ -59,11 +55,8 @@ glauchePars20=glauchePars20%>%mutate(lGap=ifelse(is.nan(lGap),-1,lGap))%>%select
 glauchePars20
 glauchePars20=as_tibble(glauchePars20)
 glauchePars20
-save(glauchePars20,file="glauchePars20.rda")
 glauchePars20%>%ggplot(aes(x=1:21,y=lGap,col=grp))+geom_point() # separable in diff of logs, 20 and 21 are more C like
 
-
-
-as_tibble(glauchePars20%>%select(-TKI,-CessT))%>%print(n=21)
-library(tools)
-showNonASCIIfile("inst/doc/glauchePars20.r") 
+save(glauchePars20,file="glauchePars20.rda")
+# library(tools)
+# showNonASCIIfile("inst/doc/glauchePars20.r") 
