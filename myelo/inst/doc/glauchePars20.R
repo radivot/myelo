@@ -47,16 +47,85 @@ C=c(1,4,5,8,10,11,17); length(C)  # difference, narrow bands, could go either wa
 # pts$abc="A";pts$abc[B]="B";pts$abc[C]="C"
 pts$grp="A_hm";pts$grp[B]="B_n";pts$grp[C]="C_hf"
 glauchePars20=pts%>%select(id,grp,everything())
+# dX = -pxy*X + pyx*Y#                              Xss=(pyx/pxy)*Yss
+# dY =  pxy*X - pyx*Y + py*Y*(1-Y/Ky) -  m*Y*Z#   Zss=(py/m)(1-Yss/Ky)
+# dZ =  rz    -   a*Z +  pz*Y*Z/(Kz^2+Y^2)
+# rz -a*(py/m)(1-Yss/Ky) + pz*Yss*(py/m)(1-Yss/Ky)/(Kz^2+Yss^2)
+# assuming 1-Yss/Ky is roughly 1 (i.e. Yss << Ky), yields
+# rz -a*(py/m) + pz*Yss*(py/m)/(Kz^2+Yss^2)
+# (rz -a*(py/m))(Kz^2+Yss^2) + pz*Yss*(py/m)
+# (rz -a*(py/m))*Kz^2 + pz*Yss*(py/m) +(rz -a*(py/m))*Yss^2
 glauchePars20=glauchePars20%>%mutate(A=rz-a*py/m,B=pz*py/m,C=Kz^2*(rz-a*py/m) )
-glauchePars20=glauchePars20%>%mutate(Uss=round((-B-sqrt(B^2-4*A*C))/(2*A)),
-                                     Sss=round((-B+sqrt(B^2-4*A*C))/(2*A),1),
-                                     lGap=round(log10(Uss)-log10(Sss),2) )
-glauchePars20=glauchePars20%>%mutate(lGap=ifelse(is.nan(lGap),-1,lGap))%>%select(-A,-B,-C)
+glauchePars20=glauchePars20%>%mutate(U2=round((-B-sqrt(B^2-4*A*C))/(2*A)),
+                                     S2=round((-B+sqrt(B^2-4*A*C))/(2*A)),
+                                     lGap2=round(log10(U2)-log10(S2),2) )
+glauchePars20=glauchePars20%>%mutate(lGap2=ifelse(is.nan(lGap2),-1,lGap2))%>%select(-A,-B,-C)
 glauchePars20
 glauchePars20=as_tibble(glauchePars20)
 glauchePars20
-glauchePars20%>%ggplot(aes(x=1:21,y=lGap,col=grp))+geom_point() # separable in diff of logs, 20 and 21 are more C like
+glauchePars20%>%ggplot(aes(x=1:21,y=lGap2,col=grp))+geom_point() # separable in diff of logs, 20 and 21 are more C like
 
+
+
+# NOT assuming 1-Yss/Ky = 1 yields cubic polynomial in Yss 
+# rz -a*(py/m)(1-Yss/Ky) + pz*Yss*(py/m)(1-Yss/Ky)/(Kz^2+Yss^2)
+# rz*(Kz^2+Yss^2) -a*(py/m)(1-Yss/Ky)*(Kz^2+Yss^2) + pz*Yss*(py/m)(1-Yss/Ky)
+# Yss^0 * (rz - a*(py/m))*Kz^2 +  
+# Yss^1 * ((a*(py/m)*Kz^2)/Ky  +  pz*(py/m))  +  
+# Yss^2 * (rz - a*(py/m)  - pz*(py/m)/Ky)  +  
+# Yss^3 * (-a*(py/m)/Ky  
+library(RConics)
+glauchePars20=glauchePars20%>%mutate(A=-a*(py/m)/Ky ,
+                                     B=rz - a*(py/m)  - pz*(py/m)/Ky,
+                                     C=(a*(py/m)*Kz^2)/Ky  +  pz*(py/m),
+                                     D= (rz - a*(py/m))*Kz^2)
+
+fcubU=function(x) {
+  inp=c(x$A,x$B,x$C,x$D)
+  rt=cubic(inp)[2]
+  if(is.complex(rt)) return(NaN) else round(return(rt))
+}
+
+fcubS=function(x) {
+  inp=c(x$A,x$B,x$C,x$D)
+  rt=cubic(inp)[3]
+  if(is.complex(rt)) return(NaN) else round(return(rt))
+}
+
+(dn=glauchePars20%>%group_by(id)%>%nest())
+dn$data[1]
+dn=dn%>%mutate(U3=round(map_dbl(data,fcubU))) 
+dn=dn%>%mutate(S3=round(map_dbl(data,fcubS))) 
+dn=dn%>%mutate(lGap3=round(log10(U3)-log10(S3),2)) 
+glauchePars20=dn%>%unnest(data)%>%select(-A,-B,-C,-D)
+glauchePars20=glauchePars20%>%mutate(lGap3=ifelse(is.nan(lGap3),-1,lGap3))
+glauchePars20
+glauchePars20%>%ggplot(aes(x=1:21,y=lGap3,col=grp))+geom_point() # same look as lGap2
+glauchePars20%>%select(S2,S3,U2,U3)%>%print(n=21) #biggest diff is  pt6 (highest Uss not negligible relative to 1e6)
+
+
+# Fig. S7 immune window
+# what about Z balance point of death = activation
+# dZ =  rz    -   a*Z +  pz*Y*Z/(Kz^2+Y^2)
+#i.e.
+# pz*Y/(Kz^2+Y^2) = a
+# pz*Y= a(Kz^2+Y^2)
+# a*Y^2 - pz*Y + a*Kz^2
+
+glauchePars20=glauchePars20%>%mutate(A=a,B=-pz,C=Kz^2*a) 
+glauchePars20=glauchePars20%>%mutate(Ymin=round((-B-sqrt(B^2-4*A*C))/(2*A)),
+                                     Ymax=round((-B+sqrt(B^2-4*A*C))/(2*A)),
+                                     lGap=round(log10(Ymax)-log10(Ymin),2) )
+glauchePars20=glauchePars20%>%mutate(lGap=ifelse(is.nan(lGap),-1,lGap))%>%select(-A,-B,-C)
+glauchePars20%>%ggplot(aes(x=1:21,y=lGap,col=grp))+geom_point() # also same look as lGap2
+glauchePars20%>%select(Ymin,S2,S3,Ymax,U2,U3)%>%print(n=21)
+glauchePars20%>%select(Ymin,S2,S3,Ymax,U2,U3)%>%as.data.frame
+glauchePars20=glauchePars20%>%select(id:m,Ymin,S2,S3,Ymax,U2,U3,lGap,lGap2,lGap3)
+
+glauchePars20%>%select(-lGap,-lGap2)%>%as.data.frame
+glauchePars20
 save(glauchePars20,file="glauchePars20.rda")
+
+
 # library(tools)
 # showNonASCIIfile("inst/doc/glauchePars20.r") 
