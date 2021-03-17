@@ -83,12 +83,12 @@ glauchePars20%>%ggplot(aes(x=1:21,y=lGap2,col=grp))+geom_point() # separable in 
 # Yss^0 * (rz - a*(py/m))*Kz^2 +  
 # Yss^1 * ((a*(py/m)*Kz^2)/Ky  +  pz*(py/m))  +  
 # Yss^2 * (rz - a*(py/m)  - pz*(py/m)/Ky)  +  
-# Yss^3 * (-a*(py/m)/Ky  
+# Yss^3 * (a*(py/m)/Ky)  
 library(RConics)
-glauchePars20=glauchePars20%>%mutate(A=-a*(py/m)/Ky ,
+glauchePars20=glauchePars20%>%mutate(A=a*(py/m)/Ky,
                                      B=rz - a*(py/m)  - pz*(py/m)/Ky,
                                      C=(a*(py/m)*Kz^2)/Ky  +  pz*(py/m),
-                                     D= (rz - a*(py/m))*Kz^2)
+                                     D=(rz - a*(py/m))*Kz^2)
 
 fcubU=function(x) {
   inp=c(x$A,x$B,x$C,x$D)
