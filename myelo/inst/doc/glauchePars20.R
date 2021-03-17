@@ -30,6 +30,16 @@ library(tidyverse)
 pts=rbind(pt1,pt2,pt3,pt4,pt5,pt6,pt7,pt8,pt9,pt10,pt11,pt12,pt13,pt14,pt15,pt16,pt17,pt18,pt19,pt20,pt21)
 colnames(pts)=c("pyx","pxy","TKI","pz","Kz","CessT","Y0")
 pts=as.data.frame(pts)
+# higher res vals from Tom Hahnel's email 
+pts$pyx=c(0.0126, 0.00033, 0.878, 0.000271, 0.000181, 0.702, 0.00106, 
+          0.000215, 0.000378, 0.000635, 0.000302, 0.0379, 0.107, 0.00985, 
+          0.585, 0.586, 0.00122, 0.000457, 4.54e-05, 0.00895, 0.0224)
+pts$pxy=c(0.0483, 0.0452, 0.184, 1.68e-06, 0.00615, 0.205, 0.000406, 
+          4.26e-05, 0.0732, 0.0447, 0.00292, 0.00276, 4.56e-05, 1.1e-06, 
+          0.056, 3.22e-05, 0.0452, 0.051, 2.86e-06, 0.0387, 0.0353)
+pts$pz=c(2210, 1940, 1.5e-07, 53800, 176, 311000, 0.00585, 696, 325, 
+         473, 2820, 19800, 132000, 54000, 82600, 57600, 26800, 6.57e-07, 
+         14.7, 4420, 2530)
 pts$py=1.658 # cells/month
 pts$Ky=1e6 # cells
 pts$a=2 # 1/month (apoptosis rate constant)
@@ -120,10 +130,27 @@ glauchePars20=glauchePars20%>%mutate(lGap=ifelse(is.nan(lGap),-1,lGap))%>%select
 glauchePars20%>%ggplot(aes(x=1:21,y=lGap,col=grp))+geom_point() # also same look as lGap2
 glauchePars20%>%select(Ymin,S2,S3,Ymax,U2,U3)%>%print(n=21)
 glauchePars20%>%select(Ymin,S2,S3,Ymax,U2,U3)%>%as.data.frame
-glauchePars20=glauchePars20%>%select(id:m,Ymin,S2,S3,Ymax,U2,U3,lGap,lGap2,lGap3)
 
-glauchePars20%>%select(-lGap,-lGap2)%>%as.data.frame
+#Initial conditions: assume quasi-equilibrium
+glauchePars20=glauchePars20%>%mutate(X0=(pyx/pxy)*Y0,humpVal=pz*Y0/(Kz^2+Y0^2),Z0=rz/(a - humpVal))
+glauchePars20%>%select(pz,Kz,Y0,X0,a,humpVal,Z0)%>%arrange(desc(humpVal))%>%as.data.frame
+# patient 6 is in the window where activation is high, so equilibrium is not possible, so set to pre-CML steady state
+glauchePars20=glauchePars20%>%mutate(Z0=ifelse(Z0>0,Z0,rz/a))
+glauchePars20=glauchePars20%>%mutate(Z0=signif(Z0,3),X0=signif(X0,3))
+
+glauchePars20%>%select(pz,Kz,Y0,X0,a,humpVal,Z0)%>%arrange(desc(humpVal))%>%as.data.frame
+
+glauchePars20%>%select(pz,Kz,Y0,X0,a,Z0)%>%arrange(desc(X0))%>%as.data.frame
+
+glauchePars20=glauchePars20%>%select(-humpVal)
 glauchePars20
+
+
+
+glauchePars20=glauchePars20%>%select(id:CessT,py:m,X0,Y0,Z0,Ymin,S2,S3,Ymax,U2,U3,lGap,lGap2,lGap3)
+glauchePars20%>%select(-lGap,-lGap2)%>%as.data.frame
+
+
 save(glauchePars20,file="glauchePars20.rda")
 
 
