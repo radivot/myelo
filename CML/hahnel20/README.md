@@ -6,7 +6,75 @@ This model captures quiescent (x) and dividing (y) CML cells interacting with an
 The differential equations of this model are:
 ![](../../docs/hahnelDEQs.png)
 
-The following code runs the model for 10 years (120 months) from an initial condition of y(0)=1. 
+
+There are three classes of patients in this paper. Class A patients (2,3,7,9,18,19) 
+have no hope of being controlled by the immune system. Class B patients (6, 12,13,14,15,16, 20, 21)
+are easily controlled, as one must merely drop the cancer load low enough. And Class C patients
+(1,4,5,8,10,11,17) can be immuno-controlled if steered properly.  
+
+In Figure S5 of their paper and the output of the code below, which simulates patient 
+loads out to 72 months, Class B patients 12-16 have striking (perhaps unrealistic) load step drops as loads fall into 
+the immune activation window.    
+
+```
+library(tidyverse)
+library(myelo)
+library(deSolve)
+head(d <- glauchePars20)
+fHahnel<-function(Time, State, Pars) {
+  with(as.list(c(Time, State, Pars)),{
+    dX = -pxy*X + pyx*Y 
+    dY =  pxy*X - pyx*Y + py*Y*(1-Y/Ky)   -  m*Y*Z - TKI*Y
+    dZ =  rz    -   a*Z                   + pz*Y*Z/(Kz^2+Y^2) 
+    list(c(dX,dY,dZ),c(prct=2+log10(Y/Ky)))
+  })
+}
+
+fsim=function(x) {
+  ic=c(X=x$X0,Y=x$Y0,Z=x$Z0)
+  ode(y = ic, times = seq(0,72,.1), func = fHahnel, parms = x)
+}
+
+(dn=d%>%group_by(id)%>%nest())
+dn=dn%>%mutate(out=map(data,fsim))
+dn=dn%>%mutate(D=map(out,function(x) as_tibble(x)%>%select(time,prct)
+                   %>%mutate(time=as.numeric(time),prct=as.numeric(prct))))
+dd=dn%>%select(id,D)
+dd=dd%>%unnest(cols=D)
+dd$id=as_factor(dd$id)
+tc=function(sz) theme_classic(base_size=sz)
+gx=xlab("Months")
+gy=ylab("2+log10(Y/Ky)")
+sbb=theme(strip.background=element_blank())
+dd%>%ggplot(aes(x=time,y=prct))+facet_grid(id~.)+geom_line(size=1)+gx+gy+tc(14)+sbb 
+ggsave("../docs/figS5simBstep72mo.png",width=4,height=12)
+```
+
+![](../../docs/figS5simBstep72mo.png)
+
+
+
+Immune activation window sizes separate the classes 
+
+```
+d%>%ggplot(aes(x=1:21,y=lGap,col=grp))+geom_point() # separable in diff of logs, 
+ggsave("../docs/logGapvsID.png",width=4,height=4)
+```
+![](../../docs/logGapvsID.png)
+
+but Class B pts 20 and 21 are very close to being in class C
+
+```
+d%>%ggplot(aes(x=Y0,y=lGap,col=grp))+geom_point() 
+ggsave("../docs/logGapvsY0.png",width=4,height=4)
+```
+![](../../docs/logGapvsY0.png)
+
+
+
+
+To mimic CML induction by ionizing radiation, the following code runs 
+the model for 10 years (120 months) from an initial condition of y(0)=1. 
 
 ```
 library(myelo)  
