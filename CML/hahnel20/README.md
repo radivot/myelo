@@ -189,11 +189,7 @@ used in Fig. S9 to steer a Class C patient into a subclinical steady state.
 This rule schedules the dose to smoothly drop to zero as the load drops across its stable steady state 
 (moving from right to left in the figure below).
 ```
-rm(list=ls())
 library(tidyverse)
-library(myelo)
-library(deSolve)
-head(d <- glauchePars20)
 TKI0=10
 Ymin=200
 Y=seq(180,220,.1)
@@ -202,7 +198,6 @@ d=tibble(Y,TKI)
 d%>%ggplot(aes(x=Y,y=TKI))+geom_line() #dose just shuts off as you across 
 # the subclinical steady state at bottom of activation window
 ggsave("../docs/doseAdjustment.png",width=4,height=4)
-
 ```
 ![](../../docs/doseAdjustment.png)
 
