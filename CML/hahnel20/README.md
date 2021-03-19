@@ -183,6 +183,31 @@ ggsave("~/Results/CML/hahnelFigS5.png",width=4,height=12)
 There is a broad range of relapse slopes. 
 
 
+A model-based (via Ymin) dose adjustment rule provided in Eq. 12 of the Treatment Optimization 
+section of the Supplemental Methods file was
+used in Fig. S9 to steer a Class C patient into a subclinical steady state.
+This rule schedules the dose to smoothly drop to zero as the load drops across its stable steady state 
+(moving from right to left in the figure below).
+```
+rm(list=ls())
+library(tidyverse)
+library(myelo)
+library(deSolve)
+head(d <- glauchePars20)
+TKI0=10
+Ymin=200
+Y=seq(180,220,.1)
+TKI=TKI0/(1+exp(100*(1-Y/Ymin)))
+d=tibble(Y,TKI)
+d%>%ggplot(aes(x=Y,y=TKI))+geom_line() #dose just shuts off as you across 
+# the subclinical steady state at bottom of activation window
+ggsave("../docs/doseAdjustment.png",width=4,height=4)
+
+```
+![](../../docs/doseAdjustment.png)
+
+
+
 
 In the adjacent folder REB20, the first differential equation above, and the first two terms of the second, are dropped, as while they are needed to capture the biphasic exponential decay of CML load while on TKI, they are not needed to represent initial  CML clone growth and trapping by the immune system in A-bomb survivors. 
 
