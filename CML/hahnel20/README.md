@@ -7,13 +7,13 @@ The differential equations of this model are:
 ![](../../docs/hahnelDEQs.png)
 
 
-There are three classes of patients in this paper. Class A patients {2, 3, 7, 9, 18, 19} 
-have no hope of being controlled by the immune system. Class B patients {6, 12, 13, 14, 15, 16, 20, 21}
-are easily controlled, as one must merely drop the cancer load low enough. And Class C patients
-{1, 4, 5, 8, 10, 11, 17} can be immuno-controlled if doses are reduced as loads drop across
-patient-specific maximally-stimulating values.  
+There are three classes of patients: Class A {2, 3, 7, 9, 18, 19} 
+have no hope of being controlled by the immune system; Class B  {6, 12, 13, 14, 15, 16, 20, 21}
+are  easily controlled by dropping cancer loads low enough; and Class C {1, 4, 5, 8, 10, 11, 17} 
+can be immuno-controlled if steered properly by lowering doses as cancer loads drop across
+peak stimulation loads, to increase time there and thus immune stimulation.  
 
-In Figure S5 of their paper and the output of the code below, which simulates patient 
+In Figure S5 and the output of the code below, which simulates patient 
 loads out to 72 months, Class B patients 12-16 have striking (perhaps unrealistic) load step drops as loads fall into 
 the immune activation window.    
 
@@ -61,15 +61,15 @@ Patient 6 is the only one that starts inside the immune activation window (i.e. 
 
 
 Immune activation window lengths (distances between 
-dotted lines above) vs patient ID are plotted below.  Class B pts 20 and 21 are almost in class C; 
-their window lengths are close to those of 8 and 11. Class A  pts arbitrarily at -1 could have been omitted. 
+dotted lines above) vs patient ID are plotted below.  Class B pts 20 and 21 are almost in class C, as their 
+window lengths are close to those of pts 8 and 11. Class A pts arbitrarily placed at -1 could have been omitted. 
 
 ```
 d%>%ggplot(aes(x=1:21,y=lGap,col=grp))+geom_point() # separable in diff of logs 
 ggsave("../docs/logGapvsID.png",width=4,height=4)
 ```
 ![](../../docs/logGapvsID.png)
-In Radiat Environ Biophys. 2021;60(1):41-47, Classes A-C are Hiroshima Male (HM)-, Nagasaki (N)-, and Hiroshima Female (HF)-like.  
+Note: in Radiat Environ Biophys. 2021;60(1):41-47, Classes A-C are Hiroshima male (hm)-, Nagasaki (n)-, and Hiroshima female (hf)-like.  
 
 
 
@@ -88,7 +88,7 @@ ggsave("../docs/pt6Zoom.png",width=4,height=4)
 
 
 A model-based  dose adjustment rule is given
-in Eq. 12 of the Treatment Optimization section in the Supplemental Methods file of this paper. 
+in Eq. 12 of the Treatment Optimization Section in Supplemental Methods. 
 This rule was used to steer a Class C patient to a subclinical steady state in Fig. S9.
 It is model-based in that it depends on patient-specific activation window bottom values (Ymins) as setpoints. 
 Moving right to left in the figure below, this rule drops doses toward zero as loads cross Ymin.
@@ -107,7 +107,7 @@ ggsave("../docs/doseAdjustment.png",width=4,height=4)
 This rule can be thought of as a  proportional controller with doses constrained between the max 
 (known to suffice as it brought the load down this far) and zero (which would be great as it 
 would eliminate toxicities). The system will reach a steady state between these extremes 
-within 5% (190 to 210) of the setpoint Ymin = 200; the tolerance
+within 5% (190 to 210) of the setpoint Ymin = 200; this tolerance
 is defined by 100 in the dose-adjustment formula (higher values imply tighter control). 
 
 The following code shows how this rule can be applied to Class B and C patients.
@@ -159,7 +159,7 @@ ggsave("../docs/doseAdjTKI.png",width=4,height=4)
 ```
 ![](../../docs/doseAdjTKI.png)
 Dose-adjusted TKI-mediated CML cell killing rates plotted here differ in initial values due to
-patient differences in efficacy, not dose.  
+patient differences in drug efficacy, not dose.  
 
 
 
@@ -181,7 +181,7 @@ ggsave("../docs/hahnelFigS2.png",width=6,height=8)
 ![](../../docs/hahnelFigS2.png)
 
 
-As data capture validatiion, the first values of these time courses reproduce Fig S1E.
+The first values of these time courses reproduce Fig S1E.
 ```
 library(myelo)
 library(tidyverse)
@@ -223,12 +223,12 @@ sbb=theme(strip.background=element_blank())
 head(d <- glauchePars20)
 d$Pt=1:21
 dd%>%ggplot(aes(x=Months,y=log10(Prct),col=Censored))+
-geom_hline(aes(yintercept=2+log10(Ymin/Ky)),linetype='dotted',data=d) +
-geom_hline(aes(yintercept=2+log10(Ymax/Ky)),linetype='dotted',data=d) +
-facet_wrap(Pt~.,ncol=5)+
-geom_line(size=1)+geom_point(size=1)+
-gx+gy+tc(14)+sbb+
-theme(legend.position="top") 
+  geom_hline(aes(yintercept=2+log10(Ymin/Ky)),linetype='dotted',data=d) +
+  geom_hline(aes(yintercept=2+log10(Ymax/Ky)),linetype='dotted',data=d) +
+  facet_wrap(Pt~.,ncol=5)+
+  geom_line(size=1)+geom_point(size=1)+
+  gx+gy+tc(14)+sbb+
+  theme(legend.position="top") 
 ggsave("../docs/hahnelFigS5.png",width=7,height=8)
 
 ```
@@ -254,17 +254,17 @@ glauchePars20       # model parameters in Table S1
 (d=glauchePars20%>%group_by(id)%>%nest())
 d$data[[1]]
 glauche20<-function(Time, State, Pars) {
-with(as.list(c(Time, State, Pars)),{
-dX = -pxy*X + pyx*Y 
-dY =  pxy*X - pyx*Y + py*Y*(1-Y/Ky)   -  m*Y*Z 
-dZ =  rz    -   a*Z                   + pz*Y*Z/(Kz^2+Y^2) 
-list(c(dX,dY,dZ),c(ratio=2+log10(Y/Ky)))
-})
+  with(as.list(c(Time, State, Pars)),{
+    dX = -pxy*X + pyx*Y 
+    dY =  pxy*X - pyx*Y + py*Y*(1-Y/Ky)   -  m*Y*Z 
+    dZ =  rz    -   a*Z                   + pz*Y*Z/(Kz^2+Y^2) 
+    list(c(dX,dY,dZ),c(ratio=2+log10(Y/Ky)))
+  })
 }
 
 fsim=function(x) {
-ic[3]=x$rz/x$a
-ode(y = ic, times = seq(0,72,1), func = glauche20, parms = x)
+  ic[3]=x$rz/x$a
+  ode(y = ic, times = seq(0,72,1), func = glauche20, parms = x)
 }
 d=d%>%mutate(out=map(data,fsim))
 head(d$out[[1]])
@@ -283,7 +283,7 @@ ggsave("../docs/hahnel.png",width=7,height=8)
 ```
 
 ![](../../docs/hahnel.png)
-This predicts that the Class B patients never would have been diagnosed. As indeed they were,
+Thus Class B patients never would have been diagnosed. As indeed they were,
 the model must have changed post-diagnosis. I suspect 
 patients become Class B over years of therapy, as  BCR-ABL enters CD4+ memory cells that are benign but 
 stimulate the immune system to destroy CML cells arising from HSC, 
