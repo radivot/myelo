@@ -138,6 +138,7 @@ dn=dn%>%mutate(D=map(out,function(x) as_tibble(x)%>%select(time,prct,TKIa)
 dd=dn%>%select(id,D)
 dd=dd%>%unnest(cols=D)
 dd$id=as_factor(dd$id)
+d$id=as_factor(d$id)
 tc=function(sz) theme_classic(base_size=sz)
 gx=xlab("Months")
 gy=ylab("2+log10(Y/Ky)")
@@ -152,14 +153,16 @@ ggsave("../docs/doseAdjY.png",width=7,height=8)
 
 ![](../../docs/doseAdjY.png)
 
-These load dynamics are achieved by these drug dosing dynamics
+These load dynamics are achieved by drug dosing dynamics that generate the following TKI-mediated CML cell killing rates 
 ```
-dd%>%ggplot(aes(x=time,y=TKIa))+facet_wrap(id~.)+geom_line(size=1)+gx+tc(14)+sbb 
-ggsave("../docs/doseAdjTKI.png",width=4,height=4)
+dd%>%ggplot(aes(x=time,y=TKIa))+facet_wrap(id~.,scale="free",ncol=5)+
+   ylim(c(0,NA))+geom_line(size=1)+gx+tc(14)+sbb 
+ggsave("../docs/doseAdjTKI.png",width=7,height=8)
+
 ```
 ![](../../docs/doseAdjTKI.png)
-Dose-adjusted TKI-mediated CML cell killing rates plotted here differ in initial values due to
-patient differences in drug efficacy, not dose.  
+This reveals that the Class C patient in Fig. S9 was pt 4. 
+It is unclear why baseline values are much higher in pts 1 and 16.   
 
 
 
