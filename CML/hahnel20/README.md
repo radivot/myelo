@@ -7,10 +7,11 @@ The differential equations of this model are:
 ![](../../docs/hahnelDEQs.png)
 
 
-There are three classes of patients in this paper. Class A patients (2,3,7,9,18,19) 
-have no hope of being controlled by the immune system. Class B patients (6, 12,13,14,15,16, 20, 21)
+There are three classes of patients in this paper. Class A patients {2, 3, 7, 9, 18, 19} 
+have no hope of being controlled by the immune system. Class B patients {6, 12, 13, 14, 15, 16, 20, 21}
 are easily controlled, as one must merely drop the cancer load low enough. And Class C patients
-(1,4,5,8,10,11,17) can be immuno-controlled if steered properly.  
+{1, 4, 5, 8, 10, 11, 17} can be immuno-controlled if doses are reduced as loads drop across
+patient-specific maximally-stimulating values.  
 
 In Figure S5 of their paper and the output of the code below, which simulates patient 
 loads out to 72 months, Class B patients 12-16 have striking (perhaps unrealistic) load step drops as loads fall into 
@@ -22,17 +23,17 @@ library(myelo)
 library(deSolve)
 head(d <- glauchePars20)
 fHahnel<-function(Time, State, Pars) {
-with(as.list(c(Time, State, Pars)),{
-dX = -pxy*X + pyx*Y 
-dY =  pxy*X - pyx*Y + py*Y*(1-Y/Ky)   -  m*Y*Z - TKI*Y
-dZ =  rz    -   a*Z                   + pz*Y*Z/(Kz^2+Y^2) 
-list(c(dX,dY,dZ),c(prct=2+log10(Y/Ky)))
-})
+    with(as.list(c(Time, State, Pars)),{
+    dX = -pxy*X + pyx*Y 
+    dY =  pxy*X - pyx*Y + py*Y*(1-Y/Ky)   -  m*Y*Z - TKI*Y
+    dZ =  rz    -   a*Z                   + pz*Y*Z/(Kz^2+Y^2) 
+    list(c(dX,dY,dZ),c(prct=2+log10(Y/Ky)))
+  })
 }
 
 fsim=function(x) {
-ic=c(X=x$X0,Y=x$Y0,Z=x$Z0)
-ode(y = ic, times = seq(0,72,.1), func = fHahnel, parms = x)
+  ic=c(X=x$X0,Y=x$Y0,Z=x$Z0)
+  ode(y = ic, times = seq(0,72,.1), func = fHahnel, parms = x)
 }
 
 (dn=d%>%group_by(id)%>%nest())
@@ -48,28 +49,27 @@ gx=xlab("Months")
 gy=ylab("2+log10(Y/Ky)")
 sbb=theme(strip.background=element_blank())
 dd%>%ggplot(aes(x=time,y=prct))+
-geom_hline(aes(yintercept=2+log10(Ymax/Ky)),linetype='dotted', col = 'red',data=d) +
-geom_hline(aes(yintercept=2+log10(Ymin/Ky)),linetype='dotted', col = 'red',data=d) +
-facet_grid(id~.)+
-geom_line(size=1)+gx+gy+tc(14)+sbb 
-ggsave("../docs/figS5simBstep72mo.png",width=4,height=12)
+  geom_hline(aes(yintercept=2+log10(Ymax/Ky)),linetype='dotted', col = 'red',data=d) +
+  geom_hline(aes(yintercept=2+log10(Ymin/Ky)),linetype='dotted', col = 'red',data=d) +
+  facet_wrap(id~.,ncol=5) + geom_line(size=1)+gx+gy+tc(14)+sbb 
+ggsave("../docs/figS5simBstep72mo.png",width=7,height=8)
 
 ```
 
 ![](../../docs/figS5simBstep72mo.png)
-Patient 6 is the only one that starts out in the activation window (between dotted lines)  and thus has less distance left to fall.
+Patient 6 is the only one that starts inside the immune activation window (i.e. between the dotted lines).  Class A patients have no window. 
 
 
 Immune activation window lengths (distances between 
-dotted lines above) vs patient ID are plotted below.  Class B pts 20 and 21 are close to being in class C, consistent 
-with their step drops above being noticeably smaller. Class A window lengths (plotted below as -1) do not exist. 
+dotted lines above) vs patient ID are plotted below.  Class B pts 20 and 21 are almost in class C; 
+their window lengths are close to those of 8 and 11. Class A  pts arbitrarily at -1 could have been omitted. 
 
 ```
-d%>%ggplot(aes(x=1:21,y=lGap,col=grp))+geom_point() # separable in diff of logs, 
+d%>%ggplot(aes(x=1:21,y=lGap,col=grp))+geom_point() # separable in diff of logs 
 ggsave("../docs/logGapvsID.png",width=4,height=4)
 ```
 ![](../../docs/logGapvsID.png)
-Here Class A is Hiroshima Male (HM)-like ,  B Nagasaki-like (N), and C  Hiroshima Female (HF)-like, see Radiat Environ Biophys. 2021;60(1):41-47. 
+In Radiat Environ Biophys. 2021;60(1):41-47, Classes A-C are Hiroshima Male (HM)-, Nagasaki (N)-, and Hiroshima Female (HF)-like.  
 
 
 
@@ -115,18 +115,18 @@ The following code shows how this rule can be applied to Class B and C patients.
 head(d <- glauchePars20%>%filter(grp!="A_hm")) #drop patients without Ymin
 
 fTa<-function(Time, State, Pars) {
-with(as.list(c(Time, State, Pars)),{
-TKIa=TKI/(1+exp(100*(1-Y/Ymin)))
-dX = -pxy*X + pyx*Y 
-dY =  pxy*X - pyx*Y + py*Y*(1-Y/Ky)   -  m*Y*Z - TKIa*Y
-dZ =  rz    -   a*Z                   + pz*Y*Z/(Kz^2+Y^2) 
-list(c(dX,dY,dZ),c(prct=2+log10(Y/Ky),TKIa=TKIa))
-})
+  with(as.list(c(Time, State, Pars)),{
+    TKIa=TKI/(1+exp(100*(1-Y/Ymin)))
+    dX = -pxy*X + pyx*Y 
+    dY =  pxy*X - pyx*Y + py*Y*(1-Y/Ky)   -  m*Y*Z - TKIa*Y
+    dZ =  rz    -   a*Z                   + pz*Y*Z/(Kz^2+Y^2) 
+    list(c(dX,dY,dZ),c(prct=2+log10(Y/Ky),TKIa=TKIa))
+  })
 }
 
 fsimTa=function(x) {
-ic=c(X=x$X0,Y=x$Y0,Z=x$Z0)
-ode(y = ic, times = seq(0,72,.1), func = fTa, parms = x)
+  ic=c(X=x$X0,Y=x$Y0,Z=x$Z0)
+  ode(y = ic, times = seq(0,72,.1), func = fTa, parms = x)
 }
 
 (dn=d%>%group_by(id)%>%nest())
@@ -142,9 +142,14 @@ tc=function(sz) theme_classic(base_size=sz)
 gx=xlab("Months")
 gy=ylab("2+log10(Y/Ky)")
 sbb=theme(strip.background=element_blank())
-dd%>%ggplot(aes(x=time,y=prct))+facet_wrap(id~.)+geom_line(size=1)+gx+gy+tc(14)+sbb 
-ggsave("../docs/doseAdjY.png",width=4,height=4)
+dd%>%ggplot(aes(x=time,y=prct))+ 
+  geom_hline(aes(yintercept=2+log10(Ymax/Ky)),linetype='dotted', col = 'red',data=d) +
+  geom_hline(aes(yintercept=2+log10(Ymin/Ky)),linetype='dotted', col = 'red',data=d) +
+  facet_wrap(id~.,ncol=5) + geom_line(size=1)+gx+gy+tc(14)+sbb 
+ggsave("../docs/doseAdjY.png",width=7,height=8)
+
 ```
+
 ![](../../docs/doseAdjY.png)
 
 These load dynamics are achieved by these drug dosing dynamics
@@ -176,7 +181,7 @@ ggsave("../docs/hahnelFigS2.png",width=6,height=8)
 ![](../../docs/hahnelFigS2.png)
 
 
-As validatiion, the first values of these time courses reproduce Fig S1E.
+As data capture validatiion, the first values of these time courses reproduce Fig S1E.
 ```
 library(myelo)
 library(tidyverse)
