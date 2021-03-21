@@ -38,8 +38,7 @@ fsim=function(x) {
 
 (dn=d%>%group_by(id)%>%nest())
 dn=dn%>%mutate(out=map(data,fsim))
-dn=dn%>%mutate(D=map(out,function(x) as_tibble(x)%>%select(time,prct)
-%>%mutate(time=as.numeric(time),prct=as.numeric(prct))))
+dn=dn%>%mutate(D=map(out,function(x) as_tibble(x)%>%mutate_all(as.numeric)))
 dd=dn%>%select(id,D)
 dd=dd%>%unnest(cols=D)
 dd$id=as_factor(dd$id)
@@ -104,9 +103,9 @@ tibble(Y,TKI)%>%ggplot(aes(x=Y,y=TKIa))+geom_line()
 ggsave("../docs/doseAdjustment.png",width=4,height=4)
 ```
 ![](../../docs/doseAdjustment.png)
-This rule yields roughly proportional control with doses constrained between the max 
+This yields roughly proportional control with doses constrained between the max 
 (known to suffice as it brought the load down this far) and zero (which would be great as it 
-would eliminate toxicities). The system will reach a steady state between these extremes 
+would eliminate toxicities). The system reaches steady state between these extremes 
 within 5% (190 to 210) of the setpoint Ymin = 200; this tolerance
 is defined by 100 in the dose-adjustment formula (higher values imply tighter control). 
 
@@ -133,8 +132,7 @@ fsimTa=function(x) {
 head(dn$data[[1]])
 dn=dn%>%mutate(out=map(data,fsimTa))
 head(dn$out[[1]])
-dn=dn%>%mutate(D=map(out,function(x) as_tibble(x)%>%select(time,prct,TKIa)
-%>%mutate(time=as.numeric(time),prct=as.numeric(prct),TKIa=as.numeric(TKIa))))
+dn=dn%>%mutate(D=map(out,function(x) as_tibble(x)%>%mutate_all(as.numeric)))
 dd=dn%>%select(id,D)
 dd=dd%>%unnest(cols=D)
 dd$id=as_factor(dd$id)
@@ -166,7 +164,7 @@ It is unclear why baseline values are much higher in pts 1 and 16.
 
 
 
-Using WebPlotDigitizer, BCR-ABL time courses in Figs S2 and S5 were digitized. This code displays them.  
+Using WebPlotDigitizer, BCR-ABL time courses in Figs S2 and S5 were digitized.    
 ```
 head(hahnelFigS2)
 (d=hahnelFigS2%>%mutate(Censored=c("No","Yes")[UL+1]))
@@ -206,7 +204,7 @@ ggsave("../docs/hahnelFigS1E.png",width=3,height=3)
 ![](../../docs/hahnelFigS1E.png)
 
 
-This code plots BCR-ABL percentages measured after TKI cessation (Fig S5). 
+There are fast and slow relapse rates after TKI cessation (Fig S5). 
 
 ```
 rm(list=ls())
@@ -237,8 +235,7 @@ ggsave("../docs/hahnelFigS5.png",width=7,height=8)
 
 ![](../../docs/hahnelFigS5.png)
 
-There are fast and slow relapse rates. Without modeling,
-patients 3 and 6 appear similar, but with it, we see 3 does
+Without modeling, patients 3 and 6 appear similar, but with it, we see 3 does
 not have an immune activation window (so treatment should resume) and 
 6 is approaching immmune activation,  so treatment should not resume.  
 
@@ -269,9 +266,7 @@ fsim=function(x) {
   ode(y = ic, times = seq(0,72,1), func = glauche20, parms = x)
 }
 d=d%>%mutate(out=map(data,fsim))
-head(d$out[[1]])
-d=d%>%mutate(D=map(out,function(x) as_tibble(x)%>%select(time,ratio)
-%>%mutate(time=as.numeric(time),ratio=as.numeric(ratio))))
+d=d%>%mutate(D=map(out,function(x) as_tibble(x)%>%mutate_all(as.numeric)))
 dd=d%>%select(id,D)
 dd=dd%>%unnest(cols=D)
 dd$id=as_factor(dd$id)
