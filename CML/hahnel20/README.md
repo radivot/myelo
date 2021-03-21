@@ -73,8 +73,8 @@ In Radiat Environ Biophys. 2021;60(1):41-47, Classes A-C are Hiroshima male (hm)
 
 
 Zooming in on the first 5 months of patient 6, initial flatness reflects the quasi-equilibrium assumption 
-used to define initial Z values of other patients not holding in the window, where activation dynamics are strong, 
-and the remedy of assuming no activation is also incorrect.
+used to define initial Z values of others  not holding in the window, wherein activation dynamics are strong, 
+and the remedy of assuming no activation also being incorrect.
 ```
 dd%>%filter(id=="pt6",time<5)%>%ggplot(aes(x=time,y=prct))+geom_line(size=1)+
 geom_hline(aes(yintercept=2+log10(Ymax/Ky)),linetype='dotted',col='red',data=d%>%filter(id=="pt6"))+
@@ -105,7 +105,7 @@ ggsave("../docs/doseAdjustment.png",width=4,height=4)
 ![](../../docs/doseAdjustment.png)
 This yields roughly proportional control with doses constrained between the max 
 (known to suffice as it brought the load down this far) and zero (which would be great as it 
-would eliminate toxicities). The system reaches steady state between these extremes 
+would eliminate toxicities). The system will reach a steady state between these extremes 
 within 5% (190 to 210) of the setpoint Ymin = 200; this tolerance
 is defined by 100 in the dose-adjustment formula (higher values imply tighter control). 
 
