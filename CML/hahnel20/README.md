@@ -62,20 +62,20 @@ Patient 6 is the only one that starts inside the immune activation window (i.e. 
 
 Immune activation window lengths (distances between 
 dotted lines above) vs patient ID are plotted below.  Class B pts 20 and 21 are almost in class C, as their 
-window lengths are close to those of pts 8 and 11. Class A pts arbitrarily placed at -1 could have been omitted. 
+window lengths are close to those of pts 8 and 11. Class A pts were arbitrarily placed at -1. 
 
 ```
 d%>%ggplot(aes(x=1:21,y=lGap,col=grp))+geom_point() # separable in diff of logs 
 ggsave("../docs/logGapvsID.png",width=4,height=4)
 ```
 ![](../../docs/logGapvsID.png)
-Note: in Radiat Environ Biophys. 2021;60(1):41-47, Classes A-C are Hiroshima male (hm)-, Nagasaki (n)-, and Hiroshima female (hf)-like.  
+In Radiat Environ Biophys. 2021;60(1):41-47, Classes A-C are Hiroshima male (hm)-, Nagasaki (n)-, and Hiroshima female (hf)-like.  
 
 
 
 Zooming in on the first 5 months of patient 6, initial flatness reflects the quasi-equilibrium assumption 
-used to define the initial Z value of other patients not holding in the window, wherein activation dynamics are strong, 
-and the remedy of assuming no activation also not being correct.
+used to define initial Z values of other patients not holding in the window, where activation dynamics are strong, 
+and the remedy of assuming no activation is also incorrect.
 ```
 dd%>%filter(id=="pt6",time<5)%>%ggplot(aes(x=time,y=prct))+geom_line(size=1)+
 geom_hline(aes(yintercept=2+log10(Ymax/Ky)),linetype='dotted',col='red',data=d%>%filter(id=="pt6"))+
@@ -104,7 +104,7 @@ tibble(Y,TKI)%>%ggplot(aes(x=Y,y=TKIa))+geom_line()
 ggsave("../docs/doseAdjustment.png",width=4,height=4)
 ```
 ![](../../docs/doseAdjustment.png)
-This rule can be thought of as a  proportional controller with doses constrained between the max 
+This rule yields roughly proportional control with doses constrained between the max 
 (known to suffice as it brought the load down this far) and zero (which would be great as it 
 would eliminate toxicities). The system will reach a steady state between these extremes 
 within 5% (190 to 210) of the setpoint Ymin = 200; this tolerance
@@ -166,8 +166,7 @@ It is unclear why baseline values are much higher in pts 1 and 16.
 
 
 
-Using WebPlotDigitizer, BCR-ABL time courses in Figs S2 and S5 were digitized. 
-Bi-exponential decays with treatment are seen in some patients 
+Using WebPlotDigitizer, BCR-ABL time courses in Figs S2 and S5 were digitized. This code displays them.  
 ```
 head(hahnelFigS2)
 (d=hahnelFigS2%>%mutate(Censored=c("No","Yes")[UL+1]))
@@ -207,7 +206,7 @@ ggsave("../docs/hahnelFigS1E.png",width=3,height=3)
 ![](../../docs/hahnelFigS1E.png)
 
 
-BCR-ABL percentages measured after TKI cessation (Fig S5) are plotted by the following code. 
+This code plots BCR-ABL percentages measured after TKI cessation (Fig S5). 
 
 ```
 rm(list=ls())
@@ -238,15 +237,15 @@ ggsave("../docs/hahnelFigS5.png",width=7,height=8)
 
 ![](../../docs/hahnelFigS5.png)
 
-There are fast and slow relapse rates.  Intriguingly, without modeling,
-patients 3 and 6 appear similar, but with it, patient 3 does
+There are fast and slow relapse rates. Without modeling,
+patients 3 and 6 appear similar, but with it, we see 3 does
 not have an immune activation window (so treatment should resume) and 
-patient 6 is approaching immmune activation,  so treatment should not resume.  
+6 is approaching immmune activation,  so treatment should not resume.  
 
 
 
 To simulate radiation-induced CML, the following code runs 
-the model for 10 years (120 months) from an initial condition of y(0)=1. 
+the model for 6 years (72 months) from an initial condition of y(0)=1. 
 
 ```
 library(myelo)  
@@ -286,7 +285,7 @@ ggsave("../docs/hahnel.png",width=7,height=8)
 ```
 
 ![](../../docs/hahnel.png)
-Thus Class B patients never would have been diagnosed. As indeed they were,
+This shows that Class B patients never would have been diagnosed. As indeed they were,
 the model must have changed post-diagnosis. I suspect 
 patients become Class B over years of therapy, as  BCR-ABL enters CD4+ memory cells that are benign but 
 stimulate the immune system to destroy CML cells arising from HSC, 
