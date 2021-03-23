@@ -10,26 +10,17 @@ head(d<-claudianiPon)
 tc=function(sz) theme_classic(base_size=sz)
 gy=ylab("BCR-ABL Percent")
 sbb=theme(strip.background=element_blank())
-d%>%ggplot(aes(x=Months,y=Prct))+facet_wrap(Pt~.,ncol=1,scale="free")+geom_line(size=1)+
-  gy+tc(14)+sbb+theme(legend.position="top") 
-ggsave("~/Results/CML/claudianiPon.png",width=4,height=12)
-d%>%ggplot(aes(x=Months,y=Prct))+facet_wrap(Pt~.,ncol=1,scale="free")+geom_line(size=1)+
+library(ggrepel)
+d%>%ggplot(aes(x=Month,y=Prct,col=Ponatinib,label=T315I))+facet_wrap(Pt~.,ncol=1,scale="free")+geom_line(size=1)+
+  geom_text_repel(nudge_y=-10,nudge_x=-3) +
   gy+tc(14)+sbb+scale_y_log10()+theme(legend.position="top")
-ggsave("~/Results/CML/claudianiPonLog.png",width=4,height=12)
+ggsave("../docs/claudianiPonLog.png",width=6,height=6)
+
 ```
-
-
-![](../../docs/claudianiPon.png)
-
-and using a log scale
 
 ![](../../docs/claudianiPonLog.png)
 
-Patient 4: ponatinib was started on month 228 and stopped (entering a TFR) on month 259. 
-
-Patient 9: ponatinib was started on month 31 and stopped (entering a TFR) on month 69.
-
-Patient 10: ponatinib was started on month 64 and stopped (attempting a TFR) on month 114.
-
+Percentages shown are of T315I mutations. Before ponatinib (light blue) a different TKI was used. 
+After it, no TKI was used. 
 
 

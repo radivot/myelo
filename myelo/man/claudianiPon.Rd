@@ -5,7 +5,7 @@
 \alias{claudianiPon}
 \title{TFR Data (post-stopping ponatinib) in Figure 1 of S. Claudiani et al 2020}
 \format{
-Months is time from Dx, Prct is BCR-ABL1 percentage, Pt is patient ID
+Month is from Dx, Prct is BCR-ABL1 percent, Pt is patient ID, Ponatinib is its dose, T315I is its percent
 }
 \source{
 Figure 1 (patients 4, 9 and 10).

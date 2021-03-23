@@ -440,7 +440,7 @@ NULL
 #'
 #'@name claudianiPon
 #'@docType data
-#'@format Months is time from Dx, Prct is BCR-ABL1 percentage, Pt is patient ID
+#'@format Month is from Dx, Prct is BCR-ABL1 percent, Pt is patient ID, Ponatinib is its dose, T315I is its percent
 #'@note Coding supported by the Cleveland Clinic Foundation.
 #'
 #'@references Simone Claudiani et al. Prolonged treatment-free remission in chronic 
