@@ -212,10 +212,9 @@ ggsave("../docs/X0.png",width=4,height=4)
 ```
 
 ![](../../../docs/X0.png)
-X0  of ~10 billion cells in some of these patients seem too high, given Ky = 1 million 
-dividing LSC are lethal and normal quiescent HSC being on the order of at most 10 million, see
-[https://pubmed.ncbi.nlm.nih.gov/22353999/](https://pubmed.ncbi.nlm.nih.gov/22353999/).
+$X_0 = 10^{10}$ cells is high, as $K_y = 10^6$ is lethal and the number of normal quiescent HSC is at most ~$10^7$, see
+[PMID 22353999](https://pubmed.ncbi.nlm.nih.gov/22353999/).
 
 ### Opinion 
-The model needs informative priors that can reign in parameter estimates.
+The model needs strong informative priors that can reign in parameter estimates.
 
