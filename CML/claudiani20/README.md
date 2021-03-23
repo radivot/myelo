@@ -1,4 +1,4 @@
-## Prolonged treatment-free remission in chronic myeloid leukemia patients with previous BCR-ABL1 kinase domain mutations. Claudiani et al, Haematologica (2020).
+## Prolonged treatment-free remission in chronic myeloid leukemia patients with previous BCR-ABL1 kinase domain mutations. Claudiani et al, Haematologica (2020). 
 
 The following code plots data for patients 4, 9 and 10 in Figure 1 of this paper. 
 
