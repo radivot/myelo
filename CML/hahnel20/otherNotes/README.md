@@ -212,7 +212,7 @@ ggsave("../docs/X0.png",width=4,height=4)
 ```
 
 ![](../../../docs/X0.png)
-$X_0 = 10^{10}$ cells is high, as $K_y = 10^6$ is lethal and the number of normal quiescent HSC is at most ~$10^7$, see
+X0 = 10^10^ cells is high, as Ky = 10^6^ is lethal and the number of normal quiescent HSC is at most ~10^7^, see
 [PMID 22353999](https://pubmed.ncbi.nlm.nih.gov/22353999/).
 
 ### Opinion 
