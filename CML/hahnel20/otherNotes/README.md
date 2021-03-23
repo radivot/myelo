@@ -1,6 +1,6 @@
 ## Additional Notes on Hahnel et al. Cancer Research (2020).
 
-The focus here is on doses needed to hold Y flat at a setpoint and how this differs across patients.   
+Goal:  see how doses needed to hold Y flat differ across patients and setpoints.   
 
 ```
 library(tidyverse)
@@ -49,19 +49,18 @@ ggsave("../docs/loadVsTime.png",width=7,height=8)
 ```
 
 ![](../../../docs/loadVsTime.png)
-This shows us that the controlled variable Y easily reaches steady state in 30 years. It also reminds us that TKI 
+So Y easily reaches steady state by 30 years. Note that TKI 
 cannot raise loads, so patient 6 cannot be driven to setpoint. 
 
 
-The following generates results at 30 years across a fine range of setpoints.
+Focusing on 30 years, a fine range of Y setpoints (Ysp) is scanned below.
 ```
 getSS=function(x,xx) xx%>%filter(time==x$Tf)
 (D=getSS(d,dd))
 D=left_join(D,d)
 D%>%select(Ysp,prct,Ymin,Y0,X0,X,lGap,id,grp,TKIa,TKIr,TKI,Kpe,Tf)%>%print(n=21)
 L=NULL
-# Ysp = c(1e1,5e1,1e2,5e2,1e3,5e3,1e4,5e4,1e5)
-Ysp=10^seq(1,6,.1)
+Ysp=10^seq(1,6,.1)  # fine range between 10 and 1 million Y cells as setpoints
 for (i in 1:length(Ysp)) {  # this take some time
   # i=1
   print(i)
@@ -77,8 +76,7 @@ D$id=as_factor(D$id)
 
 ```
 
-The first result below is a plot of how the ability of the controller 
-to drive the system to setpoint depends on the setpoint and the patient.
+The first plot shows cancer load attained (Y-axis) vs cancer load demanded (X-axis). 
 ```
 D%>%ggplot(aes(x=2+log10(Ysp/Ky),y=prct,col=grp))+facet_wrap(id~.)+
   geom_line(size=1)+tc(14)+sbb +theme(legend.position="top")
@@ -109,7 +107,7 @@ On the far right of each of these plots, Ysp = Ky (load = 100% = 2 in log10 unit
 This stable state of death is readily reached by TKIr = 0; here TKIr = TKIa/TKI, where 
 TKI and TKIa are data-derived and dose-adjusted TKI cell killing rates. 
 Right to left, many patients plateau at TKIr values below 1, i.e. using a dose lower than the dose
-used to drive the load down in the actual patient (rather than just hold it flat).
+used to drive the load down in the actual patient.
 
 
 To see if the uncontrolled latent variable X (quiescent CML cells) is also in steady state at 30 years, we compare
@@ -134,7 +132,7 @@ d$Ysp=1e5 # start at 10% = 1 on log10 scale
 d$Tf=12*3e4
 fsimTa=function(x) {
   ic=c(X=x$X0,Y=x$Y0,Z=x$Z0)
-  # lsodes(y = ic, times = seq(0,x$Tf,1e3), func = fTa, parms = x,maxsteps = 5000) very slow
+  # lsodes(y = ic, times = seq(0,x$Tf,1e3), func = fTa, parms = x,maxsteps = 5000) #very slow
   lsoda(y = ic, times = seq(0,x$Tf,1e3), func = fTa, parms = x) #faster than above (slow on some)
 }
 
@@ -150,8 +148,9 @@ ggsave("../docs/XtimeCrs.png",width=7,height=8)
 
 ```
 ![](../../../docs/XtimeCrs.png)
-It thus takes >10,000 years for X in pt 4 to reach steady state
+It thus takes >10,000 years for X in pt 4 to reach steady state. 
 
+Results across a fine grid of Ysp, and not just 1e5 as above, are obtained by this slow code
 ```
 L=NULL
 Ysp=10^seq(1,6,.1)
@@ -175,7 +174,7 @@ ggsave("../docs/Xss3e4.png",width=7,height=8)
 ```
 
 ![](../../../docs/Xss3e4.png)
-This shows that at 30,000 years, pts 4, 14 and 19 are still not at steady state
+This shows that at 30,000 years, pts 4, 14 and 19 still have not reached steady state
 
 
 Continuing out to 300,000 years
@@ -200,10 +199,10 @@ ggsave("../docs/XtimeCrs3e5.png",width=7,height=8)
 
 ```
 ![](../../../docs/XtimeCrs3e5.png)
-It thus takes >300,000 years for X in pt 14 to reach steady state.
+It takes >300,000 years for X in pt 14 to reach steady state.
 
 
-Patient 14's initial X value (X0), based on initial Y values (Y0), seems to be too high.  
+Initial X values (X0), based on initial Y values (Y0), are plotted by this code.  
 ```
 d$id=as_factor(d$id)
 d%>%ggplot(aes(x=1:21,y=log10(X0),col=grp))+
@@ -213,13 +212,10 @@ ggsave("../docs/X0.png",width=4,height=4)
 ```
 
 ![](../../../docs/X0.png)
-X0 values of 10 billion cells seem too high, given Ky = 1 million dividing LSC are lethal and 
-our estimates of normal quiescent HSC are on the order of 10 to 20 million, see
-https://pubmed.ncbi.nlm.nih.gov/22353999/.
+X0  of ~10 billion cells in some of these patients seem too high, given Ky = 1 million 
+dividing LSC are lethal and normal quiescent HSC being on the order of at most 10 million, see
+[https://pubmed.ncbi.nlm.nih.gov/22353999/](https://pubmed.ncbi.nlm.nih.gov/22353999/).
 
-
-
-
-
-
+### Opinion 
+The model needs informative priors that can reign in parameter estimates.
 
