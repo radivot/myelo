@@ -212,7 +212,7 @@ ggsave("../docs/X0.png",width=4,height=4)
 ```
 
 ![](../../../docs/X0.png)
-X0 = 10^10^ cells is high, as Ky = 10^6^ is lethal and the number of normal quiescent HSC is at most ~10^7^, see
+X<sub>0</sub> = 10<sup>10</sup> cells is high, as K<sub>y</sub> = 10<sup>6</sup> is lethal and the number of normal quiescent HSC is at most ~10<sup>7</sup>, see
 [PMID 22353999](https://pubmed.ncbi.nlm.nih.gov/22353999/).
 
 ### Opinion 
