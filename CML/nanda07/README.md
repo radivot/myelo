@@ -6,7 +6,7 @@ The differential equations of this model are:
 ![](../../docs/moore04model.png)
 
 
-Using deSolve, the following code reproduces untreated Patients A and B in Figure 2. It also approximates TKI action by reducing the rc parameters of these patients by a factor of 10. 
+Using deSolve, the following code reproduces untreated Patients A and B in Figure 2. It also approximates TKI action by reducing the *r<sub>c</sub>* parameters of these patients by a factor of 10. 
 
 ![](../../docs/nandaApproxFig2.png)
 
