@@ -16,12 +16,10 @@ Te = model.set_variable(var_type='_x', var_name='Te', shape=(1,1))
 Ca = model.set_variable(var_type='_x', var_name='Ca', shape=(1,1)) 
 # Variables can also be vectors:
 dX = model.set_variable(var_type='_x', var_name='dX', shape=(3,1)) 
-# Two states for the desired (setpoint) drug levels:
-U1_sp = model.set_variable(var_type='_u', var_name='U1_sp') 
-U2_sp = model.set_variable(var_type='_u', var_name='U2_sp') 
-# Two additional states for the true drug levels (which lag a bit behind setpoints)
-U1 = model.set_variable(var_type='_x', var_name='U1', shape=(1,1)) 
-U2 = model.set_variable(var_type='_x', var_name='U2', shape=(1,1))
+# drug levels:
+U1 = model.set_variable(var_type='_u', var_name='U1', shape=(1,1)) 
+U2 = model.set_variable(var_type='_u', var_name='U2', shape=(1,1)) 
+
 
 
 sn=0.29 
@@ -43,16 +41,11 @@ model.set_rhs('Ca', dX[2])
 
 from casadi import *
 dX_next = vertcat( 
-    sn - (1+U2)*dn*Tn - kn*Tn*Ca/(Ca+etap), 
-    alfn*kn*Tn*Ca/(Ca+etap) + alfe*Te*Ca/(Ca+etap) - (1+U2)*de*Te - gep*Ca*Te, 
-    (1-U1)*rc*Ca*log(Cmax/Ca) - (1+U2)*dc*Ca - gcp*Ca*Te,
+    sn - (1.0+U2)*dn*Tn - kn*Tn*Ca/(Ca+etap), 
+    alfn*kn*Tn*Ca/(Ca+etap) + alfe*Te*Ca/(Ca+etap) - (1.0+U2)*de*Te - gep*Ca*Te, 
+    (1.0-U1)*rc*Ca*log(Cmax/Ca) - (1.0+U2)*dc*Ca - gcp*Ca*Te,
 )
 model.set_rhs('dX', dX_next)
-
-tau = 1e-2 # lag time between drug level demanded and achieved
-model.set_rhs('U1', 1/tau*(U1_sp - U1)) 
-model.set_rhs('U2', 1/tau*(U2_sp - U2))
-
 model.setup()
 ```
 
@@ -63,8 +56,8 @@ model.setup()
 mpc = do_mpc.controller.MPC(model)
 
 setup_mpc = { 
-  'n_horizon': 250,
-  't_step': 1,
+  'n_horizon': 25,
+  't_step': 0.1,
   'n_robust': 1, 
   'store_full_solution': True,
 } 
@@ -81,7 +74,7 @@ lterm = B3*Ca - B4*Tn
 mpc.set_objective(mterm=mterm, lterm=lterm)
 
 
-mpc.set_rterm( U1_sp=B1, U2_sp=B2)
+mpc.set_rterm( U1=B1, U2=B2)
 
 TnMax=1e4
 TeMax=1e4
@@ -98,15 +91,15 @@ mpc.bounds['upper','_x', 'Tn'] = TnMax
 mpc.bounds['upper','_x', 'Te'] = TeMax 
 mpc.bounds['upper','_x', 'Ca'] = Cmax
 # Lower bounds on inputs:
-mpc.bounds['lower','_u', 'U1_sp'] = 0 
-mpc.bounds['lower','_u', 'U2_sp'] = 0 
+mpc.bounds['lower','_u', 'U1'] = 0 
+mpc.bounds['lower','_u', 'U2'] = 0 
 # Lower bounds on inputs:
-mpc.bounds['upper','_u', 'U1_sp'] = U1max 
-mpc.bounds['upper','_u', 'U2_sp'] = U2max
+mpc.bounds['upper','_u', 'U1'] = U1max 
+mpc.bounds['upper','_u', 'U2'] = U2max
 
-#mpc.scaling['_x', 'Tn'] = 2 
-#mpc.scaling['_x', 'Te'] = 2 
-#mpc.scaling['_x', 'Ca'] = 2
+mpc.scaling['_x', 'Tn'] = 2 
+mpc.scaling['_x', 'Te'] = 2 
+mpc.scaling['_x', 'Ca'] = 2
 
 #inertia_mass_1 = 2.25*1e-4*np.array([1., 0.9, 1.1]) 
 #inertia_mass_2 = 2.25*1e-4*np.array([1., 0.9, 1.1]) 
@@ -125,7 +118,7 @@ mpc.setup()
 
 ```python
 simulator = do_mpc.simulator.Simulator(model)
-simulator.set_param(t_step = 1)
+simulator.set_param(t_step = 0.1)
 # p_template = simulator.get_p_template()
 # type(p_template)
 # p_template.keys()
@@ -147,11 +140,11 @@ simulator.setup()
 
 
 ```python
-x0 = np.pi*np.array([1510, 10, 1e4, 0, 0, 0, 0, 0]).reshape(-1,1)
+x0 = np.pi*np.array([1510, 10, 1e4, 0, 0, 0]).reshape(-1,1)
 simulator.x0 = x0 
 mpc.x0 = x0
-mpc.x0
-mpc.x0['Ca']
+# mpc.x0
+# mpc.x0['Ca']
 
 mpc.set_initial_guess()
 
@@ -176,8 +169,8 @@ for g in [sim_graphics, mpc_graphics]:
   g.add_line(var_type='_x', var_name='Te', axis=ax[0]) 
   g.add_line(var_type='_x', var_name='Ca', axis=ax[0])
   # Plot drug levels on the second axis:
-  g.add_line(var_type='_u', var_name='U1_sp', axis=ax[1]) 
-  g.add_line(var_type='_u', var_name='U2_sp', axis=ax[1])
+  g.add_line(var_type='_u', var_name='U1', axis=ax[1]) 
+  g.add_line(var_type='_u', var_name='U2', axis=ax[1])
 
 
 
@@ -186,7 +179,7 @@ ax[1].set_ylabel('Drugs')
 ax[1].set_xlabel('Time [days]')
 
 u0 = np.zeros((2,1))  # no controller input
-for i in range(200):
+for i in range(200):  # 200 steps of 0.1 takes us to 20 days
   simulator.make_step(u0)
 
 
@@ -194,10 +187,8 @@ sim_graphics.plot_results()
 # Reset the limits on all axes in graphic to show the data. 
 sim_graphics.reset_axes()
 # Show the figure:
-fig
+# fig
 ```
-
-
 
 
     
@@ -205,19 +196,12 @@ fig
     
 
 
-
-
-    
-![png](output_8_1.png)
-    
-
-
 ### 2. Controlled Perturbation
 
 
 ```python
-#%%capture
-u0 = mpc.make_step(x0) # runs controller all the way out, like pontryagin open loop
+%%capture
+u0 = mpc.make_step(x0) # one run to horizon of 25 steps taking step sizes of 0.1
 ```
 
 
@@ -248,8 +232,8 @@ for line_i in mpc_graphics.pred_lines['_x', 'Tn']: line_i.set_color('#1f77b4') #
 for line_i in mpc_graphics.pred_lines['_x', 'Te']: line_i.set_color('#ff7f0e') #
 for line_i in mpc_graphics.pred_lines['_x', 'Ca']: line_i.set_color('#2ca02c') #
 # Change the color for the two inputs:
-for line_i in mpc_graphics.pred_lines['_u', 'U1_sp']: line_i.set_color('#1f77b4')
-for line_i in mpc_graphics.pred_lines['_u', 'U2_sp']: line_i.set_color('#ff7f0e')
+for line_i in mpc_graphics.pred_lines['_u', 'U1']: line_i.set_color('#1f77b4')
+for line_i in mpc_graphics.pred_lines['_u', 'U2']: line_i.set_color('#ff7f0e')
 # Make all predictions transparent:
 for line_i in mpc_graphics.pred_lines.full: line_i.set_alpha(0.2)
 
@@ -257,7 +241,7 @@ for line_i in mpc_graphics.pred_lines.full: line_i.set_alpha(0.2)
 lines = sim_graphics.result_lines['_x', 'Tn']+sim_graphics.result_lines['_x', 'Te']+sim_graphics.result_lines['_x', 'Ca']
 ax[0].legend(lines,'123',title='Cells')
 # also set legend for second subplot:
-lines = sim_graphics.result_lines['_u', 'U1_sp']+sim_graphics.result_lines['_u', 'U2_sp']
+lines = sim_graphics.result_lines['_u', 'U1']+sim_graphics.result_lines['_u', 'U2']
 ax[1].legend(lines,'12',title='Drug Inputs')
 
 simulator.reset_history() 
@@ -269,7 +253,7 @@ mpc.reset_history()
 ```python
 %%capture  
 #capture above is cell magic that grabs up lengthy output
-for i in range(20):
+for i in range(200):
   u0 = mpc.make_step(x0)     # reruns optimal control optimization at each time step, i.e. does MPC
   x0 = simulator.make_step(u0)
 ```
@@ -281,7 +265,7 @@ The closed loop MPC result below is very similar to the open loop Pontryagin-lik
 mpc_graphics.plot_predictions(t_ind=0) # Plot results until current time 
 sim_graphics.plot_results() 
 sim_graphics.reset_axes()
-fig
+fig  # cells ordered as in equations 1=Tn, 2=Te, and 3=Ca. U1 (1) and U2 (2) are bang-bang controls.
 ```
 
 
@@ -293,7 +277,4 @@ fig
 
 
 
-
-```python
-
-```
+optimal control is bang bang
