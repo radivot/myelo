@@ -76,7 +76,7 @@ ggsave("../docs/alphaNbetaDataNfits.png",width=7,height=8)
 ```
 
 ![](../../../docs/alphaNbetaDataNfits.png)
-which shows reasonable fits and values of alpha and beta ~2.3-fold higher than those in Fig S2. Full fits show broad variation across patients.
+which shows reasonable fits and values of α and β ~2.3-fold higher than those in Fig S2. Full fits show broad variation across patients.
 
 
 ```
