@@ -9,7 +9,8 @@ log scale is α and when the second term dominates the slope is β. On a log10 s
 values are log(10)=2.3 times smaller, as is the residual error of the fits. We will plot 
 data and fits on a log10 scale, but we will perform fits on a natural log scale. Taking logs lets small y gain weight needed to estimate β. 
 
-First we plot the data
+
+First, as in Hahnel et al, maxLik is used to fit the model.
 ```
 rm(list=ls()) 
 library(tidyverse)
@@ -17,18 +18,7 @@ library(myelo)
 head(d<-hahnelFigS2)
 (d=d%>%filter(UL==0)%>%select(-UL)) # use only non-zero measurements to keep it simple
 names(d)=c("TIME","DV","ID")  #change names to NONMEM style
-d=d%>%mutate(LDV=log10(DV),LNDV=log(DV)) # slopes match rates on natural log scale, not log10 scale
-log(10)  # 2.3 is the slope factor decrease when plotted on log10 scale, which also makes sigma 2.3-fold smaller
-d%>%ggplot(aes(x=TIME,y=LDV))+facet_wrap(ID~.,ncol=4)+geom_point(size=1)+theme(legend.position="top") 
-ggsave("../docs/alphaNbetaData.png",width=7,height=8)
-
-```
-
-![](../../../docs/alphaNbetaData.png)
-
-
-Next, as in Hahnel et al, maxLik is used to fit the model.
-```
+d=d%>%mutate(LDV=log10(DV),LNDV=log(DV)) 
 library(maxLik)
 loglik <- function(param) {
   lA <- log(param[1])
@@ -66,7 +56,8 @@ simY <- function(param,tpred,id) {
 library(data.table)
 (D=data.table(bind_rows(D)))
 names(D)=c("TIME","LDV","ID")
-(DTx=bind_rows(lapply(P,function(x) data.frame(TIME=100,LDV=2.5,a=round(x[["alpha"]],3),b=round(x[["beta"]],3)))))
+mkDF=function(x) data.frame(TIME=100,LDV=2.5,a=round(x[["alpha"]],3),b=round(x[["beta"]],3))
+(DTx=bind_rows(lapply(P,mkDF)))
 DTx$ID=1:21
 DTxb=DTx
 DTxb$LDV=1
@@ -76,33 +67,65 @@ ggsave("../docs/alphaNbetaDataNfits.png",width=7,height=8)
 ```
 
 ![](../../../docs/alphaNbetaDataNfits.png)
-which shows reasonable fits and values of α and β ~2.3-fold higher than those in Fig S2. Full fits show broad variation across patients.
+which shows α and β values ~2.3-fold higher than log10 scale α and β slopes in Fig S2. 
+Fits of patients 4, 10 and 18 could be better.
 
+Using the R package bbmle, similar fits can be obtained as follows. 
+```
+library(bbmle)
+dn=d%>%group_by(ID)%>%nest()
+fitBi=function(d1)  {
+  coef(summary(mle2(LNDV~dnorm(mean=log((exp(lA+alpha*TIME) + exp(lB+beta*TIME))),sd=sigma),
+               method="Nelder-Mead", 
+               start=list(lA=log(100),alpha=-1,lB=log(1),beta=-0.05,sigma=0.5),data=d1,
+               control = list(maxit=500))))  
+}
+dn=dn%>%mutate(M=map(data,fitBi))
+dn$M[[20]]
+getPars=function(x){
+  x=x[,1] 
+  x[c(1,3)]=exp(x[c(1,3)])
+  names(x)[c(1,3)]=c("A","B")
+  x
+}
+dn=dn%>%mutate(P=map(M,getPars))
+
+(D=mapply(simY,dn$P,d21$Tpred,1:21,SIMPLIFY = F))
+(D=data.table(bind_rows(D)))
+names(D)=c("TIME","LDV","ID")
+(DTx=bind_rows(lapply(dn$P,mkDF)))
+DTx$ID=1:21
+DTxb=DTx
+DTxb$LDV=1
+d%>%ggplot(aes(x=TIME,y=LDV))+facet_wrap(ID~.,ncol=4)+geom_point(size=1)+
+  geom_line(data=D)+geom_text(aes(label=a),data=DTx,parse=T)+geom_text(aes(label=b),data=DTxb,parse=T)
+ggsave("../docs/alphaNbetaDataNfitsBB.png",width=7,height=8)
 
 ```
-cbind(d21[,1:2],bind_rows(P))
-   ID        Tf            A      alpha            B         beta     sigma
-1   1  86.01102   42.2286197 -0.9970453 0.0160544502 -0.033776730 0.6272613
-2   2  55.08346    4.6075267 -0.3300274 0.0021539996  0.024865636 0.8464224
-3   3  40.81505   22.9812259 -1.0438443 0.4690139628 -0.130820280 0.4787884
-4   4  62.95828   99.9998979 -1.0627191 0.0357998044 -0.051261541 0.3688622
-5   5  29.22078  275.2051141 -1.3711429 0.2582689203 -0.222577565 0.6179687
-6   6  53.02817 1171.9793225 -2.3246318 0.0279872162 -0.050265072 0.6637285
-7   7 108.38124    0.5140817 -0.1885761 0.0053533259 -0.011377815 0.7660208
-8   8  62.61634    3.2173211 -0.2475736 0.0002189793  0.021278971 0.7467047
-9   9  59.00763   62.4505621 -1.2181436 0.0215412043 -0.074984498 0.4666018
-10 10  70.57751   99.9997887 -1.0417356 0.0280718343 -0.032879217 0.3827729
-11 11  17.19144   73.4501175 -0.8789277 0.0003120670  0.168390293 0.5906084
-12 12 133.27273  163.9925480 -2.2976040 1.5865929223 -0.069040172 1.7783393
-13 13  97.75399  104.4944570 -0.5194102 0.0010986393  0.003243757 1.6680958
-14 14 164.49488  153.8728564 -0.8794149 0.0033837593 -0.002462134 1.4324898
-15 15 130.50255   40.8244353 -0.1873713 0.0016172347 -0.002991918 1.3143236
-16 16  54.57490   50.6342915 -1.1705643 0.0053600629 -0.009748653 0.9759647
-17 17  95.19301   99.1778001 -1.0511198 0.0397887447 -0.030282900 0.8330277
-18 18  81.30258   99.9997868 -1.0532572 0.0506743368 -0.035246391 0.4050289
-19 19  77.74245   15.8629736 -0.2275802 0.0002396775  0.049598322 0.7996429
-20 20  98.94875   51.7395212 -0.8518424 0.2773272757 -0.036869268 0.3764971
-21 21  60.89312   25.8304064 -0.8507428 0.0086532360 -0.037461885 0.5230334
 
+![](../../../docs/alphaNbetaDataNfitsBB.png)
+which shows better fits of patients 4, 10 and 18.
 
+Differences in parameter estimates can be drastic: in the table below, compare A and alpha of 
+pts 1, 3, 6, and 7, and B and beta of pt 13. 
 ```
+pML<-cbind(d21[,1],bind_rows(P))
+pML$method="maxLik"
+pBB<-cbind(d21[,1],bind_rows(dn$P))
+pBB$method="bbmle"
+bind_rows(pML,pBB)%>%arrange(ID)%>%filter(ID%in%c(1,3,6,7,13))
+   ID            A      alpha           B         beta     sigma method
+1   1 4.222862e+01 -0.9970453 0.016054450 -0.033776730 0.6272613 maxLik
+2   1 8.070877e+04 -3.8916201 0.024939337 -0.041162706 0.7423625  bbmle
+3   3 2.298123e+01 -1.0438443 0.469013963 -0.130820280 0.4787884 maxLik
+4   3 4.144447e+02 -2.0406933 0.500721898 -0.133096927 0.4802431  bbmle
+5   6 1.171979e+03 -2.3246318 0.027987216 -0.050265072 0.6637285 maxLik
+6   6 4.024998e+05 -3.7792521 0.028233184 -0.050498802 0.6635207  bbmle
+7   7 5.140817e-01 -0.1885761 0.005353326 -0.011377815 0.7660208 maxLik
+8   7 1.855883e+03 -2.6750067 0.032174230 -0.033431420 0.9228490  bbmle
+9  13 1.044945e+02 -0.5194102 0.001098639  0.003243757 1.6680958 maxLik
+10 13 1.611426e+02 -0.5611876 0.051454394 -0.055396728 2.5671772  bbmle
+```
+
+
+
