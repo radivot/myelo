@@ -4,11 +4,10 @@ Goal: Use BCR-ABL percentages above detection and before cessation to demo
 population level modeling of bi-exponential BCR-ABL 
 decays often observed initially with TKI use. 
 
-The model of interest is $y=Ae^{\alpha t}+Be^{\beta t}$. When the first term dominates, the slope on a natural 
-log scale is $\alpha$ and when the second term dominates the slope is $\beta$. On a log10 scale, these
-values are $log(10)=2.3$ times smaller, as is the residual error of the fits. We will plot 
-data and fits on a log10 scale, but we will perform fits on a natural log scale. Taking logs 
-lets small $y$ gain weight needed to estimate $\beta$. 
+The model of interest is y=Ae<sup>αt</sup>+Be<sup>βt</sup>. When the first term dominates, the slope on a natural 
+log scale is α and when the second term dominates the slope is β. On a log10 scale, these
+values are log(10)=2.3 times smaller, as is the residual error of the fits. We will plot 
+data and fits on a log10 scale, but we will perform fits on a natural log scale. Taking logs lets small y gain weight needed to estimate β. 
 
 First we plot the data
 ```
@@ -77,7 +76,7 @@ ggsave("../docs/alphaNbetaDataNfits.png",width=7,height=8)
 ```
 
 ![](../../../docs/alphaNbetaDataNfits.png)
-which shows reasonable fits and values of $\alpha$ and $\beta$ ~2.3-fold higher than those in Fig S2. Full fits show broad variation across patients.
+which shows reasonable fits and values of alpha and beta ~2.3-fold higher than those in Fig S2. Full fits show broad variation across patients.
 
 
 ```
