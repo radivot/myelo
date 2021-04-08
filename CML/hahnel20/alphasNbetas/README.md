@@ -106,7 +106,7 @@ ggsave("../docs/alphaNbetaDataNfitsBB.png",width=7,height=8)
 ![](../../../docs/alphaNbetaDataNfitsBB.png)
 which shows better fits of patients 4, 10 and 18.
 
-Parameter differences can be drastic, as seen below for A and alpha of 
+R package parameter estimate differences can be drastic, as seen below for A and alpha of 
 pts 1, 3, 6, and 7, and B and beta of 13. 
 ```
 pML<-cbind(d21[,1],bind_rows(P))
@@ -128,8 +128,8 @@ bind_rows(pML,pBB)%>%arrange(ID)%>%filter(ID%in%c(1,3,6,7,13))
 10 13 1.611426e+02 -0.5611876 0.051454394 -0.055396728 2.5671772  bbmle
 ```
 
-Parameter estimates need to be reigned in toward averages. This can be accomplished using 
-the R package lme4. 
+To reign estimates in toward population averages, we can use nlmer in 
+the mixed effects  R package lme4. 
 
 ```
 library(lme4)
@@ -162,6 +162,14 @@ ggsave("../docs/alphaNbetaFitsLME4.png",width=7,height=8)
 ```
 
 ![](../../../docs/alphaNbetaFitsLME4.png)
-Showing nice fits and similar estimates, as information is now borrowed across patients in one joint fit. 
+We now have nice fits with parameter estimates that are more similar. 
+Information was borrowed across patients in one joint fit of 
+population parameter means and variances. 
+Assuming normality, estimates for individuals were 
+bought closer to the population means. 
+
+A limitation of lme4 is that it requires closed form models. Models are often more simply described by 
+ordinary differential equations (ODEs). An R package that allows this is nlmixr. A demo of its use is provided in the 
+adjacent folder alphasNbetasUsingODEs.
 
 
