@@ -106,14 +106,15 @@ ggsave("../docs/alphaNbetaDataNfitsBB.png",width=7,height=8)
 ![](../../../docs/alphaNbetaDataNfitsBB.png)
 which shows better fits of patients 4, 10 and 18.
 
-Differences in parameter estimates can be drastic: in the table below, compare A and alpha of 
-pts 1, 3, 6, and 7, and B and beta of pt 13. 
+Parameter differences can be drastic, as seen below for A and alpha of 
+pts 1, 3, 6, and 7, and B and beta of 13. 
 ```
 pML<-cbind(d21[,1],bind_rows(P))
 pML$method="maxLik"
 pBB<-cbind(d21[,1],bind_rows(dn$P))
 pBB$method="bbmle"
 bind_rows(pML,pBB)%>%arrange(ID)%>%filter(ID%in%c(1,3,6,7,13))
+
    ID            A      alpha           B         beta     sigma method
 1   1 4.222862e+01 -0.9970453 0.016054450 -0.033776730 0.6272613 maxLik
 2   1 8.070877e+04 -3.8916201 0.024939337 -0.041162706 0.7423625  bbmle
@@ -127,5 +128,40 @@ bind_rows(pML,pBB)%>%arrange(ID)%>%filter(ID%in%c(1,3,6,7,13))
 10 13 1.611426e+02 -0.5611876 0.051454394 -0.055396728 2.5671772  bbmle
 ```
 
+Parameter estimates need to be reigned in toward averages. This can be accomplished using 
+the R package lme4. 
+
+```
+library(lme4)
+(startvec <- c(lA = log(100), alpha = -1, lB=log(0.5), beta = -0.05))
+nform <- ~ log(exp(lA+alpha*input) + exp(lB+beta*input))
+nfun <- deriv(nform, namevec=c("lA", "alpha", "lB", "beta"),
+              function.arg=c("input","lA", "alpha", "lB", "beta"))
+nfun
+(M<-nlmer(LNDV ~ nfun(TIME, lA, alpha, lB, beta) ~ (lA|ID) + (alpha|ID) +(lB|ID) + (beta|ID),
+                        data=d,start = startvec,
+      nAGQ = 0L,
+      control = nlmerControl(tolPwrss = 1e-4)) )
+(fe=fixef(M))
+(RE=ranef(M)$ID)
+apply(RE,2,mean) #check
+(P=RE+t(t(rep(1,21)))%*%t(fe))
+P=P%>%mutate(lA=exp(lA),lB=exp(lB))%>%rename(A=lA,B=lB)
+P=lapply(1:21,function(i) unlist(P[i,]))
+(D=mapply(simY,P,d21$Tpred,1:21,SIMPLIFY = F))
+(D=data.table(bind_rows(D)))
+names(D)=c("TIME","LDV","ID")
+(DTx=bind_rows(lapply(P,mkDF)))
+DTx$ID=1:21
+DTxb=DTx
+DTxb$LDV=1
+d%>%ggplot(aes(x=TIME,y=LDV))+facet_wrap(ID~.,ncol=4)+geom_point(size=1)+
+  geom_line(data=D)+geom_text(aes(label=a),data=DTx,parse=T)+geom_text(aes(label=b),data=DTxb,parse=T)
+ggsave("../docs/alphaNbetaFitsLME4.png",width=7,height=8)
+
+```
+
+![](../../../docs/alphaNbetaFitsLME4.png)
+Showing nice fits and similar estimates, as information is now borrowed across patients in one joint fit. 
 
 
