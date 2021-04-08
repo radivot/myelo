@@ -128,8 +128,8 @@ bind_rows(pML,pBB)%>%arrange(ID)%>%filter(ID%in%c(1,3,6,7,13))
 10 13 1.611426e+02 -0.5611876 0.051454394 -0.055396728 2.5671772  bbmle
 ```
 
-To reign estimates in toward population averages, we can use nlmer in 
-the mixed effects  R package lme4. 
+To bias estimates toward patient population averages, we can use nlmer in 
+the mixed effects R package lme4. 
 
 ```
 library(lme4)
