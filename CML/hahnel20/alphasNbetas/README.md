@@ -151,16 +151,16 @@ brought closer to the population means.
 A limitation of lme4 is that it requires closed form models. Models are often more simply described by 
 ordinary differential equations (ODEs). An R package that allows this is nlmixr. In 
 this pharmacokinetic data analysis package, states are masses 
-(drug amounts),  rate constants are clearances divided by volumes, and the
-output is the drug concentration in the central compartment (mass divided by volume).
+(drug amounts),  rate constants are clearances divided by volumes, and measured
+drug concentrations are central comparment drug masses divided by volumes.
 
 Bi-exponential decays are captured by two-compartment models. We thus
-view BCR-ABL as being injected into a central compartment from which it is cleared 
+view BCR-ABL as if injected into a central compartment from which it is cleared 
 permanently or set aside temporarily in a peripheral compartment that protects it, until it returns to the
-central compartment. Needed then is a mapping of our initial estimates used above of 
-A=100, alpha=-1, B=0.1, and beta=-0.05, to initial estmates of two-compartment PK model parameters.
+central compartment. Needed then is a mapping of our initial estimates above 
+(A=100, alpha=-1, B=0.1, and beta=-0.05) to initial estmates of two-compartment PK model parameters.
 To get the initial BCR-ABL value of 100.1, we set the dose to 1001 and 
-our initial estimate of the central volume (Vc) thus to 10. We then set
+our initial estimate of the central volume (Vc) to 10. We then set
 the initial estimate of the elimination rate constant Ke to 1 (i.e. -alpha) 
 and the initial estimate of the peripheral-to-central
 rate constant Kpc to 0.05 (i.e. -beta). Setting the reverse,
@@ -213,7 +213,7 @@ ggsave("../docs/nlmixrFit1.png",width=7,height=8)
 ```
 ![](../../../docs/nlmixrFit1.png)
 
-Patient-specific model parameter estimates can be retrieved as follows.
+Patient-specific model parameter estimates corresponding to the plots above can be retrieved as follows.
 
 ```
 fe=coef(fit)$fixed[1:4]
