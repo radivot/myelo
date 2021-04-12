@@ -164,7 +164,7 @@ our initial estimate of the central volume (Vc) to 10. We then set
 the initial estimate of the elimination rate constant Ke to 1 (i.e. -alpha) 
 and the initial estimate of the peripheral-to-central
 rate constant Kpc to 0.05 (i.e. -beta). Setting the reverse,
-Kcp, to a similarly small initial value of 0.05, the nlmixr code is
+Kcp, to a similarly small value of 0.05, the nlmixr code is
 
 ```
 library(nlmixr)
