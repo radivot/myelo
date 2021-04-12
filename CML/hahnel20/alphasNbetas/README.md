@@ -249,4 +249,6 @@ P
 ```
 
 Using monolix yields similar plots
+
+
 ![](../../../docs/indfits_DV_0_0.png)
