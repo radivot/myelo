@@ -247,3 +247,6 @@ P
 21 261.690853 0.8096706 0.014647168 6.283243e-03
 
 ```
+
+Using monolix yields similar plots
+![](../../../docs/indfits_DV_0_0.png)
