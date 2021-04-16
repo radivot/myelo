@@ -20,8 +20,7 @@ ggsave("../docs/claudianiPonLog.png",width=6,height=6)
 
 ![](../../docs/claudianiPonLog.png)
 
-Percentages shown are of T315I mutations. Before ponatinib (light blue) a different TKI was used. 
-After it, no TKI was used. 
+T315I mutation percentages of BCR-ABL at 3, 2 and 1 time points are indicated below the curves. BCR-ABL percentages during ponatinib use are in light blue:  before this a different TKI was used and after it no TKI was used. 
 
 ## Interpretation
 
