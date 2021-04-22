@@ -251,8 +251,7 @@ P
 
 Using nonmem yields similar plots
 
-![](../../../docs/nonmem.pdf)
-
+![](../../../docs/nonmem.png)
 
 
 Using monolix yields similar plots
