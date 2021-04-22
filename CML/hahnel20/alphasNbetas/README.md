@@ -248,6 +248,13 @@ P
 
 ```
 
+
+Using nonmem yields similar plots
+
+![](../../../docs/nonmem.pdf)
+
+
+
 Using monolix yields similar plots
 
 
