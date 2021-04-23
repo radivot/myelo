@@ -1,0 +1,25 @@
+<TT>   Population parameter estimates                                                                                                
+       ==============================================================================================================================
+
+<TH>   PARAMETER                        | VALUE  | RSE   | SHRINKAGE | COMMENT                                                       
+       ------------------------------------------------------------------------------------------------------------------------------
+<TR>   **Typical parameters**           |        |       |           |                                                               
+<TR>   Vc                               | 24.8   | 121%  | -         | Central volume (L)                                            
+<TR>   Ke                               | 0.642  | 25.8% | -         | -alpha                                                        
+<TR>   Kpc                              | 0.0163 | 68.9% | -         | - beta                                                        
+<TR>   Kcp                              | 0.0141 | 103%  | -         | -                                                             
+<TR>                                    |        |       |           |                                                               
+<TR>   **Inter-individual variability** |        |       |           |                                                               
+<TR>   omega(Vc)                        | 1.85   | 37.3% | -0.9%     | LogNormal                                                     
+<TR>   omega(Ke)                        | 0.55   | 24.7% | 0.3%      | LogNormal                                                     
+<TR>   omega(Kpc)                       | 1.55   | 55.3% | 15.9%     | LogNormal                                                     
+<TR>   omega(Kcp)                       | 2.09   | 30%   | 7.8%      | LogNormal                                                     
+<TR>                                    |        |       |           |                                                               
+<TR>   **Residual Variability**         |        |       |           |                                                               
+<TR>   error_PROP1                      | 0.863  | 8.61% | 2.5%*     | Proportional Error (fraction) - Compound concentration (ug/mL)
+<TR>                                    |        |       |           |                                                               
+<TR>   Objective function               | -1667  | -     | -         | -                                                             
+<TR>   AIC                              | -1649  | -     | -         | -                                                             
+<TR>   BIC                              | -1614  | -     | -         | -                                                             
+       ------------------------------------------------------------------------------------------------------------------------------
+<TF>    Model: projs/NONK, Significant digits: 3 (Objective function rounded to closest integer value), omega values and error model parameters reported in standard deviation.<br>The objective function was determined using importance sampling (IMP) with settings EONLY=1 and MAPITER=0, as suggested in the NONMEM manual.<br>\* Epsilon shrinkage (records with missing dependent variable and censored records not considered).

@@ -1,0 +1,17 @@
+# Attributes file for dataset projs/MONCL/RESULTS/project_indiv.csv
+
+atrcontents <- list()
+
+atrcontents$paramNames <- c("CL", "Vc", "Q1", "Vp1")
+
+atrcontents$covariateNames <- ""
+
+atrcontents$covNames <- ""
+
+atrcontents$catNames <- ""
+
+atrcontents$ALT_NAMES_USED <- c("XPRED", "XWRES", "IPRED", "IWRES")
+
+atrcontents$ALT_NAMES_ORIG <- c("popPred", "pwRes", "indivPred_mode", "indWRes_mode")
+
+

@@ -248,13 +248,238 @@ P
 
 ```
 
+Using the R package RQRtools (https://iqrtools.intiquan.com/) within IQdesktop
+(https://iqdesktop.intiquan.com/), a single representation of the model can be applied
+to three different popular computational backends, NONMEM, Monolix, and nlmixr. 
+The code for this is as follows. 
 
-Using nonmem yields similar plots
+```
+library(IQRtools)
+setwd("~/PROJECTS/SHARE")
+data=data_IQRest(datafile= "data/biExport.csv")     
+(dosing=dosing_IQRest(INPUT1=c(type="BOLUS")) )## Define dosing
 
-![](../../../docs/nonmem.png)
+modK=IQRmodel("mods/modK.txt")
+cat(export_IQRmodel(modK))
+modelSpecK=modelSpec_IQRest(POPvalues0=c(Ke=10,Vc=10,Kpc=0.05,Kcp=0.05), 
+                             errorModel = list(OUTPUT1 = c(type = "rel", guess = 0.3) ))
+estK <- IQRnlmeEst(model         = modK,
+                    dosing        = dosing,
+                    data          = data,
+                    modelSpec     = modelSpecK)
+prNONK <- IQRnlmeProject(est = estK,
+                         projectPath="projs/NONK",
+                         tool="NONMEM",
+                         algOpt.K1 = 50,
+                         algOpt.K2 = 20,
+                         comment = "BiExp Ke NONMEM version") 
+run_IQRnlmeProject(prNONK) 
+prMONK <- IQRnlmeProject(est = estK,
+                         projectPath="projs/MONK",
+                         tool="MONOLIX",
+                         algOpt.K1 = 50,
+                         algOpt.K2 = 20,
+                         comment = "BiExp Ke  MONOLIX version")
+run_IQRnlmeProject(prMONK) 
+projMIXK <- IQRnlmeProject(est = estK,
+                           projectPath="projs/MIXK",
+                           tool="NLMIXR",
+                           algOpt.K1 = 50,
+                           algOpt.K2 = 20,
+                           comment = "BiExp Ke  NLMIXR version")
+run_IQRnlmeProject(projMIXK) 
+png(filename="outs/NONK.png",width = 680, height = 680)
+plotINDIV_IQRnlmeProject("projs/NONK",outputNr = 1,filename =NULL ,plotLog = TRUE,nindiv = 25)
+dev.off()
+png(filename="outs/MONK.png",width = 680, height = 680)
+plotINDIV_IQRnlmeProject("projs/MONK",outputNr = 1,filename =NULL ,plotLog = TRUE,nindiv = 25)
+dev.off()
+png(filename="outs/MIXK.png",width = 680, height = 680)
+plotINDIV_IQRnlmeProject("projs/MIXK",outputNr = 1,filename =NULL ,plotLog = TRUE,nindiv = 25)
+dev.off()
+
+modCL=IQRmodel("mods/modCL.txt")
+cat(export_IQRmodel(modCL))
+modelSpecCL=modelSpec_IQRest(POPvalues0=c(CL=10,Vc=10,Q1=0.5,Vp1=10), 
+                             IIVdistribution = c(CL="L",Vc="L",Q1="L",Vp1 ="L"),
+                             errorModel = list(OUTPUT1 = c(type = "rel", guess = 0.3) ))
+estCL <- IQRnlmeEst(model         = modCL,
+                    dosing        = dosing,
+                    data          = data,
+                    modelSpec     = modelSpecCL)
+
+prNONCL <- IQRnlmeProject(est = estCL,
+                          projectPath="projs/NONCL",
+                          tool="NONMEM",
+                          algOpt.K1 = 50,
+                          algOpt.K2 = 20,
+                          comment = "BiExp CL NONMEM version") 
+run_IQRnlmeProject(prNONCL) 
+prMONCL <- IQRnlmeProject(est = estCL,
+                          projectPath="projs/MONCL",
+                          tool="MONOLIX",
+                          algOpt.K1 = 50,
+                          algOpt.K2 = 20,
+                          comment = "BiExp CL  MONOLIX version")
+run_IQRnlmeProject(prMONCL) 
+projMIXR <- IQRnlmeProject(est = estCL,
+                              projectPath="projs/MIXCL",
+                              tool="NLMIXR",
+                              algOpt.K1 = 50,
+                              algOpt.K2 = 20,
+                              comment = "BiExp CL  NLMIXR version")
+run_IQRnlmeProject(projMIXR) 
+png(filename="outs/NONCL.png",width = 680, height = 680)
+plotINDIV_IQRnlmeProject("projs/NONCL",outputNr = 1,filename =NULL ,plotLog = TRUE,nindiv = 25)
+dev.off()
+png(filename="outs/MONCL.png",width = 680, height = 680)
+plotINDIV_IQRnlmeProject("projs/MONCL",outputNr = 1,filename =NULL ,plotLog = TRUE,nindiv = 25)
+dev.off()
+png(filename="outs/MIXCL.png",width = 680, height = 680)
+plotINDIV_IQRnlmeProject("projs/MIXCL",outputNr = 1,filename =NULL ,plotLog = TRUE,nindiv = 25)
+dev.off()
+```
+
+Using the K parameterization of the two compartment model in mods/modK.txt
+```
+********** MODEL NAME
+model_2cpt_linear_iv_Ke
+
+********** MODEL NOTES
+
+PK model for simulation of drug concentration in central compartment
+with following characteristics:
+Compartments:  2
+Elimination :  linear
+Absorption  :  none (infusion/iv)
+
+Unit convention
+Dose: mg
+Concentration: ug/mL
+Time: hours
+
+The annotation of the parameter units is consistent with the given unit convention.
+Units of the inputs (dose) and outputs (concentration) in the dataset for parameter estimation need to match the unit convention.
+
+********** MODEL STATES
+
+d/dt(Ac) 	=  - Kcp*Ac + Kpc*Ap1 - Ke*Ac + INPUT1
+d/dt(Ap1) =    Kcp*Ac - Kpc*Ap1
+
+Ac(0)    	= 0
+Ap1(0)    	= 0
+
+********** MODEL PARAMETERS
+
+Vc 			  = 10 	# Central volume (L)
+Ke 			  = 1 	# -alpha
+Kpc			  = 0.05 	# - beta
+Kcp			  = 0.05 	# 
+
+********** MODEL VARIABLES
+
+% Calculation of concentration in central compartment
+Cc 			  = Ac/Vc
+
+% Defining an output (only needed when interfacing with NLME
+% parameter estimation tools such as NONMEM and MONOLIX)
+OUTPUT1  	  = Cc  # Compound concentration (ug/mL)
 
 
-Using monolix yields similar plots
+********** MODEL REACTIONS
 
 
-![](../../../docs/indfits_DV_0_0.png)
+********** MODEL FUNCTIONS
+
+
+********** MODEL EVENTS
+```
+
+yielded
+
+for NONMEM
+
+![](../../../docs/NONK.png)
+
+for Monolix 
+
+![](../../../docs/MONK.png)
+
+and for nlmixr
+
+![](../../../docs/MIXK.png)
+
+
+Using an the clearance (CL, Q and Vp) parameterization  in mods/modCL.txt
+
+```
+********** MODEL NAME
+model_2cpt_linear_iv_CL
+
+********** MODEL NOTES
+
+PK model for simulation of drug concentration in central compartment
+with following characteristics:
+Compartments:  2
+Elimination :  linear
+Absorption  :  none (infusion/iv)
+
+Unit convention
+Dose: mg
+Concentration: ug/mL
+Time: hours
+
+The annotation of the parameter units is consistent with the given unit convention.
+Units of the inputs (dose) and outputs (concentration) in the dataset for parameter estimation need to match the unit convention.
+
+********** MODEL STATES
+
+d/dt(Ac) 	=  - Q1/Vc*Ac + Q1/Vp1*Ap1 - CL/Vc*Ac  + INPUT1
+d/dt(Ap1) 	=  + Q1/Vc*Ac - Q1/Vp1*Ap1
+
+Ac(0)    	= 0
+Ap1(0)    = 0
+
+********** MODEL PARAMETERS
+CL 			  = 10 	# Clearance (L/hour)
+Vc 			  = 10 	# Central volume (L)
+Q1			  = 0.5 	# Intercompartmental clearance (L/hour)
+Vp1			  = 10 	# Peripheral volume (L)
+INPUT1 = 0
+Tlag1 = 0
+
+********** MODEL VARIABLES
+
+% Calculation of concentration in central compartment
+Cc 			  = Ac/Vc
+
+% Defining an output (only needed when interfacing with NLME
+% parameter estimation tools such as NONMEM and MONOLIX)
+OUTPUT1  	  = Cc  # Compound concentration (ug/mL)
+
+
+********** MODEL REACTIONS
+
+
+********** MODEL FUNCTIONS
+
+
+********** MODEL EVENTS
+```
+
+
+yielded 
+
+for NONMEM
+
+![](../../../docs/NONK.png)
+
+for Monolix
+
+![](../../../docs/MONK.png)
+
+
+and for nlmixr 
+
+![](../../../docs/MIXK.png)
+

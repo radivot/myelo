@@ -1,0 +1,89 @@
+********************************************************************************
+*                          project.mlxtran                                     *
+*                          April 23, 2021 at 04:46:16                          *
+*                          Monolix version : 5.1.0                             *
+********************************************************************************
+
+
+POPULATION PARAMETERS ESTIMATION _______________________________________________
+
+Fixed Effects ----------------------------    se_lin    rse(%)
+CL_pop                         :      10.8      3.03      28.2
+Vc_pop                         :        13      3.54      27.1
+Q1_pop                         :     0.176     0.089      50.4
+Vp1_pop                        :      11.5      5.35      46.6
+
+Standard Deviation of the Random Effects -
+omega_CL                       :      1.04     0.185      17.7
+omega_Vc                       :       0.8     0.189      23.6
+omega_Q1                       :      1.61     0.298      18.5
+omega_Vp1                      :     0.853     0.361      42.3
+
+Error Model Parameters -------------------
+b                              :       0.9    0.0382      4.24
+
+Elapsed time (seconds) :      1.8
+CPU time     (seconds) :        1
+
+ _______________________________________________________________________________
+
+
+
+CORRELATION MATRIX OF THE ESTIMATES ____________________________________________
+
+
+Fisher by Linearization --------------------------------------------------------
+Correlation Matrix :
+   CL_pop         1
+   Vc_pop   0.43942         1
+   Q1_pop   0.39122   0.49238         1
+  Vp1_pop   0.41872   0.53354    0.6163         1
+ omega_CL         0         0         0         0         1
+ omega_Vc         0         0         0         0 -0.063025         1
+ omega_Q1         0         0         0         0-0.0078427 -0.020713         1
+omega_Vp1         0         0         0         0 -0.036959  -0.13026  -0.16108         1
+        b         0         0         0         0-0.0078451 -0.042572-0.0059821 -0.031823         1
+                               min       max   max/min
+Eigen values           :      0.38       2.5       6.5
+
+Elapsed time (seconds) :   0.006
+CPU time     (seconds) :       0
+
+ -------------------------------------------------------------------------------
+
+ _______________________________________________________________________________
+
+
+
+INDIVIDUAL PARAMETERS ESTIMATION _______________________________________________
+
+
+Individual Parameters Estimation by Conditional Mode ---------------------------
+            min        Q1    median        Q3       max
+CL  :     0.329      9.97      15.9      18.8      32.2
+Vc  :      1.62      10.6      14.5      24.2      28.9
+Q1  :   0.00177    0.0907     0.169     0.339      6.28
+Vp1 :      3.52      7.34      12.5      17.3      42.9
+
+Elapsed time (seconds) :   0.059
+CPU time     (seconds) :       0
+
+ -------------------------------------------------------------------------------
+
+ _______________________________________________________________________________
+
+
+
+LOG-LIKELIHOOD ESTIMATION ______________________________________________________
+                                                           (lin)
+
+-2 x log-likelihood                             :       -1078.97
+Akaike Information Criteria               (AIC) :       -1060.97
+Corrected Bayesian Information Criteria  (BICc) :       -1037.65
+Bayesian Information Criteria             (BIC) :       -1051.57
+
+Elapsed time                          (seconds) :           0.00
+CPU time                              (seconds) :           0.00
+
+ _______________________________________________________________________________
+

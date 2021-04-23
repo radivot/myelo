@@ -1,0 +1,11 @@
+# Attributes file for dataset temp_XYZ.csv
+
+atrcontents <- list()
+
+atrcontents$methodBLLOQ <- "M1"
+
+atrcontents$doseNAMES <- "Dose"
+
+atrcontents$obsNAMES <- "BCRABL"
+
+

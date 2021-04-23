@@ -1,0 +1,51 @@
+; =============================================
+DESCRIPTION: model_2cpt_linear_iv_Ke
+  PK model for simulation of drug concentration in central compartment
+  with following characteristics:
+  Compartments:  2
+  Elimination :  linear
+  Absorption  :  none (infusion/iv)
+  Unit convention
+  Dose: mg
+  Concentration: ug/mL
+  Time: hours
+  The annotation of the parameter units is consistent with the given unit convention.
+  Units of the inputs (dose) and outputs (concentration) in the dataset for parameter estimation need to match the unit convention.
+; =============================================
+
+  [LONGITUDINAL]
+
+  input = {Vc,Ke,Kpc,Kcp}
+; =============================================
+PK:
+; =============================================
+
+  ; Model parameters
+  ; ----------------
+  Tlag1 = 0
+
+  ; Model compartments
+  ; ------------------
+  compartment(cmt=1, amount=Ac)
+  compartment(cmt=2, amount=Ap1)
+
+  ; Model dosing
+  ; ------------
+  iv(cmt=1, type=1, p=1, Tlag=Tlag1)
+
+  ; Transfer and elimination definitions
+  ; ------------------------------------
+  elimination(cmt=1, k=-(-(Kcp + Ke))-(Kcp))
+  transfer(from=2, to=1, kt=Kpc)
+  transfer(from=1, to=2, kt=Kcp)
+
+  ; Output variables
+  ; ----------------
+  Cc = Ac/Vc
+
+; =============================================
+OUTPUT:
+; =============================================
+
+  output = {Cc}
+

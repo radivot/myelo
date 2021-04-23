@@ -1,0 +1,17 @@
+# Attributes file for dataset projs/MONK/RESULTS/project_pred.csv
+
+atrcontents <- list()
+
+atrcontents$paramNames <- c("Vc", "Ke", "Kpc", "Kcp")
+
+atrcontents$covariateNames <- ""
+
+atrcontents$covNames <- ""
+
+atrcontents$catNames <- ""
+
+atrcontents$ALT_NAMES_USED <- c("XPRED", "XWRES", "IPRED", "IWRES")
+
+atrcontents$ALT_NAMES_ORIG <- c("popPred", "pwRes", "indivPred_mode", "indWRes_mode")
+
+
