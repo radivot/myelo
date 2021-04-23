@@ -1,0 +1,58 @@
+=====
+TITLE:    Define file for the "BIEXPORT" dataset
+SUBTITLE: 
+DATE:     
+TEMPLATE: DefaultStyle.rmdt
+=====
+
+
+!NOINTRO
+!BLOCKSTART[keepNext](block_kwnext)
+
+
+#* Dataset name, description, and location
+
+!TABINLINE[caption:Dataset information,size:8,label:overview,ignoreCaption:true,valueTable:false]
+| NAME     | DESCRIPTION              | LOCATION          |
+| -------- | ------------------------ | ----------------- |
+| biExport | General analysis dataset | data/biExport.csv |
+
+!NEWPAGE
+
+
+#* BIEXPORT specification
+Missing values are coded in the dataset as '.' and referenced in this specification as 'NA'.
+
+
+!TABINLINE[caption:Definition of dataset contents,size:8,label:overview,ignoreCaption:true,valueTable:false]
+| NAME     | TYPE    | LABEL                                    | VALUES                                                                                                                                                                   | COMMENTS |
+| -------- | ------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
+| IXGDF    | Numeric | Index of record in master dataset        | 1...N                                                                                                                                                                    |          |
+| IGNORE   | String  | Exclusion reason                         | Reason for ignoring an observation record in the analysis. If NA then the record is not ignored                                                                          |          |
+| USUBJID  | Numeric | Unique subject identifier                | Unique subject ID or a derivative of it, allowing to identify the subject                                                                                                |          |
+| ID       | Numeric | Numeric subject ID for modeling software | Numeric subject ID for modeling software                                                                                                                                 |          |
+| TIME     | Numeric | Actual time relative to first dose       | 'TIME' values in the unit defined in the 'TIMEUNIT' column                                                                                                               |          |
+| TIMEPOS  | Numeric | Time since first record in subject       | 'TIMEPOS' values in the unit defined in the 'TIMEUNIT' column                                                                                                            |          |
+| TAD      | Numeric | Time after last dose                     | 'TAD' values in the unit defined in the 'TIMEUNIT' column                                                                                                                |          |
+| TIMEUNIT | String  | Unit of all numeric time definitions     | 'MONTHS'                                                                                                                                                                 |          |
+| YTYPE    | Numeric | Observation output number                | 1 (BCRABL),0 or NA (non-observation records)                                                                                                                             |          |
+| NAME     | String  | Short name of event                      | BCRABL, Dose                                                                                                                                                             |          |
+| VALUE    | Numeric | Value of event defined by NAME           | 'VALUE' values in the unit defined in the 'UNIT' column for the same record                                                                                              |          |
+| DV       | Numeric | Dependent variable                       | 0 for dosing events.For observation events the value of the observation in the units defined in the 'UNIT' column of this record.Missing observations are coded as 'NA'. |          |
+| UNIT     | String  | Unit of the value                        | 'NA': if undefined or information not available / not needed for analysis                                                                                                |          |
+| LLOQ     | Numeric | Lower limit of quantification            | In units as defined in the 'UNIT' column of the same record. 'NA': if undefined or information not available / not needed for analysis                                   |          |
+| CENS     | Numeric | Censoring flag                           | 1 for observation records below 'LLOQ' if handling in the model via the M3 or M4 method. 0 otherwise                                                                     |          |
+| MDV      | Numeric | Missing dependent variable flag          | 1 for dosing records and ignored observation records, 0 otherwise                                                                                                        |          |
+| EVID     | Numeric | Event ID                                 | 1 for dosing records, 0 for non-dosing records                                                                                                                           |          |
+| AMT      | Numeric | Dose amount (mg)                         | Dose given in the unit of the 'UNIT' column of this record. 0 for non-dosing records                                                                                     |          |
+| ADM      | Numeric | Administration input number              | 1 (Dose),0 or NA (non-dose records)                                                                                                                                      |          |
+| II       | Numeric | Interval of dosing                       | In units as defined in the 'UNIT' column of the same record. '0': if undefined (non-dosing events) or information not available / not needed for analysis                |          |
+| ADDL     | Numeric | Number of addl doses with II interval    | '0': if undefined (non-dosing events) or information not available / not needed for analysis                                                                             |          |
+| ROUTE    | String  | Route of administration                  | IV. 'NA' for non-dosing records                                                                                                                                          |          |
+| TINF     | Numeric | Infusion time                            | Duration of dose administration / infusion time for dosing records. 0 indicates a bolus admnistration or a non-dosing record                                             |          |
+| RATE     | Numeric | Rate of infusion                         | Rate of dose administration for dosing records. 0 indicates a bolus admnistration or a non-dosing record                                                                 |          |
+| DOSE     | Numeric | DOSE of last dose (carry-forward)        | In units as defined in the 'UNIT' column of current dose record. 0 for pre-first dose records in a subject                                                               |          |
+| DURATION | Numeric | Duration of event                        | 'DURATION' values in the unit defined in the 'TIMEUNIT' column. -1 if event ongoing post end of observation period                                                       |          |
+
+!BLOCKEND(block_kwnext)
+
