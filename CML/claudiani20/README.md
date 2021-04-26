@@ -33,21 +33,18 @@ a pre-existing small T315I subclone under immunological control lost via
 immune system exhaustion by an infection, similar to the Hong Kong 
 flu of 1968 releasing latent A-bomb-induced CML clones in Hiroshima females in 1969-1974, 
 see Radiat Environ Biophys. 2021;60(1):41-47. 
-Continued exposure to non-ponatinib TKI during this loss of immuno-control 
-then provided greater selective pressure for the pre-existing T315I clone 
-to grow relative to WT.  Thus, prior to the 
-infection the immune system was controlling the cancer. 
-The infection allowed all bcr-abl clones to expand,
-and with continued TKI application, particularly the T315I subclone. 
+With loss of immuno-control, continued exposure to non-ponatinib TKI then provided greater selective pressure for growth of the pre-existing T315I clone.  Prior to the 
+infection, immuno-control was needed to keep CML in check.  
+The infection allowed all bcr-abl clones to expand. 
 Ponatinib then drove all subclones down to a size that 
-could again be immuno-controlled, see Hahnel et al. Canc Res 2020 80:2394–406. In 
+could be immuno-controlled, see Hahnel et al. Canc Res 2020 80:2394–406. In 
 contrast, the relapse in patient 10 was initiated by 
 T315I formation, as in this patient T315I was at 100% at the end of a ~3-fold rise 
-between months 40 and 60. Consistent with weaker immuno-control in patient 10, a relapse occurred 
-when attempting TFR; in patient 4, BCR-ABL decreasing 
+between 40 and 60 months. Consistent with weaker immuno-control in patient 10, a relapse occurred 
+when attempting TFR; in contrast, in patient 4, BCR-ABL decreasing 
 between months 270 and 280 in the absence of any TKI suggests strong immuno-control. 
 
-## Other Questions and Speculations
+## More Questions and Speculations
  
 Q. If the pre-ponatinib TKI was able to control non-T315I clones prior to
 the patient gaining immuno-control, why couldn't it control them after immuno-control 
@@ -58,7 +55,6 @@ but before T315I.
 
 Q. Why would T315I form after immuno-control? 
 
-A. Maybe TKI-to-immuno-control transitions happen gradually, and thus with periods 
+A. What if TKI-to-immuno-control transitions happen gradually, with periods 
 of major contributions from both sources. Perhaps the T315I clone starts when there is more TKI
-control, and before the clone gets too big, the immuno-control 
-contribution increases enough to keep it in check. 
+control, and before the clone gets too big, immuno-control increases enough to keep it in check. 
