@@ -102,6 +102,19 @@ tibble(Y,TKI)%>%ggplot(aes(x=Y,y=TKIa))+geom_line()
 #dose drops smoothly around Ymin at bottom of activation window
 ggsave("../docs/doseAdjustment.png",width=4,height=4)
 ```
+
+<!--
+```{r, mychunk, echo=FALSE, results="hide"}
+# redo above for pt 4
+Ymin=4000
+Y=seq(3500,4500,1)
+TKIa=TKI/(1+exp(100*(1-Y/Ymin)))  #adjusted TKI dose
+tibble(Y,TKI)%>%ggplot(aes(x=Y,y=TKIa))+geom_line()
+#dose drops smoothly around Ymin at bottom of activation window
+ggsave("~/doseAdjustmentPt4.pdf",width=2.5,height=2.5)
+```
+-->
+
 ![](../../docs/doseAdjustment.png)
 This yields roughly proportional control with doses constrained between the max 
 (known to suffice as it brought the load down this far) and zero (which would be great as it 
