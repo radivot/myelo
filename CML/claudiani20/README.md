@@ -32,11 +32,11 @@ T315I formation did not initiate this relapse. This patient had
 a pre-existing small T315I subclone under immunological control lost via 
 immune system exhaustion by an infection, similar to the Hong Kong 
 flu of 1968 releasing latent A-bomb-induced CML clones in Hiroshima females in 1969-1974, 
-see Radiat Environ Biophys. 2021;60(1):41-47. 
-With loss of immuno-control, continued exposure to non-ponatinib TKI then provided greater selective pressure for growth of the pre-existing T315I clone.  Prior to the 
-infection, immuno-control was needed to keep CML in check.  
-The infection allowed all bcr-abl clones to expand. 
-Ponatinib then drove all subclones down to a size that 
+see Radiat Environ Biophys. 2021;60(1):41-47. With loss of immuno-control, continued 
+exposure to non-ponatinib TKI then provided greater selective pressure for growth of 
+the pre-existing T315I clone.  Prior to the 
+infection, immuno-control was needed to keep CML in check.  The infection 
+allowed all bcr-abl clones to expand. Ponatinib then drove all subclones down to a size that 
 could be immuno-controlled, see Hahnel et al. Canc Res 2020 80:2394–406. In 
 contrast, the relapse in patient 10 was initiated by 
 T315I formation, as in this patient T315I was at 100% at the end of a ~3-fold rise 
