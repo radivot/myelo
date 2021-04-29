@@ -486,14 +486,14 @@ yielded
 
 for NONMEM
 
-![](../../../docs/NONK.png)
+![](../../../docs/NONCL.png)
 
 for Monolix
 
-![](../../../docs/MONK.png)
+![](../../../docs/MONCL.png)
 
 
 and for nlmixr 
 
-![](../../../docs/MIXK.png)
+![](../../../docs/MIXCL.png)
 
