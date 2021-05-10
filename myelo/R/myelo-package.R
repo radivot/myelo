@@ -457,6 +457,30 @@ NULL
 NULL
 
 
+#'Michor's Nature 2005 Data
+#'
+#'This is a dataframe of BCR-ABL percentages for 68 CML patients taking imatinib up to one year. 
+#'
+#'@name michor
+#'@docType data
+#'@format Prct is BCR-ABL1 percent, Pt is patient ID, and Days is presumably from first Tx, not Dx.
+#'
+#'@references Franziska Michor, Timothy P. Hughes, Yoh Iwasa, Susan Branford,
+#' Neil P. Shah, Charles L. Sawyers & Martin A. Nowak
+#'Dynamics of chronic myeloid leukaemia, \emph{Nature},
+#'\bold{435}, 1267-1270 (2005)
+#' 
+#'@source  Figure 5 (in the supplement). 
+#'@keywords datasets
+#'@examples
+#'
+#'library(myelo)
+#'head(michor)
+#'
+NULL
+
+
+
 
 #'Models of myeloid hematopoiesis
 #'
