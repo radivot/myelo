@@ -100,11 +100,11 @@ brought closer to the population means.
 
 A limitation of lme4 is that it requires closed form solutions. Models are often more simply described by 
 ordinary differential equations (ODEs). An R package that allows this is nlmixr. In 
-this pharmacokinetic data analysis package, bi-exponential decays can be captured by two-compartment models. We thus
+this pharmacokinetic data analysis package, bi-exponential decays can be modeled using two-compartments. We thus
 view BCR-ABL as if injected into a central compartment from which it is cleared 
 permanently or set aside temporarily in a peripheral compartment that protects it, until it returns to the
 central compartment. 
-To get the initial BCR-ABL value of 100.1, we set the dose to 1001 and 
+To get an initial BCR-ABL value of 100.1, we set the dose to 1001 and 
 our initial estimate of the central volume (Vc) to 10. We then set
 the initial estimate of the elimination rate constant Ke to 0.05 (i.e. -alpha) 
 and the initial estimate of the peripheral-to-central
@@ -159,11 +159,11 @@ ggsave("outs/michorNLMIXR.png",width=6,height=30)
 ![](outs/michorNLMIXR.png)
 
 
-Using the R package IQRtools (https://iqrtools.intiquan.com/) within IQdesktop
-(https://iqdesktop.intiquan.com/) found here (https://hub.docker.com/r/intiquan/iqdesktop),
+Using the R package IQRtools (https://iqrtools.intiquan.com/) in IQdesktop
+(https://iqdesktop.intiquan.com/),
 a single representation of the model can be applied
-to three backends, NONMEM, Monolix, and nlmixr. 
-The code for this is as follows. 
+to NONMEM, Monolix, and nlmixr. 
+The code for this is 
 
 ```
 library(IQRtools)
