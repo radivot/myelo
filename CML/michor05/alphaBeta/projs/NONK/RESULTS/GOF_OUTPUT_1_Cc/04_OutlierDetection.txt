@@ -1,0 +1,8 @@
+<TT>   Detected outliers (N=0)                            
+       ===================================================
+
+<TH>   USUBJID              | ID | TIME | TAD | DV | PWRES
+       ---------------------------------------------------
+<TR>   No outliers detected | -  | -    | -   | -  | -    
+       ---------------------------------------------------
+<TF>    N=0 outliers detected.<br>Rule for outlier detection: (|EWRES| > 6)

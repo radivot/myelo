@@ -1,0 +1,115 @@
+; MONOLIX project generated with IQRtools
+
+; ==PROJECT HEADER START===================================================
+; COMMENT             = 'BiExp Ke  MONOLIX version'
+; TOOL                = 'MONOLIX'
+; TOOLVERSION         = 'MLX2019R1'
+; DATA                = '../../data/biExport.csv'
+; DOSINGTYPES         = 'BOLUS'
+; TK0NAMES            = 'NA'
+; COVNAMES            = ''
+; CATNAMES            = ''
+; CATCATEGORIES       = ''
+; REGRESSIONNAMES     = ''
+; OUTPUTS             = 'Cc'
+; ERRORMODELS         = 'rel'
+; PARAMNAMES          = 'Vc,Ke,Kpc,Kcp'
+; PARAMTRANS          = 'exp(phi),exp(phi),exp(phi),exp(phi)'
+; PARAMINVTRANS       = 'log(psi),log(psi),log(psi),log(psi)'
+; COVARIATENAMES      = ''
+; COVARIATESUSED      = ''
+; BETACOVNAMES        = ''
+; BETACOVTRANS        = ''
+; BETACATNAMES        = ''
+; BETACATREFERENCE    = ''
+; ==PROJECT HEADER END=====================================================
+
+; =============================================
+<DATAFILE>
+; =============================================
+
+[FILEINFO]
+file = '../../data/biExport.csv'
+delimiter = comma
+header = {IXGDF, IGNORE, USUBJID, ID, TIME, TIMEPOS, TAD, TIMEUNIT, YTYPE, NAME, VALUE, DV, UNIT, LLOQ, CENS, MDV, EVID, AMT, ADM, II, ADDL, ROUTE, TINF, RATE, DOSE, DURATION}
+
+[CONTENT]
+ID = {use=identifier}
+TIME = {use=time}
+YTYPE = {use=observationtype}
+DV = {use=observation, name={y}, ytype={1}, type={continuous}}
+CENS = {use=censored}
+MDV = {use=missingdependentvariable}
+EVID = {use=eventidentifier}
+AMT = {use=amount}
+ADM = {use=administration}
+II = {use=interdoseinterval}
+ADDL = {use=additionaldose}
+TINF = {use=infusiontime}
+
+; =============================================
+<MODEL>
+; =============================================
+
+[INDIVIDUAL]
+input = {Vc_pop, Ke_pop, Kpc_pop, Kcp_pop, omega_Vc, omega_Ke, omega_Kpc, omega_Kcp}
+
+DEFINITION:
+Vc = {distribution=logNormal, typical=Vc_pop, sd=omega_Vc}
+Ke = {distribution=logNormal, typical=Ke_pop, sd=omega_Ke}
+Kpc = {distribution=logNormal, typical=Kpc_pop, sd=omega_Kpc}
+Kcp = {distribution=logNormal, typical=Kcp_pop, sd=omega_Kcp}
+
+[LONGITUDINAL]
+input = {b}
+
+file = './project_model.txt'
+
+DEFINITION:
+y = {distribution=normal, prediction=Cc ,errorModel=proportional(b)}
+
+; =============================================
+<FIT>
+; =============================================
+data = {y}
+model = {y}
+
+; =============================================
+<PARAMETER>
+; =============================================
+Vc_pop = {value=10, method=MLE}
+Ke_pop = {value=0.05, method=MLE}
+Kpc_pop = {value=0.005, method=MLE}
+Kcp_pop = {value=0.005, method=MLE}
+omega_Vc = {value=0.5, method=MLE}
+omega_Ke = {value=0.5, method=MLE}
+omega_Kpc = {value=0.5, method=MLE}
+omega_Kcp = {value=0.5, method=MLE}
+b = {value=0.3, method=MLE}
+
+; =============================================
+<MONOLIX>
+; =============================================
+
+[TASKS]
+populationParameters()
+individualParameters(method = conditionalMode)
+fim(method = Linearization)
+logLikelihood(method = Linearization)
+plotResult()
+
+[SETTINGS]
+GLOBAL:
+seed = 123456
+exportpath = 'RESULTSORIG'
+nbchains = 1
+autochains = no
+
+POPULATION:
+exploratoryautostop = no
+smoothingautostop = no
+smoothingiterations = 20
+exploratoryiterations = 50
+variability = FirstStage
+
+

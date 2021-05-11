@@ -1,0 +1,25 @@
+<TT>   Population parameter estimates                                                                                                 
+       ===============================================================================================================================
+
+<TH>   PARAMETER                        | VALUE   | RSE** | SHRINKAGE | COMMENT                                                       
+       -------------------------------------------------------------------------------------------------------------------------------
+<TR>   **Typical parameters**           |         |       |           |                                                               
+<TR>   Vc                               | 6.37    | 8.13% | -         | Central volume (L)                                            
+<TR>   Ke                               | 0.0473  | 4.33% | -         | -alpha                                                        
+<TR>   Kpc                              | 0.00531 | 11.9% | -         | - beta                                                        
+<TR>   Kcp                              | 8e-04   | 22.2% | -         | -                                                             
+<TR>                                    |         |       |           |                                                               
+<TR>   **Inter-individual variability** |         |       |           |                                                               
+<TR>   omega(Vc)                        | 0.561   | NA    | 5.1%      | LogNormal                                                     
+<TR>   omega(Ke)                        | 0.32    | NA    | 4.5%      | LogNormal                                                     
+<TR>   omega(Kpc)                       | 0.373   | NA    | -8.3%     | LogNormal                                                     
+<TR>   omega(Kcp)                       | 1.71    | NA    | -4.5%     | LogNormal                                                     
+<TR>                                    |         |       |           |                                                               
+<TR>   **Residual Variability**         |         |       |           |                                                               
+<TR>   error_PROP1                      | 0.444   | NA    | 2.08%*    | Proportional Error (fraction) - Compound concentration (ug/mL)
+<TR>                                    |         |       |           |                                                               
+<TR>   Objective function               | 1315    | -     | -         | -                                                             
+<TR>   AIC                              | 1333    | -     | -         | -                                                             
+<TR>   BIC                              | 1370    | -     | -         | -                                                             
+       -------------------------------------------------------------------------------------------------------------------------------
+<TF>    Model: projs/MIXK, Significant digits: 3 (Objective function rounded to closest integer value), omega values and error model parameters reported in standard deviation.<br>\* Epsilon shrinkage (records with missing dependent variable and censored records not considered).<br>\*\* Not computed by NLMIXR for random effect and error model parameters.

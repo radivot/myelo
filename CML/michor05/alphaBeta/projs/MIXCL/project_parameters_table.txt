@@ -1,0 +1,25 @@
+<TT>   Population parameter estimates                                                                                               
+       =============================================================================================================================
+
+<TH>   PARAMETER                        | VALUE | RSE** | SHRINKAGE | COMMENT                                                       
+       -----------------------------------------------------------------------------------------------------------------------------
+<TR>   **Typical parameters**           |       |       |           |                                                               
+<TR>   CL                               | 0.291 | 6.14% | -         | Clearance (L/hour)                                            
+<TR>   Vc                               | 6.49  | 5.37% | -         | Central volume (L)                                            
+<TR>   Q1                               | 0.012 | 19.5% | -         | Intercompartmental clearance (L/hour)                         
+<TR>   Vp1                              | 16.1  | 28.7% | -         | Peripheral volume (L)                                         
+<TR>                                    |       |       |           |                                                               
+<TR>   **Inter-individual variability** |       |       |           |                                                               
+<TR>   omega(CL)                        | 0.421 | NA    | 2.6%      | LogNormal                                                     
+<TR>   omega(Vc)                        | 0.231 | NA    | -1.3%     | LogNormal                                                     
+<TR>   omega(Q1)                        | 1.1   | NA    | -0.9%     | LogNormal                                                     
+<TR>   omega(Vp1)                       | 0.671 | NA    | 9.7%      | LogNormal                                                     
+<TR>                                    |       |       |           |                                                               
+<TR>   **Residual Variability**         |       |       |           |                                                               
+<TR>   error_PROP1                      | 0.483 | NA    | 0.38%*    | Proportional Error (fraction) - Compound concentration (ug/mL)
+<TR>                                    |       |       |           |                                                               
+<TR>   Objective function               | 1348  | -     | -         | -                                                             
+<TR>   AIC                              | 1366  | -     | -         | -                                                             
+<TR>   BIC                              | 1403  | -     | -         | -                                                             
+       -----------------------------------------------------------------------------------------------------------------------------
+<TF>    Model: projs/MIXCL, Significant digits: 3 (Objective function rounded to closest integer value), omega values and error model parameters reported in standard deviation.<br>\* Epsilon shrinkage (records with missing dependent variable and censored records not considered).<br>\*\* Not computed by NLMIXR for random effect and error model parameters.

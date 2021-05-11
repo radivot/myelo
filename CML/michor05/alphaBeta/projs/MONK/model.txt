@@ -1,0 +1,53 @@
+********** MODEL NAME
+
+model_2cpt_linear_iv_Ke
+
+********** MODEL NOTES
+
+PK model for simulation of drug concentration in central compartment
+with following characteristics:
+Compartments:  2
+Elimination :  linear
+Absorption  :  none (infusion/iv)
+Unit convention
+Dose: mg
+Concentration: ug/mL
+Time: hours
+The annotation of the parameter units is consistent with the given unit convention.
+Units of the inputs (dose) and outputs (concentration) in the dataset for parameter estimation need to match the unit convention.
+
+********** MODEL STATES
+
+d/dt(Ac) = - Kcp*Ac + Kpc*Ap1 - Ke*Ac + INPUT1
+d/dt(Ap1) = Kcp*Ac - Kpc*Ap1
+ 
+Ac(0) = 0
+Ap1(0) = 0
+ 
+********** MODEL PARAMETERS
+
+Vc = 10 # Central volume (L)
+Ke = 0.05 # -alpha
+Kpc = 0.005 # - beta
+Kcp = 0.005
+INPUT1 = 0
+Tlag1 = 0
+ 
+********** MODEL VARIABLES
+
+Cc = Ac/Vc
+OUTPUT1 = Cc # Compound concentration (ug/mL)
+ 
+********** MODEL REACTIONS
+
+ 
+********** MODEL FUNCTIONS
+
+ 
+********** MODEL EVENTS
+
+ 
+********** MODEL INITIAL ASSIGNMENTS
+
+ 
+

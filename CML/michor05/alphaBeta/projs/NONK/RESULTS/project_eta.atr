@@ -1,0 +1,17 @@
+# Attributes file for dataset projs/NONK/RESULTS/project_eta.csv
+
+atrcontents <- list()
+
+atrcontents$paramNames <- c("Vc", "Ke", "Kpc", "Kcp")
+
+atrcontents$covariateNames <- ""
+
+atrcontents$covNames <- ""
+
+atrcontents$catNames <- ""
+
+atrcontents$ALT_NAMES_USED <- c("XPRED", "XRES", "XWRES")
+
+atrcontents$ALT_NAMES_ORIG <- c("EPRED", "ERES", "EWRES")
+
+

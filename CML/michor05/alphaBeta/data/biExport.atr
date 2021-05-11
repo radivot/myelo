@@ -1,0 +1,19 @@
+# Attributes file for dataset biExport
+
+atrcontents <- list()
+
+atrcontents$methodBLLOQ <- "M1"
+
+atrcontents$doseNAMES <- "Dose"
+
+atrcontents$obsNAMES <- "BCRABL"
+
+atrcontents$covInfo <- NULL
+
+atrcontents$catInfo <- NULL
+
+atrcontents$imputeInfo <- NULL
+
+atrcontents$regressorNames <- NULL
+
+

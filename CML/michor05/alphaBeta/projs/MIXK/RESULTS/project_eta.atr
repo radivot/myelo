@@ -1,0 +1,17 @@
+# Attributes file for dataset projs/MIXK/RESULTS/project_eta.csv
+
+atrcontents <- list()
+
+atrcontents$paramNames <- c("Vc", "Ke", "Kpc", "Kcp")
+
+atrcontents$covariateNames <- ""
+
+atrcontents$covNames <- ""
+
+atrcontents$catNames <- ""
+
+atrcontents$ALT_NAMES_USED <- c("XPRED", "XWRES", "IPRED", "IWRES")
+
+atrcontents$ALT_NAMES_ORIG <- c("EPRED", "ERES", "IPRED", "IWRES")
+
+
