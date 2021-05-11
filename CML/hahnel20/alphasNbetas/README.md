@@ -63,6 +63,7 @@ DTxb=DTx
 DTxb$LDV=1
 d%>%ggplot(aes(x=TIME,y=LDV))+facet_wrap(ID~.,ncol=4)+geom_point(size=1)+
    geom_line(data=D)+geom_text(aes(label=a),data=DTx,parse=T)+geom_text(aes(label=b),data=DTxb,parse=T)
+setwd("~/githubs/myelo/CML")
 ggsave("../docs/alphaNbetaDataNfits.png",width=7,height=8)
 ```
 
@@ -497,3 +498,74 @@ and for nlmixr
 
 ![](../../../docs/MIXCL.png)
 
+
+
+To compare results to those of Michor et al 2005, time is converted to days 
+and limited to the first 365. 
+
+```
+head(d)
+d1y=d%>%mutate(TIME=30.5*TIME)%>%filter(TIME<365)
+(startvec <- c(lA = log(100), alpha = -0.05, lB=log(0.1), beta = -0.005))
+nform <- ~ log(exp(lA+alpha*input) + exp(lB+beta*input))
+nfun <- deriv(nform, namevec=c("lA", "alpha", "lB", "beta"),
+              function.arg=c("input","lA", "alpha", "lB", "beta"))
+nfun
+(M<-nlmer(LNDV ~ nfun(TIME, lA, alpha, lB, beta) ~ (lA|ID) + (alpha|ID) +(lB|ID) + (beta|ID),
+                        data=d1y,start = startvec,
+      nAGQ = 0L,
+      control = nlmerControl(tolPwrss = 1e-4)) )
+(fe=fixef(M))
+(RE=ranef(M)$ID)
+apply(RE,2,mean) #check
+(P=RE+t(t(rep(1,21)))%*%t(fe))
+P=P%>%mutate(lA=exp(lA),lB=exp(lB))%>%rename(A=lA,B=lB)
+P=lapply(1:21,function(i) unlist(P[i,]))
+(d21y=d1y%>%group_by(ID)%>%summarize(Tf=max(TIME)))
+d21y$Tpred=lapply(d21y$Tf,function(x) seq(0,x))
+
+(D=mapply(simY,P,d21y$Tpred,1:21,SIMPLIFY = F))
+(D=data.table(bind_rows(D)))
+names(D)=c("TIME","LDV","ID")
+mkDF=function(x) data.frame(TIME=250,LDV=2.5,a=round(x[["alpha"]],3),b=round(x[["beta"]],3))
+(DTx=bind_rows(lapply(P,mkDF)))
+DTx$ID=1:21
+DTxb=DTx
+DTxb$LDV=1
+d1y%>%ggplot(aes(x=TIME,y=LDV))+facet_wrap(ID~.,ncol=4)+geom_point(size=1)+
+  geom_line(data=D)+geom_text(aes(label=a),data=DTx,parse=T)+geom_text(aes(label=b),data=DTxb,parse=T)
+ggsave("../docs/alphaNbetaFitsLME4d1y.png",width=7,height=8)
+
+```
+
+![](../../../docs/alphaNbetaFitsLME4d1y.png)
+This shows that the rate constants all shrank to the population mean. 
+
+
+Looking at the random effects
+```
+> RE
+   lA alpha         lB beta
+1   0     0 -1.1721089    0
+2   0     0  0.3703322    0
+3   0     0  0.2168800    0
+4   0     0 -1.1838943    0
+5   0     0 -0.1784630    0
+6   0     0 -1.1395010    0
+7   0     0 -0.8421898    0
+8   0     0  0.5092889    0
+9   0     0 -0.1917855    0
+10  0     0 -1.5505433    0
+11  0     0 -0.9056834    0
+12  0     0  1.8923407    0
+13  0     0  2.2577791    0
+14  0     0  0.3605456    0
+15  0     0  3.3665251    0
+16  0     0 -1.4363420    0
+17  0     0 -0.1196345    0
+18  0     0 -1.5758449    0
+19  0     0  2.0487526    0
+20  0     0  0.6604085    0
+21  0     0 -1.3868622    0
+```
+only the amplitude parameter B varies across patients.  

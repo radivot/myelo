@@ -1,7 +1,6 @@
 #  Dynamics of Chronic Myeloid Leukaemia  
 ## Michor et al, Nature (2005). 
-Modeled were stem (0)-, progenitor (1)-, differentiated (2)-, and terminal (3) normal (X) 
-and CML sensitive (Y) and resistant (Z) cells as
+This model represents stem (0)-, progenitor (1)-, differentiated (2)-, and terminally differentiated (3) cells that are normal (X) or cancerous. Cancerous (CML) cells and either sensitive (Y) or resistant (Z) to TKI; normal cells are resistant to TKI. In R the model is
 ```
 michor05<-function(Time, State, Pars) {
 	with(as.list(c(State, Pars)), {
@@ -11,8 +10,8 @@ michor05<-function(Time, State, Pars) {
 				}
 				lambda<- function(x,sp) -0.5*(x-sp)
 # lambda is a controller that manipulates inflow
-# to move a leaky tank level (x) toward setpoint (sp)
-				dX0 = (lambda(X0,X0sp)-d0)*X0
+# to move a level (x) toward setpoint (sp)
+				dX0 = (lambda(X0,X0sp)-d0)*X0 
 				dX1 = ax*X0-d1*X1
 				dX2 = bx*X1-d2*X2
 				dX3 = cx*X2-d3*X3
@@ -32,8 +31,7 @@ michor05<-function(Time, State, Pars) {
 }
 ```
 
-The following shows how a setpoint(sp)-sized bolus of stem cells repopulates vacant pools down to 
-mature granulocytes.
+The following shows how a setpoint(sp)-sized bolus of stem cells repopulates pools downstream.
 
 ```
 library(tidyverse)
@@ -62,7 +60,7 @@ ggsave("../docs/michorSim.png",width=4,height=6)
 
 
 
-Captured by WebPlotDigitizer, data in Fig. 5 is plotted by this code
+Data in Fig. 5, obtained via WebPlotDigitizer, is shown by this code
 ```
 library(myelo)
 head(d<-michor)
