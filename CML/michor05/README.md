@@ -45,7 +45,7 @@ pars=c(d0=0.003,d1=0.008,d2=0.05,d3=1,
 (y0<-c(X0=2e6,X1=0,X2=0,X3=0,
        Y0=0,Y1=0,Y2=0,Y3=0,
        Z0=0,Z1=0,Z2=0,Z3=0))
-#  for Figure 4C increase Z0 to 10 and u from to 4e-8 
+#  for Figure 4C increase Z0 to 10 and u to 4e-8 
 out=ode(y=y0,times=seq(0,400,1),michor05, parms=pars)
 D=as.data.frame(out)
 d=D%>%select(time,X1:X3)%>%
@@ -62,10 +62,7 @@ ggsave("../docs/michorSim.png",width=4,height=6)
 
 
 
-The data in Figure 5 of this paper, captured using WebPlotDigitizer, is
-![](../../docs/michorData.png)
-
-This plot was created as follows.
+Captured by WebPlotDigitizer, data in Fig. 5 is plotted by this code
 ```
 library(myelo)
 head(d<-michor)
@@ -75,7 +72,8 @@ d%>%ggplot(aes(x=Days,y=Prct))+
   geom_line()+geom_point(size=1)+gy+tc(14)+sbb+
   scale_y_log10()+theme(legend.position="top")
 ggsave("../docs/michorData.png",width=6,height=30)
-
 ```
+![](../../docs/michorData.png)
+
 
 
