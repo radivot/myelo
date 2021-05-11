@@ -1,10 +1,7 @@
-##  Dynamics of chronic myeloid leukaemia by Michor et al, Nature (2005) 
-
-The model presented in this paper is a linear system of differential equations that
-includes normal cells (x), sensitive CML cells (y), and resistant CML cells z, each as
-stem-, progenitor-, differentiated-, and terminally differentiated cells. 
-
-The model is
+#  Dynamics of Chronic Myeloid Leukaemia  
+## Michor et al, Nature (2005). 
+Modeled were stem (0)-, progenitor (1)-, differentiated (2)-, and terminal (3) normal (X) 
+and CML sensitive (Y) and resistant (Z) cells as
 ```
 michor05<-function(Time, State, Pars) {
 	with(as.list(c(State, Pars)), {
@@ -12,8 +9,10 @@ michor05<-function(Time, State, Pars) {
 					ay=ay/100
 					byy=byy/750
 				}
-				lambda<- function(X0) -0.5*(X0-X0o)
-				dX0 = (lambda(X0)-d0)*X0
+				lambda<- function(x,sp) -0.5*(x-sp)
+# lambda is a controller that manipulates inflow
+# to move a leaky tank level (x) toward setpoint (sp)
+				dX0 = (lambda(X0,X0sp)-d0)*X0
 				dX1 = ax*X0-d1*X1
 				dX2 = bx*X1-d2*X2
 				dX3 = cx*X2-d3*X3
@@ -33,8 +32,8 @@ michor05<-function(Time, State, Pars) {
 }
 ```
 
-The following code shows how a setpoint-sized bolus of stem cells repopulates populations between it and 
-a mature granulocyte.
+The following shows how a setpoint(sp)-sized bolus of stem cells repopulates vacant pools down to 
+mature granulocytes.
 
 ```
 library(tidyverse)
@@ -42,7 +41,7 @@ library(deSolve)
 pars=c(d0=0.003,d1=0.008,d2=0.05,d3=1,
        ax=0.8,bx=5,   cx=100, ry=0.008,
       ay=1.6, byy=10, cy=100, rz=0.023, 
-      az=1.6, bz=10, cz=100, trt=0, u=0, X0o=2e6)
+      az=1.6, bz=10, cz=100, trt=0, u=0, X0sp=2e6)
 (y0<-c(X0=2e6,X1=0,X2=0,X3=0,
        Y0=0,Y1=0,Y2=0,Y3=0,
        Z0=0,Z1=0,Z2=0,Z3=0))
@@ -63,10 +62,10 @@ ggsave("../docs/michorSim.png",width=4,height=6)
 
 
 
-This paper also includes this data
+The data in Figure 5 of this paper, captured using WebPlotDigitizer, is
 ![](../../docs/michorData.png)
 
-which was created by this code.
+This plot was created as follows.
 ```
 library(myelo)
 head(d<-michor)
