@@ -14,8 +14,8 @@ static double  parms[15];
 #define D0b   parms[8]
 #define az    parms[9]
 #define bz    parms[10]
-#define rz    parms[11]
-#define ry    parms[12]
+#define ry    parms[11]
+#define rz    parms[12]
 #define u     parms[13]
 #define sp    parms[14]
 
@@ -36,7 +36,7 @@ void derivsMichor(int *neq, double *t, double *y, double *ydot, double *yout, in
     
     X0=y[0];  X1=y[1];   X2=y[2];  X3=y[3];   
     Y0=y[4];  Y1=y[5];   Y2=y[6];  Y3=y[7];   
-    Z0=y[8];  Z1=y[9];   Z2=y[10]; Z3=y[11];   
+    Z0=y[8];  Z1=y[9];   Z2=y[10]; Z3=y[11]; D=y[12];   
     
     lambda=-0.5*(X0-sp);
     dX0 = (lambda-d0)*X0;
@@ -65,4 +65,6 @@ void derivsMichor(int *neq, double *t, double *y, double *ydot, double *yout, in
     ydot[10]= dZ2;
     ydot[11]= dZ3;
     ydot[12]= dD;
+    
+    yout[0]=(Y3+Z3)/(Y3+Z3+2*X3);
 }

@@ -2,7 +2,7 @@
 #include <Rinternals.h>
 #include <Rdefines.h>
 #include <R_ext/Rdynload.h>
-static double  parms[4];
+static double  parms[4]; 
 #define beta0  parms[0]
 #define betaSS parms[1]
 #define kapDel parms[2]

@@ -31,7 +31,7 @@ void derivsFri02(int *neq, double *t, double *y, double *ydot)
     
     dC1=-(k12+k13+k10)*C1 + k21*C2 + k31*C3;
     dC2=k12*C1 - k21*C2;
-    dC3=k13*C1 - k31*C3;
+    dC3=k13*C1 - k31*C3; 
     Cp=C1/V1/mw;
     Edrug=slope*Cp;
     dProl = ktr*Prol*(1-Edrug)*pow(Circ0/Circ,gam) - ktr*Prol;

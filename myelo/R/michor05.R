@@ -65,6 +65,6 @@ michor05<-function(Time, State, Pars) {
     return(list(c(dX0,dX1, dX2, dX3, 
                   dY0,dY1, dY2, dY3, 
                   dZ0,dZ1, dZ2, dZ3,dD),
-                c(ratio=(Y3+Z3)/(Y3+Z3+X3))))
+                c(ratio=(Y3+Z3)/(Y3+Z3+2*X3))))
   })
 }

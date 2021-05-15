@@ -4,7 +4,7 @@
 #include <R_ext/Rdynload.h>
 static double parms[43];
 #define Qss parms[0]
-#define Nrss parms[1]
+#define Nrss parms[1] 
 #define Nss parms[2]
 #define G1ss parms[3]
 #define G2ss parms[4]

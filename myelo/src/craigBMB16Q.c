@@ -31,11 +31,11 @@ void lagvalue2(double T, int *nr, int N, double *ytau) {
     return fun(T, nr, N, ytau);
 }
 */
-
+ 
 
 void parmsCraig16Q(void (* odeparms)(int *, double *))
 {   int N=16;
-    odeparms(&N, parms);
+    odeparms(&N, parms); 
 }
 
 

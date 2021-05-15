@@ -9,7 +9,7 @@ static double parms[7];
 #define fQ   parms[3]
 #define the2   parms[4]
 #define s2    parms[5]
-#define kapDel parms[6]
+#define kapDel parms[6] 
 
 
 

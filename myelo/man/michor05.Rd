@@ -38,10 +38,14 @@ Integrative Cancer Biology Program under U54CA149233-029689.
 
 \dontrun{
 library(myelo)  
-pars=c(d0=0.003,d1=0.008,d2=0.05,d3=1,ax=0.8,bx=5,cx=100,ry=0.008,
-ay=1.6, byy=10, cy=100, rz=0.023, az=1.6, bz=10, cz=100,trt=0,u=0,X0o=2e6)
-(y0<-c(X0=2e6,X1=0,X2=0,X3=0,Y0=0,Y1=0,Y2=0,Y3=0,Z0=0,Z1=0,Z2=0,Z3=0))
-#for Figure 4C increase Z0 from 0 to 10 and increase u from 0 to 4e-8 
+
+pars=c(d0=0.003, d1=0.008, d2=0.05, d3=1,ax=0.8, bx=5, cx=100, ry=0.008, 
+D0a=45/99, D0b= 45/749,  
+rz=0.023, az=1.6, bz=10,
+u=4e-8, sp=2e6)
+(y0<-c(X0=2e6,X1=0,X2=0,X3=0,
+Y0=0,Y1=0,Y2=0,Y3=0,
+Z0=0,Z1=0,Z2=0,Z3=0,D=0))
 out=ode(y=y0,times=seq(0,1000,1),michor05, parms=pars, rtol=1e-4, atol= rep(1e-4,12))
 plot(out)
 }

@@ -27,7 +27,7 @@ void derivsQdb(int *neq, double *t, double *y, double *ydot, double *yout, int *
     if (Q>thresh) {
         beta=betaSS;
     } else { 
-        beta = fQ-((fQ-betaSS)/thresh)*Q;
+        beta = fQ-((fQ-betaSS)/thresh)*Q; 
     }
     dAq = 0;   // Changes only by events
     dQ=-(beta+kapDel)*Q + Aq*k*S4;

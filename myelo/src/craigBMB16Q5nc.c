@@ -6,7 +6,7 @@ static double parms[7];
 #define Qss parms[0]
 #define Aqss parms[1]
 #define tauS parms[2]
-#define fQ   parms[3]
+#define fQ   parms[3] 
 #define the2   parms[4]
 #define s2    parms[5]
 #define kapDel parms[6]

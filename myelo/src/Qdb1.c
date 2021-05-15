@@ -4,7 +4,7 @@
 #include <R_ext/Rdynload.h>
 static double  parms[4];
 #define fQ     parms[0]
-#define thresh parms[1]
+#define thresh parms[1] 
 #define betaSS parms[2]
 #define kapDel parms[3]
 
