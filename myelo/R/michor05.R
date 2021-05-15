@@ -32,33 +32,39 @@
 #'
 #'\dontrun{
 #'library(myelo)  
-#'pars=c(d0=0.003,d1=0.008,d2=0.05,d3=1,ax=0.8,bx=5,cx=100,ry=0.008,
-#'ay=1.6, byy=10, cy=100, rz=0.023, az=1.6, bz=10, cz=100,trt=0,u=0,X0o=2e6)
-#'(y0<-c(X0=2e6,X1=0,X2=0,X3=0,Y0=0,Y1=0,Y2=0,Y3=0,Z0=0,Z1=0,Z2=0,Z3=0))
-#'#for Figure 4C increase Z0 from 0 to 10 and increase u from 0 to 4e-8 
+#'
+#'pars=c(d0=0.003, d1=0.008, d2=0.05, d3=1,ax=0.8, bx=5, cx=100, ry=0.008, 
+#'D0a=45/99, D0b= 45/749,  
+#'rz=0.023, az=1.6, bz=10,
+#'u=4e-8, sp=2e6)
+#'(y0<-c(X0=2e6,X1=0,X2=0,X3=0,
+#' Y0=0,Y1=0,Y2=0,Y3=0,
+#' Z0=0,Z1=0,Z2=0,Z3=0,D=0))
 #'out=ode(y=y0,times=seq(0,1000,1),michor05, parms=pars, rtol=1e-4, atol= rep(1e-4,12))
 #'plot(out)
 #' }
 #'
 michor05<-function(Time, State, Pars) {
-	with(as.list(c(State, Pars)), {
-				if (trt==1) {   #During therapy 
-					ay=ay/100
-					byy=byy/750
-				}
-				lambda<- function(X0) -0.5*(X0-X0o)
-				dX0 = (lambda(X0)-d0)*X0
-				dX1 = ax*X0-d1*X1
-				dX2 = bx*X1-d2*X2
-				dX3 = cx*X2-d3*X3
-				dY0 = (ry*(1-u)-d0)*Y0
-				dY1 = ay*Y0-d1*Y1
-				dY2 = byy*Y1-d2*Y2
-				dY3 = cy*Y2-d3*Y3
-				dZ0 = (rz-d0)*Z0+ry*u*Y0
-				dZ1 = az*Z0-d1*Z1
-				dZ2 = bz*Z1-d2*Z2
-				dZ3 = cz*Z2-d3*Z3
-				return(list(c(dX0,dX1, dX2, dX3, dY0,dY1, dY2, dY3, dZ0,dZ1, dZ2, dZ3),c(ratio=(Y3+Z3)/(Y3+Z3+X3))))
-			})
+  with(as.list(c(State, Pars)), {
+    # lambda is a controller that manipulates inflow
+    # to move a level (x) toward setpoint (sp)
+    lambda= -0.5*(X0-sp)
+    dX0 = (lambda-d0)*X0 
+    dX1 = ax*X0-d1*X1
+    dX2 = bx*X1-d2*X2
+    dX3 = cx*X2-d3*X3
+    dY0 = (ry*(1-u)-d0)*Y0
+    dY1 = Y0*az/(1+D/D0a) - d1*Y1
+    dY2 = Y1*bz/(1+D/D0b) - d2*Y2
+    dY3 = cx*Y2 - d3*Y3
+    dZ0 = (rz-d0)*Z0+ry*u*Y0
+    dZ1 = az*Z0-d1*Z1
+    dZ2 = bz*Z1-d2*Z2
+    dZ3 = cx*Z2-d3*Z3
+    dD  = 0
+    return(list(c(dX0,dX1, dX2, dX3, 
+                  dY0,dY1, dY2, dY3, 
+                  dZ0,dZ1, dZ2, dZ3,dD),
+                c(ratio=(Y3+Z3)/(Y3+Z3+X3))))
+  })
 }
