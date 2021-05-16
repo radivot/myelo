@@ -1,6 +1,7 @@
-#  Identifiability
-The goal here is to simulate the model with noise and see how many parameters can be
-reproduced. For this it is best to define the model in C, e.g. 
+#  Compiled Models
+For faster integration it is best to define the model in C. 
+
+The deSolve code for this is 
 
 ```
 #include <R.h>
@@ -75,8 +76,10 @@ void derivsMichor(int *neq, double *t, double *y, double *ydot, double *yout, in
 
 }
 ```
+This source exists in myelo's src folder. It is compiled automatically when myelo is built from source.
 
-To recreate Figure 4B the R code is then
+
+To recreate Figure 4B using this compiled code, the R code is
 ```
 library(tidyverse)
 library(deSolve)
@@ -89,7 +92,6 @@ pars=c(d0=0.003, d1=0.008, d2=0.05, d3=1,
 (y0<-c(X0=1e6,X1=1e8,X2=1e10,X3=1e12,
        Y0=2.5e5,Y1=5e7,Y2=1e10,Y3=1e+12,
        Z0=0,Z1=0,Z2=0,Z3=0,D=45))
-event=data.frame()
 (evnt=data.frame(var="D",time=c(0,365),value=c(45,0),method="rep"))
 (f=file.path(system.file(paste("libs",Sys.getenv("R_ARCH"),sep=""), package = "myelo"),
          paste("myelo",.Platform$dynlib.ext,sep="")))
@@ -114,62 +116,83 @@ ggsave("../docs/michorCFg4b.png",width=3,height=6)
 ```
 ![](../../../docs/michorCFg4b.png)
 
-To add noise to Year 1 ratios in Figure 4A, the code is
-```
-out=ode(y=y0,times=seq(0,365,1),func="derivsMichor",
-       dllname = "myelo",initfunc = "parmsMichor",
-       parms=pars,
-       nout = 1, outnames = c("ratio"))
-       
-head(d<-as.data.frame(out)%>%select(time,ratio))
-dns=d%>%mutate(ratio=ratio*exp(0.5*rnorm(n=n())))
-tc=function(sz) theme_classic(base_size=sz)
-gx=xlab("Days")
-sy=scale_y_log10()
-sbb=theme(strip.background=element_blank())
-dns%>%ggplot(aes(x=time,y=ratio))+
-  geom_point(size=1)+tc(14)+sbb+gx+sy
-ggsave("../docs/michorSim365.png",width=3,height=6)
-```
-![](../../../docs/michorSim365.png)
 
+Another option is to use the R package mrgsolve as follows.
 
-Now fits the model to this noisy rich data
 
 ```
-library(bbmle)
-pars
-nLL<-function(d2) { 
-# d1=exp(d1)
-  d2=exp(d2)
-  # pars["d1"]=d1 
-  pars["d2"]=d2
-  out=ode(y=y0,times=seq(0,365,1),func="derivsMichor",
-       dllname = "myelo",initfunc = "parmsMichor",
-       parms=pars,
-       nout = 1, outnames = c("ratio"))
-  y.pred=out[,"ratio"]
-  sigma  <- sqrt(sum((dns$ratio-y.pred)^2)/length(dns$ratio))
-  -sum(dnorm(dns$ratio, mean=out[,"ratio"],sd=sigma,log=TRUE)) 
-}
+library(mrgsolve)
+code='
+$PARAM d0=0.003, d1=0.008, d2=0.05, d3=1,
+       ax=0.8, bx=5, cx=100, 
+       D0a=45/99, D0b= 45/749,  
+       az=1.6, bz=10,
+       ry=0.008, rz=0.023, 
+       u=4e-8, sp=1e6
+$INIT X0=1e6,X1=1e8,X2=1e10,X3=1e12
+       Y0=2.5e5,Y1=5e7,Y2=1e10,Y3=1e+12
+       Z0=0,Z1=0,Z2=0,Z3=0,D=45
+$ODE 
+double ratio=(Y3+Z3)/(Y3+Z3+2*X3);
+double lambda=-0.5*(X0-sp);
+dxdt_X0 = (lambda-d0)*X0;
+dxdt_X1 = ax*X0-d1*X1;
+dxdt_X2 = bx*X1-d2*X2;
+dxdt_X3 = cx*X2-d3*X3;
+dxdt_Y0 = (ry*(1-u)-d0)*Y0;
+dxdt_Y1 = Y0*az/(1+D/D0a) - d1*Y1;
+dxdt_Y2 = Y1*bz/(1+D/D0b) - d2*Y2;
+dxdt_Y3 = cx*Y2-d3*Y3;
+dxdt_Z0 = (rz-d0)*Z0+ry*u*Y0;
+dxdt_Z1 = az*Z0-d1*Z1;
+dxdt_Z2 = bz*Z1-d2*Z2;
+dxdt_Z3 = cx*Z2-d3*Z3;
+dxdt_D = 0;
+$CAPTURE ratio'
+mod <- mread("michorMRG", "~/tmp", code)
+out=mod%>%mrgsim(start=0,end = 365, delta = 1)
+out%>%plot(xlab="Days")
+(d=as.data.frame(out))
+d=d%>%select(time,Y0:Y3,ratio)%>%gather(key="Cell",value="Value",-time)
+d$Cell=fct_relevel(d$Cell,"ratio",after=4)
+d%>%ggplot(aes(x=time,y=Value))+
+  facet_wrap(Cell~.,ncol=1,scales = "free")+
+  geom_line(size=1)+tc(14)+sbb+gx+sy
+ggsave("../docs/michorMRGfg4a.png",width=3,height=6)
 
-(IC0=c(d2=0.05)) 
-(IC=log(2*IC0))
-(s=summary(M<-mle2(nLL,method="Nelder-Mead",
-                start=as.list(IC),
-                control = list(maxit=50000, parscale=IC) ) ) )
-data.frame(IC=exp(IC),fit=exp(coef(M)),trueVals=IC0)
-data.frame(point=exp(s@coef[,1]),
-           lowCI=exp(s@coef[,1]-1.96*s@coef[,2]),
-           hiCI=exp(s@coef[,1]+1.96*s@coef[,2])  )
-
-ini   <- LF4(parsIC)
-final <- LF4(exp(coef(Fit)))
-ini%>%ggplot(aes(x=time,y=ratio))+geom_line()+geom_point(data=d)+
-  geom_line(data=final,col="red",size=1)+tc(14)+gx           
-           
 ```
+![](../../../docs/michorMRGfg4a.png)
 
 
 
-
+```
+library(RxODE)
+ode <- "
+ratio=(Y3+Z3)/(Y3+Z3+2*X3);
+lambda=-0.5*(X0-sp);
+d/dt(X0) = (lambda-d0)*X0;
+d/dt(X1) = ax*X0-d1*X1;
+d/dt(X2) = bx*X1-d2*X2;
+d/dt(X3) = cx*X2-d3*X3;
+d/dt(Y0) = (ry*(1-u)-d0)*Y0;
+d/dt(Y1) = Y0*az/(1+D/D0a) - d1*Y1;
+d/dt(Y2) = Y1*bz/(1+D/D0b) - d2*Y2;
+d/dt(Y3) = cx*Y2-d3*Y3;
+d/dt(Z0) = (rz-d0)*Z0+ry*u*Y0;
+d/dt(Z1) = az*Z0-d1*Z1;
+d/dt(Z2) = bz*Z1-d2*Z2;
+d/dt(Z3) = cx*Z2-d3*Z3;
+d/dt(D) = 0;
+"
+library(ggplot2)
+m1 <- RxODE(model = ode)
+print(m1)
+ev  <- et(amountUnits="mg", timeUnits="Days") %>%
+  et(time=0, amt=0, addl=0, ii=0, cmt="D") %>%
+  et(0:360) # Add sampling 
+x <- m1 %>% rxSolve(pars, ev, y0);
+knitr::kable(head(x))
+plot(x) + ylab("BCRABL")
+ggsave("../docs/michorRxODEfg4a.png",width=8,height=9)
+```
+![](../../../docs/michorRxODEfg4a.png)
