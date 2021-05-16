@@ -192,7 +192,11 @@ ev  <- et(amountUnits="mg", timeUnits="Days") %>%
   et(0:360) # Add sampling 
 x <- m1 %>% rxSolve(pars, ev, y0);
 knitr::kable(head(x))
-plot(x) + ylab("BCRABL")
+plot(x)+scale_y_log10() 
 ggsave("../docs/michorRxODEfg4a.png",width=8,height=9)
+plot(x,"ratio")+scale_y_log10()+ ylab("BCRABL/BCR")
+ggsave("../docs/michorRxODEfg4aRatio.png",width=8,height=9)
+
 ```
 ![](../../../docs/michorRxODEfg4a.png)
+![](../../../docs/michorRxODEfg4aRatio.png)
