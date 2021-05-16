@@ -164,7 +164,7 @@ ggsave("../docs/michorMRGfg4a.png",width=3,height=6)
 ![](../../../docs/michorMRGfg4a.png)
 
 
-
+A third option is to use the R package RxODE as follows
 ```
 library(RxODE)
 ode <- "
