@@ -1,8 +1,5 @@
 #  Identifiability
-The goal here is to simulate the model with noise and see how many parameters can be
-reproduced. 
-
-To add noise to Year 1 ratios in Figure 4A, the code is
+The goal here is to see how well parameters can be recovered from simulations of Figure 4A. 
 ```
 library(tidyverse)
 library(RxODE)
@@ -41,7 +38,7 @@ head(x,3)
 plot(x)+scale_y_log10()
 plot(x,"ratio")+scale_y_log10()+ ylab("BCRABL/BCR")
 head(d<-as.data.frame(x)%>%select(time,ratio))
-dns=d%>%mutate(ratio=ratio*exp(0.2*rnorm(n=n())))
+dns=d%>%mutate(ratio=ratio*exp(0.05*rnorm(n=n())))
 tc=function(sz) theme_classic(base_size=sz)
 gx=xlab("Days")
 gy=ylab("BCR-ABL/BCR")
