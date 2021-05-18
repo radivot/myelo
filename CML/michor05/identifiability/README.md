@@ -26,20 +26,23 @@ ggsave("outs/ratFits68.png",width=6,height=30)
 ```
 ![](outs/ratFits68.png)
 
-In contrast to the lme4 fits in the adjacent folder alphaBeta, here 
-percentages divided by 100 are clipped at 0.99, which via ratio=Y/(Y+2) 
-implies an upper limit on Y of ~200 CML-to-normal cells. 
-
+Squared residuals of these fits are plotted vs means by this
 
 ```
-d%>%ggplot(aes(x=EY,y=var))+geom_point()+scale_y_log10() # ~no trend, save near saturation
+d%>%ggplot(aes(x=EY,y=var))+geom_point()+scale_y_log10() 
 ggsave("outs/ratVarMean.png",width=6,height=4)
 sqrt(mean(d$var)) # sd=0.43
 ```
 ![](outs/ratVarMean.png)
 
+There is no major trend, so assuming normality is acceptable. The standard deviation of 
+the additive noise is 0.43. BCRABL/BCR ratios r were clipped at 0.99. This clipping 
+corresponds, via r = Y/(Y+2), to an upper limit on the ratio of CML-to-normal cells, Y, of ~200. 
 
-A compiled bi-exponential ODE model is then loaded and simulated as follows (see adjacent compile folder). 
+
+
+
+A bi-exponential model is simulated densely by this
 ```
 rm(list=ls())
 library(ggplot2)
@@ -75,7 +78,7 @@ ggsave("outs/simData.png",width=4,height=4)
 ![](outs/simData.png)
 
 
-Now define cost of a lack of fit, assuming normality.
+Now define the cost of a lack of fit, assuming normality.
 ```
 head(DataLogRat<-D%>%select(time, lrat,sd))
 # we narrowed D above to make lrat the only choice 
@@ -83,8 +86,6 @@ biCost <- function (pars) {    #for the output
   out = biExp(pars)            #picked out from out 
   return(modCost(model = out, obs = DataLogRat, err = "sd")) #here
 }
-x=biCost(pars)
-x$model
 ```
 
 
@@ -115,7 +116,6 @@ par(fig=c(0,1,0,1))
 ```
 ![](outs/KeSensTimeCrs.png)
 
-Arrows in the main plot match circles in the upper right. 
 
 Sensitivities for all parameters are created by this 
 ```
@@ -291,11 +291,15 @@ plot(CRL,ylab="lrat",cex=0.5,trace=TRUE)# globalSensFx2.png
 ![](outs/sensRangeTimeCrsFx2.png)
 ![](outs/globalSensFx2.png)
 
-Thus, Ac0 convergence failure may be unavoidably due to Y/(Y+2).
-Running 20x more iterations does not seem to help. 
+Ac0 convergence failed likely due to  Y/(Y+2) saturation:
+running 100,000 iterations did not help 
 
 ![](outs/converge1e5Fx2.png)
 
+but halving initial conditions to reduce saturation yielded this
 
+![](outs/converge1e5Fx2p5.png)
 
+This initial condition of Y = 0.5 maps to a ratio of 0.5/(0.5+2) = 0.2. 
+I suggest t=0 be defined as the first time BCRABL/BCR drops below 0.2 (20%).
 
