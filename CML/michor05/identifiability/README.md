@@ -1,7 +1,9 @@
 #  FME Identifiability Analysis 
 The goal here is to see how well parameters can be recovered from bi-exponential model simulations. 
 
-First we show that log(BCRABL/BCR) yields a flat variance-mean relationship, consistent with normality.   
+First we need to examine the log(BCRABL/BCR) variance-mean relationship 
+to see if it is roughly flat, consistent with normality.
+
 ```
 rm(list=ls())
 library(tidyverse)
@@ -9,10 +11,10 @@ library(myelo)
 library(lme4)
 head(d<-michor)
 names(d)=c("TIME","DV","ID")  #change names to NONMEM style
-head(d<-d%>%mutate(LNDV=log(DV)))
+head(d<-d%>%mutate(DV=DV/100,DV=ifelse(DV>0.99,0.99,DV),LNDV=log(DV)))
 (startvec <- c(lA = log(0.995), alpha = -0.05, lB=log(0.005), beta = -0.005))
-nform <- ~ log(exp(lA+alpha*input) + exp(lB+beta*input))
-nfun <- deriv(nform, namevec=c("lA", "alpha", "lB", "beta"),
+nform=~log((exp(lA+alpha*input)+exp(lB+beta*input))/(2+exp(lA+alpha*input)+exp(lB+beta*input)))
+nfun=deriv(nform, namevec=c("lA", "alpha", "lB", "beta"),
               function.arg=c("input","lA", "alpha", "lB", "beta"))
 (M<-nlmer(LNDV ~ nfun(TIME, lA, alpha, lB, beta) ~ (lA|ID) + (alpha|ID) +(lB|ID) + (beta|ID),
           data=d,start = startvec,
@@ -20,23 +22,36 @@ nfun <- deriv(nform, namevec=c("lA", "alpha", "lB", "beta"),
           control = nlmerControl(tolPwrss = 1e-4)) )
 head(d<-d%>%mutate(EY=predict(M),res=LNDV-EY,var=res^2,sd=sqrt(var)))
 d%>%ggplot(aes(x=TIME,y=LNDV))+facet_wrap(ID~.,ncol=4)+geom_point(size=1)+geom_line(aes(y=EY)) 
-# ggsave("outs/nlmerFits.pdf",width=6,height=30) #same as in myelo/CML/michor05/alphaBeta 
-d%>%ggplot(aes(x=EY,y=var))+geom_point() #+scale_y_log10() #no trend, so log(Y) makes it normal
-ggsave("outs/nlmerResids.png",width=6,height=30)
-sqrt(mean(d$var)) # sd=0.6
+ggsave("outs/ratFits68.png",width=6,height=30)  
 ```
-![](outs/nlmerResids.png)
+![](outs/ratFits68.png)
+
+In contrast to the lme4 fits in the adjacent folder alphaBeta, here 
+percentages divided by 100 are clipped at 0.99, which via ratio=Y/(Y+2) 
+implies an upper limit on Y of ~200 CML-to-normal cells. 
+
+
+```
+d%>%ggplot(aes(x=EY,y=var))+geom_point()+scale_y_log10() # ~no trend, save near saturation
+ggsave("outs/ratVarMean.png",width=6,height=4)
+sqrt(mean(d$var)) # sd=0.43
+```
+![](outs/ratVarMean.png)
 
 
 A compiled bi-exponential ODE model is then loaded and simulated as follows (see adjacent compile folder). 
 ```
+rm(list=ls())
+library(ggplot2)
+library(myelo)
+setwd("~/soft/iqDeskTop/bi/fme") # on mac
+library(tidyverse)
 library(deSolve)
 library(FME)
 
 pars=c(Ke=0.05, Kpc=0.005,Ac0=0.995,Ap0=0.005)
-(f=file.path(system.file(paste("libs",
-    Sys.getenv("R_ARCH"),sep=""),package = "myelo"),
-    paste("myelo",.Platform$dynlib.ext,sep="")))
+(f=file.path(system.file(paste("libs",Sys.getenv("R_ARCH"),sep=""), package = "myelo"),
+             paste("myelo",.Platform$dynlib.ext,sep="")))
 dyn.load(f)
 biExp <- function (pars) {
   y0=with(as.list(pars),c(Ac=Ac0,Ap=Ap0))
@@ -49,7 +64,8 @@ biExp <- function (pars) {
 }
 
 head(D<-biExp(pars))
-head(D<-D%>%mutate(lrat=rnorm(dim(D)[1],mean=lrat,sd=0.6),sd=0.6))
+head(D<-D%>%mutate(lrat=rnorm(dim(D)[1],mean=lrat,sd=0.43),sd=0.43))
+D=D%>%mutate(lrat=ifelse(lrat> -0.01,-0.01,lrat))# if >0.99, set to it 
 
 tc=function(sz) theme_classic(base_size=sz)
 gx=xlab("Days")
@@ -145,13 +161,16 @@ plot(ident, log = "y") #collinearity.png
 This suggests fixing the slope or intercept of the beta exponential.
 
 
-Perturbing initial estimates 2-fold, we get back true values
+Perturbing initial estimates 2-fold, we get back values that resemble true values
 ```
 biCost2 <- function(lpars) #nest to insure positive
   biCost(c(exp(lpars), n = 900)) # parameters
 Pars <- pars[1:4] * 2  #double to make it work to find the opt
 Fit <- modFit(f = biCost2, p = log(Pars))
 exp(coef(Fit))
+#         Ke         Kpc         Ac0         Ap0 
+#0.049132426 0.004317588 0.926145667 0.004205642 
+
 deviance(Fit)
 
 ini   <- biExp(pars = c(Pars, n = 900))
@@ -164,10 +183,9 @@ legend("topright", c("data", "initial", "fitted"),
 ```
 ![](outs/initFitted.png)
 
-which shows how much initial estimates were away from final estimates. 
 
 
-The following MCMC code takes time to run, so we save the result. 
+The following MCMC code takes ~10 min to run, so we save the result. 
 ```    
 # MCMC <- modMCMC(f = biCost2, p = Fit$par,niter=1e5)
 # save(MCMC, file="data/mcmc.Rdata")
@@ -193,10 +211,9 @@ pairs(MCMC,nsample=1000,cex.labels=1.4,cex=0.7)
 ```
 ![](outs/pairsMCMC.png)
 
-Ac0 multimodality goes with convergence plateaus. Beta exponential slope-intercept correlation
-is strong. 
+Beta exponential slope-intercept correlation is strong. 
 
-Beta intercept burial in the alpha intercept is seen here
+Beta intercept burial below the alpha intercept is seen here
 ```
 sR=sensRange(func=biExp,parms=pars,parInput=MCMC$par)
 plot(summary(sR),xlab="time")
@@ -213,7 +230,72 @@ plot(CRL,ylab="lrat",cex=0.5,trace=TRUE)
 ```
 ![](outs/globalSens.png)
 
-we see weak dependence of lrat on Ac0. This goes with slow Ac0 convergence.
+consistent with  convergence, we see weak dependence of lrat on Ac0. 
+
+
+What if we fix the two decay rate constants. 
+```
+pars=c(Ac0=0.995,Ap0=0.005)
+(f=file.path(system.file(paste("libs",Sys.getenv("R_ARCH"),sep=""), package = "myelo"),
+             paste("myelo",.Platform$dynlib.ext,sep="")))
+dyn.load(f)
+biExp <- function (pars) {
+  y0=with(as.list(pars),c(Ac=Ac0,Ap=Ap0))
+  out=ode(y=y0,times=seq(0,360,1),func="derivsBiExp",
+          dllname = "myelo",initfunc = "parmsBiExp",
+          parms=c(Ke=0.05, Kpc=0.005),
+          nout = 1, outnames = c("ratio"))
+  D=as.data.frame(out)
+  D%>%mutate(lrat=log(ratio))
+}
+
+head(D<-biExp(pars))
+head(D<-D%>%mutate(lrat=rnorm(dim(D)[1],mean=lrat,sd=0.43),sd=0.43))
+D=D%>%mutate(lrat=ifelse(lrat> -0.01,-0.01,lrat))# if >0.99, set to it 
+head(DataLogRat<-D%>%select(time, lrat,sd))
+biCost <- function (pars) {
+  out = biExp(pars)            #picked out from out 
+  return(modCost(model = out, obs = DataLogRat, err = "sd")) #here
+}
+
+Sfun <- sensFun(biCost, pars)
+summary(Sfun)
+plot(Sfun, which = c("lrat"), xlab="time", lwd = 2,legpos="topright")
+```
+![](outs/sensTimeCrsFx2.png)
+
+
+```
+biCost2 <- function(lpars) #nest to insure positive
+  biCost(c(exp(lpars), n = 900)) #parameters
+Pars <- pars * 2  #double to make work to find opt
+Fit <- modFit(f = biCost2, p = log(Pars))
+# system.time(MCMC <- modMCMC(f = biCost2, p = Fit$par,niter=5e3)) # 10% => 30s
+# save(MCMC, file="data/mcmcFx2.Rdata")
+load("data/mcmcFx2.Rdata")
+options(width = 50)
+MCMC$pars <- exp(MCMC$pars)
+summary(MCMC)
+par(mar=c(4, 4, 3, 1) + .1)
+plot(MCMC, Full = TRUE) #convergeFx2.png #same struggle due to saturation
+pairs(MCMC,nsample=1000,cex.labels=1.4,cex=0.7)# pairsMCMCfx2.png
+sR <- sensRange(func = biExp, parms = pars, parInput = MCMC$par)
+plot(summary(sR),xlab="time",legpos="topright") #sensRangeTimeCrsFx2.png
+parRange=cbind(min=0.75*pars, max=1.25*pars)
+crlfun=function(pars) return(m=mean(biExp(pars)$lrat))
+CRL=modCRL(fun=crlfun,parRange=parRange,num=500)
+plot(CRL,ylab="lrat",cex=0.5,trace=TRUE)# globalSensFx2.png
+```
+![](outs/convergeFx2.png)
+![](outs/pairsMCMCfx2.png)
+![](outs/sensRangeTimeCrsFx2.png)
+![](outs/globalSensFx2.png)
+
+Thus, Ac0 convergence failure may be unavoidably due to Y/(Y+2).
+Running 20x more iterations does not seem to help. 
+
+![](outs/converge1e5Fx2.png)
+
 
 
 
