@@ -1,9 +1,7 @@
 #  FME Identifiability Analysis 
 The goal here is to see how well parameters can be recovered from bi-exponential model simulations. 
 
-First, log(BCRABL/BCR) is normal, as
-nlmer fit residuals show a flat variance-mean relationship 
-(the main characteristic of normality).   
+First we show that log(BCRABL/BCR) yields a flat variance-mean relationship, consistent with normality.   
 ```
 rm(list=ls())
 library(tidyverse)
@@ -30,7 +28,7 @@ sqrt(mean(d$var)) # sd=0.6
 ![](outs/nlmerResids.png)
 
 
-The deSolve C coded bi-exponential model (see adjacent compile folder) is loaded and simulated as follows. 
+A compiled bi-exponential ODE model is then loaded and simulated as follows (see adjacent compile folder). 
 ```
 library(deSolve)
 library(FME)
@@ -61,7 +59,7 @@ ggsave("outs/simData.png",width=4,height=4)
 ![](outs/simData.png)
 
 
-Now define cost as the penalty of a lack of fit, assuming normality.
+Now define cost of a lack of fit, assuming normality.
 ```
 head(DataLogRat<-D%>%select(time, lrat,sd))
 # we narrowed D above to make lrat the only choice 
@@ -71,13 +69,10 @@ biCost <- function (pars) {    #for the output
 }
 x=biCost(pars)
 x$model
-gy=ylab("Weighted Residuals")
-x$residuals%>%ggplot(aes(x,res))+geom_point()+xlab("Days")+gy
-ggsave("outs/resids.png",width=4,height=4)
 ```
-![](outs/resids.png)
 
-The following chunk shows the impact of a 30% increase in Ke 
+
+The following shows the impact of a 30% increase in Ke 
 ```
 par(fig=c(0,1,0,1))
 ref  <- biExp(pars)
@@ -103,9 +98,10 @@ par(fig=c(0,1,0,1))
 # save as KeSensTimeCrs.png by hand from gui
 ```
 ![](outs/KeSensTimeCrs.png)
+
 Arrows in the main plot match circles in the upper right. 
 
-Sensitivities for all parameters are created below. 
+Sensitivities for all parameters are created by this 
 ```
 Sfun <- sensFun(biCost, pars)
 summary(Sfun)
@@ -113,7 +109,8 @@ plot(Sfun, which = c("lrat"), xlab="time", lwd = 2,legpos="topright")
 # save as sensTimeCourses.png via gui
 ```
 ![](outs/sensTimeCourses.png)
-Defined as output changes/values, sensitivity numerator and denominator minus signs cancel. 
+
+Note that sensitivity is defined as output changes/values, and numerator and denominator minus signs cancel. 
 
 
 The following creates pairwise phase-plane-like sensitivity plots. 
@@ -121,10 +118,11 @@ The following creates pairwise phase-plane-like sensitivity plots.
 pairs(Sfun, which = c("lrat"), col = c("blue"))  
 ```
 ![](outs/pairsSfun.png)
+
 For example, in row 1 col 2, starting at the origin, Ke sensitivity jumps first and Kpc sensitivity  later.
 Lower diags are correlation coefficients. 
 
-Next we look at collinearity
+Next let's look at collinearity
 ```
 ident <- collin(Sfun)
 head(ident, n = 20)
@@ -143,6 +141,7 @@ head(ident, n = 20)
 plot(ident, log = "y") #collinearity.png
 ```
 ![](outs/collinearity.png)
+
 This suggests fixing the slope or intercept of the beta exponential.
 
 
@@ -164,7 +163,8 @@ legend("topright", c("data", "initial", "fitted"),
        lty = c(NA,2,1), pch = c(1, NA, NA)) #=> initFitted.png
 ```
 ![](outs/initFitted.png)
-which shows how much initial estimates lie away from final estimates. 
+
+which shows how much initial estimates were away from final estimates. 
 
 
 The following MCMC code takes time to run, so we save the result. 
@@ -183,25 +183,27 @@ par(mar=c(4, 4, 3, 1) + .1)
 plot(MCMC, Full = TRUE) #converge.png
 ```
 ![](outs/converge.png)
-Ac0 struggles due to 
+
+Ac0 struggles. This may be due to 
 saturation of Y/(Y+2) with Y=Ac+Ap. 
 
-Now look at the correlations
+Now look at correlations
 ```
 pairs(MCMC,nsample=1000,cex.labels=1.4,cex=0.7)
 ```
 ![](outs/pairsMCMC.png)
-Ac0 multimodality is consistent with convergence plateaus. Strong slope-intercept correlation
-of the beta exponential is also apparent. 
 
-Beta intercept burial in the alpha intercept is inferred from this
+Ac0 multimodality goes with convergence plateaus. Beta exponential slope-intercept correlation
+is strong. 
+
+Beta intercept burial in the alpha intercept is seen here
 ```
 sR=sensRange(func=biExp,parms=pars,parInput=MCMC$par)
 plot(summary(sR),xlab="time")
 ```
 ![](outs/sensRangeTimeCrs.png)
 
-The next plot shows what happens when parameters vary by 25%. 
+Letting parameters vary by 25%. 
 ```
 parRange=cbind(min=0.75*pars, max=1.25*pars)
 crlfun=function(pars) return(m=mean(biExp(pars)$lrat))
@@ -210,7 +212,8 @@ cor(CRL)[5,]
 plot(CRL,ylab="lrat",cex=0.5,trace=TRUE)
 ```
 ![](outs/globalSens.png)
-Weak dependence of lrat on Ac0 goes with slow Ac0 convergence.
+
+we see weak dependence of lrat on Ac0. This goes with slow Ac0 convergence.
 
 
 
