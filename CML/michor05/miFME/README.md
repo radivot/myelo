@@ -64,35 +64,8 @@ ggsave("outs/miResids.png",width=4,height=4)
 ![](outs/miResids.png)
 
 
-The following shows the impact of a 30% increase in d2 
-```
-par(fig=c(0,1,0,1))
-ref  <- miMod(pars)
-pert <- miMod(pars*c(1,1,1.3,rep(1,16)))
-plot(ref$time,ref$lrat,type="l",lwd=2,xlab="Days",ylab="lrat",
-     main="local sensitivity, parameter d2")
-lines(pert$time,pert$lrat,lwd=2,lty=2)
 
-arrseq <- seq(50,150,20)#c(10,30,50,70,90)
-arrows(ref$time[arrseq],ref$lrat[arrseq],
-       ref$time[arrseq],pert$lrat[arrseq], length= 0.075)
-legend("bottomleft",c("d2=0.05","d2=0.065"),lty=c(1,2))
-par(new=TRUE)
-par(fig=c(0.5,0.99,0.5,0.95))
-
-# note, denom below is negative, as is num, so this
-ss <- (pert$lrat-ref$lrat)/pert$lrat # is positive
-plot(ref$time,ss,type="l",lwd=2,
-     xlab="",ylab="",axes=FALSE,frame.plot=TRUE)
-points(ref$time[arrseq],ss[arrseq])
-title("Sensitivity functions ",line=0.5,cex.main=1)
-par(fig=c(0,1,0,1))
-# save as d2SensTimeCrs.png by hand from gui
-```
-![](outs/d2SensTimeCrs.png)
-
-
-Sensitivities for all parameters are created by these codes
+Now examine sensitivities of the model parameters
 ```
 Sfun <- sensFun(miMod, pars,sensvar="lrat",senspar=1:6)
 summary(Sfun)
@@ -113,7 +86,7 @@ plot(Sfun, xlab="time", lwd = 2,legpos="topright")
 Note that sensitivity is defined as output changes/values, and numerator and denominator minus signs cancel. 
 
 
-Next let's look at collinearity
+Based on plots above, next we look at the collinearity of 9 influential parameters 
 ```
 Sfun <- sensFun(miMod, pars,sensvar="lrat",
                 senspar=c("d1","d2","ax","bx","bz","az","ry","Y1o","Y2o"))
@@ -190,7 +163,7 @@ miCost4P <- function (subpars) {
 miCost4 <- function(lsubpars) #nest to insure positive
   miCost4P(exp(lsubpars)) #parameters
 
-Pars=1*pars[c("d2","ry","Y1o","Y2o")] # handles big changes from true
+Pars=10*pars[c("d2","ry","Y1o","Y2o")] # handles big changes from true
 Fit <- modFit(f = miCost4, p = log(Pars))
 exp(coef(Fit)) # still close but drift
 #           d2           ry          Y1o          Y2o 
@@ -270,7 +243,7 @@ pairs(MCMC,nsample=1000,cex.labels=1.4,cex=0.7)# pairsMCMC3.png
 ![](outs/converge3.png)
 
 Convergence of these 2- and 3-parameter models is considerably better than
-observed for the 2-parameter bi-exponential model in biFME. 
+observed for the 2-parameter bi-exponential model in the adjacent biFME folder. 
 
 Parameter estimate correlations of these two models are  
 
