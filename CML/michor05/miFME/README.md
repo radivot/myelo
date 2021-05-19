@@ -50,16 +50,16 @@ ggsave("outs/miSim.png",width=4,height=4)
 ![](outs/miSim.png)
 
 
-Now define the cost of a lack of fit, assuming normality.
+Now define the cost of a lack of fit, assuming normality
 ```
 head(DataLogRat<-D%>%select(time, lrat,sd))
 miCost <- function (pars) {
-  out = miMod(pars)            #picked out from out 
-  return(modCost(model = out, obs = DataLogRat, err = "sd")) #here
+  out = miMod(pars)            
+  return(modCost(model = out, obs = DataLogRat, err = "sd")) 
 }
 ```
 
-Now examine sensitivities of the model parameters.
+and examine sensitivities of the model parameters.
 ```
 Sfun <- sensFun(miMod, pars,sensvar="lrat",senspar=1:6)
 summary(Sfun)
@@ -78,7 +78,7 @@ plot(Sfun, xlab="time", lwd = 2,legpos="topright")
 ![](outs/sensTimeCrs_rztoY3o.png)
 
 
-Based on plots above, next we look at the collinearities of 9 influential parameters 
+Based on plots above, we look at the collinearities of 9 influential parameters 
 ```
 Sfun <- sensFun(miMod, pars,sensvar="lrat",
                 senspar=c("d1","d2","ax","bx","bz","az","ry","Y1o","Y2o"))
@@ -203,7 +203,7 @@ deviance(Fit) # 332.092 better fit than real=>fitting noise
 ```
 Results above confirm that we should fit at most 4 parameters. 
 
-Now lets see how well these three models converge using FME's MCMC. 
+Now lets see how well these models converge using FME's MCMC. 
 ```    
 # the following takes time, so save the result
 # system.time(MCMC<-modMCMC(f=miCost2,p=Fit2$par,niter=2e4))#336/2e4 95s
@@ -234,10 +234,10 @@ pairs(MCMC,nsample=1000,cex.labels=1.4,cex=0.7)# pairsMCMC3.png
 
 ![](outs/converge3.png)
 
-Convergence of these 2- and 3-parameter models is considerably better than
-observed for the 2-parameter bi-exponential model in the adjacent biFME folder. 
+Convergence of the 2- and 3-parameter models is considerably better than
+the 2-parameter bi-exponential model in the adjacent biFME folder. 
 
-Parameter estimate correlations of these two models are  
+Parameter correlations of these models are  
 
 ![](outs/pairsMCMC2.png)
 
