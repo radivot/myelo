@@ -57,15 +57,9 @@ miCost <- function (pars) {
   out = miMod(pars)            #picked out from out 
   return(modCost(model = out, obs = DataLogRat, err = "sd")) #here
 }
-gy=ylab("Weighted Residuals")
-x$residuals%>%ggplot(aes(x,res))+geom_point()+xlab("Days")+gy
-ggsave("outs/miResids.png",width=4,height=4)
 ```
-![](outs/miResids.png)
 
-
-
-Now examine sensitivities of the model parameters
+Now examine sensitivities of the model parameters.
 ```
 Sfun <- sensFun(miMod, pars,sensvar="lrat",senspar=1:6)
 summary(Sfun)
@@ -83,10 +77,8 @@ plot(Sfun, xlab="time", lwd = 2,legpos="topright")
 ![](outs/sensTimeCrs_cxtory.png)
 ![](outs/sensTimeCrs_rztoY3o.png)
 
-Note that sensitivity is defined as output changes/values, and numerator and denominator minus signs cancel. 
 
-
-Based on plots above, next we look at the collinearity of 9 influential parameters 
+Based on plots above, next we look at the collinearities of 9 influential parameters 
 ```
 Sfun <- sensFun(miMod, pars,sensvar="lrat",
                 senspar=c("d1","d2","ax","bx","bz","az","ry","Y1o","Y2o"))
