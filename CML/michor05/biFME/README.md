@@ -1,4 +1,4 @@
-#  FME Identifiability Analysis 
+#  Identifiability of the Bi-Exponential Model using FME 
 The goal here is to see how well parameters can be recovered from bi-exponential model simulations. 
 
 First we need to examine the log(BCRABL/BCR) variance-mean relationship 
