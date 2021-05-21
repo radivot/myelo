@@ -480,6 +480,32 @@ NULL
 NULL
 
 
+#'Stein et al's CML Data (Clin Canc Res 2011)
+#'
+#'This is a dataframe of BCR-ABL percentages for 20 CML patients with follow up going up to 8 years. 
+#'
+#'@name stein
+#'@docType data
+#'@format Prct is BCR-ABL1 percent, Grp and Pt are the patient group and number within it, 
+#'and Years is presumably from first Tx, not Dx.
+#'
+#'@references Andrew M. Stein, Dean Bottino, Vijay Modur, 
+#'Susan Branford, Jaspal Kaeda, John M. Goldman,
+#'Timothy P. Hughes, Jerald P. Radich, and Andreas Hochhaus
+#'BCR-ABL Transcript Dynamics Support the Hypothesis 
+#'That Leukemic Stem Cells Are Reduced during Imatinib Treatment, 
+#'\emph{Clin Cancer Res},\bold{17}, 6812-6821 (2011)
+#' 
+#'@source  Supplemental Figure 1A-D. 
+#'@keywords datasets
+#'@examples
+#'
+#'library(myelo)
+#'head(stein)
+#'
+NULL
+
+
 
 
 #'Models of myeloid hematopoiesis
