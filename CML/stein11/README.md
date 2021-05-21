@@ -24,7 +24,7 @@ steinR<-function(Time, State, Pars) {
 				dLSCP = k12*LSCQ + (r2md2-k21)*LSCP 
 				dEP = a23*LSCP-d3*EP
 				dLP = a34*EP-d4*LP
-				dWBC = a45*EP-d5*WBC
+				dWBC = a45*LP-d5*WBC
 				return(list(c(dLSCQ,dLSCP, dEP, dLP,dWBC),
 				    c(ratio=(WBC)/(WBC+2*2.5e10))))
 			})
@@ -32,7 +32,7 @@ steinR<-function(Time, State, Pars) {
 
 ```
 
-The following simulates this model out to 8 years
+The following simulates this model out to 1 year
 ```
 library(tidyverse)
 library(deSolve)
@@ -45,28 +45,7 @@ pars=c(
  a23=3.1,  # treatment
  a34=7e3, a45=0.035)
 (y0<-c(LSCQ=4.4e4,LSCP=5.9e3,EP=1.8e8,LP=9e12,WBC=2.3e11))
-out=ode(y=y0,times=seq(0,8,0.1),steinR, parms=pars)
-D=as.data.frame(out)
-d=D%>%gather(key="Cell",value="Value",-time)
-d$Cell=as_factor(d$Cell)
-tc=function(sz) theme_classic(base_size=sz)
-gx=xlab("Years")
-sbb=theme(strip.background=element_blank())
-d%>%ggplot(aes(x=time,y=Value))+
-  facet_wrap(Cell~.,scales = "free")+
-  geom_line(size=1)+tc(14)+sbb+gx+scale_y_log10()
-ggsave("../docs/steinSim.png",width=4,height=6)
-```
-![](../../docs/steinSim.png)
-
-This shows the BCR-ABL ratio dropping 4 orders of magnitude, 
-as in the typical biphasic curve in Figure 3, but it does not show biphasic kinetics and the 
-drops in LP and EP are not large enough.
-
-Noting that d5=1.4 is likely in units of days, simulating 8 years in days 
-```
-(y0<-c(LSCQ=4.4e4,LSCP=5.9e3,EP=1.8e8,LP=9e12,WBC=2.3e11))
-out=ode(y=y0,times=seq(0,8*365,10),steinR, parms=pars)
+out=ode(y=y0,times=seq(0,2*365,10),steinR, parms=pars)
 D=as.data.frame(out)
 d=D%>%gather(key="Cell",value="Value",-time)
 d$Cell=as_factor(d$Cell)
@@ -76,13 +55,10 @@ sbb=theme(strip.background=element_blank())
 d%>%ggplot(aes(x=time/365,y=Value))+
   facet_wrap(Cell~.,scales = "free")+
   geom_line(size=1)+tc(14)+sbb+gx+scale_y_log10()
-ggsave("../docs/steinSimDays.png",width=4,height=6)
+ggsave("../docs/steinSim.png",width=6,height=4)
 ```
-![](../../docs/steinSimDays.png)
+![](../../docs/steinSim.png)
 
-yields drops that are way too large. Units of time are not stated in the supplement. 
-Are some perhaps in years while others are in days?
-
-
-
+This shows a slightly biphasic drop, 
+but total drops are too large at 2 years.
 
