@@ -16,7 +16,7 @@ ggsave("../docs/stein.png",width=6,height=6)
 ![](../../docs/stein.png)
 
 
-The model used is 
+The model presented in this paper is 
 ```
 steinR<-function(Time, State, Pars) {
 	with(as.list(c(State, Pars)), {
@@ -80,7 +80,8 @@ ggsave("../docs/steinSimDays.png",width=4,height=6)
 ```
 ![](../../docs/steinSimDays.png)
 
-Now everything drops way too much. What gives?
+yields drops that are way too large. Units of time are not stated in the supplement. 
+Are some perhaps in years while others are in days?
 
 
 
