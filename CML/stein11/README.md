@@ -32,7 +32,7 @@ steinR<-function(Time, State, Pars) {
 
 ```
 
-The following simulates this model out to 1 year
+The following simulates this model
 ```
 library(tidyverse)
 library(deSolve)
@@ -62,3 +62,27 @@ ggsave("../docs/steinSim.png",width=6,height=4)
 This shows a slightly biphasic drop, 
 but total drops are too large at 2 years.
 
+Decreasing k12 by a factor of 10 
+```
+pars=c(
+ # r2md2=0.005,  #no treatment
+ r2md2= -.1,     #treatment
+ d3=0.05,d4=0.14, d5=1.4,
+ k12=0.003, k21= 0.004,
+ # a23=1.5e3,  #no treatment
+ a23=3.1,  # treatment
+ a34=7e3, a45=0.035)
+(y0<-c(LSCQ=4.4e4,LSCP=5.9e3,EP=1.8e8,LP=9e12,WBC=2.3e11))
+out=ode(y=y0,times=seq(0,8*365,10),steinR, parms=pars)
+D=as.data.frame(out)
+d=D%>%gather(key="Cell",value="Value",-time)
+d$Cell=as_factor(d$Cell)
+tc=function(sz) theme_classic(base_size=sz)
+gx=xlab("Years")
+sbb=theme(strip.background=element_blank())
+d%>%ggplot(aes(x=time/365,y=Value))+
+  facet_wrap(Cell~.,scales = "free")+
+  geom_line(size=1)+tc(14)+sbb+gx+scale_y_log10()
+ggsave("../docs/steinSimDropk12by10.png",width=6,height=4)
+```
+![](../../docs/steinSimDropk12by10.png)
