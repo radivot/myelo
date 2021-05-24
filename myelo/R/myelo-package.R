@@ -480,6 +480,35 @@ NULL
 NULL
 
 
+#'Michor's Stop and Relapse 2005 Data
+#'
+#'This is a dataframe of BCR-ABL percentages of 3 CML patients stopping TKI in Figure 2 and 4 
+#'patients relapsing in Figure 3. 
+#'
+#'@name miSR
+#'@docType data
+#'@format Prct is BCR-ABL1 percent, Pt is patient ID, and Days is presumably from first Tx, not Dx, 
+#'DOSE of TKI was replaced with a Ponatinib equivalent of 45 mg. MDV (missing dependent variable) is 
+#'1 (TRUE) at TKI stopping times at which
+#'BCR-ABL was not also measured (this happens in the first 2 of the 3 pts that stopped TKI); 
+#'
+#'@references Franziska Michor, Timothy P. Hughes, Yoh Iwasa, Susan Branford,
+#' Neil P. Shah, Charles L. Sawyers & Martin A. Nowak
+#'Dynamics of chronic myeloid leukaemia, \emph{Nature},
+#'\bold{435}, 1267-1270 (2005)
+#' 
+#'@source  Figures 2 & 3. 
+#'@keywords datasets
+#'@examples
+#'
+#'library(myelo)
+#'head(miSR)
+#'
+NULL
+
+
+
+
 #'Stein et al's CML Data (Clin Canc Res 2011)
 #'
 #'This is a dataframe of BCR-ABL percentages for 20 CML patients with follow up going up to 8 years. 

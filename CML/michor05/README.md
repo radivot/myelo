@@ -143,5 +143,12 @@ ggsave("../docs/michorData.png",width=6,height=30)
 ```
 ![](../../docs/michorData.png)
 
-
+And TKI stop and relapse data in Figs 2 & 3 is shown by this code.
+```
+head(d<-miSR)
+d%>%ggplot(aes(x=Days,y=Prct))+facet_wrap(Pt~.,ncol=2,scales="free")+geom_line()+geom_point(size=1)+
+  gy+tc(14)+sbb+scale_y_log10()+theme(legend.position="top")
+ggsave("../docs/miRS.png",width=6,height=6)
+```
+![](../../docs/miRS.png)
 
