@@ -7,7 +7,7 @@ decays often observed initially with TKI use.
 The model of interest is y=Ae<sup>αt</sup>+Be<sup>βt</sup>. When the first term dominates, the slope on a natural 
 log scale is α and when the second term dominates the slope is β. On a log10 scale, these
 values are log(10)=2.3 times smaller, as is the residual error of the fits. We will plot 
-data and fits on a log10 scale, but we will perform fits on a natural log scale. Taking logs lets small y gain weight needed to estimate β. 
+data and fits on a log10 scale, but we will perform fits on a natural log scale. Taking logs gives small y values more weight in estimates of β. 
 
 
 First, as in Hahnel et al, maxLik is used to fit the model.

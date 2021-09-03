@@ -90,7 +90,7 @@ loads tracking setpoints (as in Class A pts 2 and 3),
 since immuno-control dominates TKI-mediated control and TKI cannot
 raise loads above natural setpoints of stable subclinical steady states. We see
 Class C pts 8 and 11 close to Class B,  Class B pts 20 and 21 
-closes to Class C, and Class C pt 10 almost in Class A. 
+close to Class C, and Class C pt 10 almost in Class A. 
 
 The following shows how relative TKI doses used by the controller depend on the setpoint.
 
@@ -122,7 +122,7 @@ ggsave("../docs/Xss.png",width=7,height=8)
 ```
 
 ![](../../../docs/Xss.png)
-This shows that 11 out of 21 have X in steady state 30 years out. 
+This shows that 11 out of 21 have X in steady state 30 years out, i.e. are flat at 0 in these plots.  
 
 The following code extends the final time to 30,000 years.  
 ```

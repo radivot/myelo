@@ -74,7 +74,7 @@ In Radiat Environ Biophys. 2021;60(1):41-47, Classes A-C are Hiroshima male (hm)
 
 Zooming in on the first 5 months of patient 6, initial flatness reflects the quasi-equilibrium assumption 
 used to define initial Z values of others  not holding in the window, wherein activation dynamics are strong, 
-and the remedy of assuming no activation also being incorrect.
+and the remedy of assuming no activation also not being correct.
 ```
 dd%>%filter(id=="pt6",time<5)%>%ggplot(aes(x=time,y=prct))+geom_line(size=1)+
 geom_hline(aes(yintercept=2+log10(Ymax/Ky)),linetype='dotted',col='red',data=d%>%filter(id=="pt6"))+
