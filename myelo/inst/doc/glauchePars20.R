@@ -69,7 +69,7 @@ glauchePars20=glauchePars20%>%mutate(A=rz-a*py/m,B=pz*py/m,C=Kz^2*(rz-a*py/m) )
 glauchePars20=glauchePars20%>%mutate(U2=round((-B-sqrt(B^2-4*A*C))/(2*A)),
                                      S2=round((-B+sqrt(B^2-4*A*C))/(2*A)),
                                      lGap2=round(log10(U2)-log10(S2),2) )
-glauchePars20=glauchePars20%>%mutate(lGap2=ifelse(is.nan(lGap2),-1,lGap2))%>%select(-A,-B,-C)
+glauchePars20=glauchePars20%>%mutate(lGap2=ifelse(is.nan(lGap2),-Inf,lGap2))%>%select(-A,-B,-C)
 glauchePars20
 glauchePars20=as_tibble(glauchePars20)
 glauchePars20
@@ -90,13 +90,20 @@ glauchePars20=glauchePars20%>%mutate(A=a*(py/m)/Ky,
                                      C=(a*(py/m)*Kz^2)/Ky  +  pz*(py/m),
                                      D=(rz - a*(py/m))*Kz^2)
 
-fcubU=function(x) {
+fcub1=function(x) {
+  inp=c(x$A,x$B,x$C,x$D)
+  rt=cubic(inp)[1]
+  if(is.complex(rt)) return(NaN) else round(return(rt))
+}
+
+
+fcub2=function(x) {
   inp=c(x$A,x$B,x$C,x$D)
   rt=cubic(inp)[2]
   if(is.complex(rt)) return(NaN) else round(return(rt))
 }
 
-fcubS=function(x) {
+fcub3=function(x) {
   inp=c(x$A,x$B,x$C,x$D)
   rt=cubic(inp)[3]
   if(is.complex(rt)) return(NaN) else round(return(rt))
@@ -104,11 +111,12 @@ fcubS=function(x) {
 
 (dn=glauchePars20%>%group_by(id)%>%nest())
 dn$data[1]
-dn=dn%>%mutate(U3=round(map_dbl(data,fcubU))) 
-dn=dn%>%mutate(S3=round(map_dbl(data,fcubS))) 
+dn=dn%>%mutate(S3=round(map_dbl(data,fcub1))) 
+dn=dn%>%mutate(U3=round(map_dbl(data,fcub2))) 
+dn=dn%>%mutate(U3=round(map_dbl(data,fcub3))) 
 dn=dn%>%mutate(lGap3=round(log10(U3)-log10(S3),2)) 
 glauchePars20=dn%>%unnest(data)%>%select(-A,-B,-C,-D)
-glauchePars20=glauchePars20%>%mutate(lGap3=ifelse(is.nan(lGap3),-1,lGap3))
+glauchePars20=glauchePars20%>%mutate(lGap3=ifelse(is.nan(lGap3),-Inf,lGap3))
 glauchePars20
 glauchePars20%>%ggplot(aes(x=1:21,y=lGap3,col=grp))+geom_point() # same look as lGap2
 glauchePars20%>%select(S2,S3,U2,U3)%>%print(n=21) #biggest diff is  pt6 (highest Uss not negligible relative to 1e6)
@@ -126,7 +134,7 @@ glauchePars20=glauchePars20%>%mutate(A=a,B=-pz,C=Kz^2*a)
 glauchePars20=glauchePars20%>%mutate(Ymin=round((-B-sqrt(B^2-4*A*C))/(2*A)),
                                      Ymax=round((-B+sqrt(B^2-4*A*C))/(2*A)),
                                      lGap=round(log10(Ymax)-log10(Ymin),2) )
-glauchePars20=glauchePars20%>%mutate(lGap=ifelse(is.nan(lGap),-1,lGap))%>%select(-A,-B,-C)
+glauchePars20=glauchePars20%>%mutate(lGap=ifelse(is.nan(lGap),-Inf,lGap))%>%select(-A,-B,-C)
 glauchePars20%>%ggplot(aes(x=1:21,y=lGap,col=grp))+geom_point() # also same look as lGap2
 glauchePars20%>%select(Ymin,S2,S3,Ymax,U2,U3)%>%print(n=21)
 glauchePars20%>%select(Ymin,S2,S3,Ymax,U2,U3)%>%as.data.frame
@@ -148,8 +156,8 @@ glauchePars20
 
 
 glauchePars20=glauchePars20%>%select(id:CessT,py:m,X0,Y0,Z0,Ymin,S2,S3,Ymax,U2,U3,lGap,lGap2,lGap3)
-glauchePars20%>%select(-lGap,-lGap2)%>%as.data.frame
-
+glauchePars20=glauchePars20%>%select(-lGap,-lGap2)%>%as.data.frame
+glauchePars20
 
 save(glauchePars20,file="glauchePars20.rda")
 
