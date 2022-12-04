@@ -157,7 +157,7 @@ glauchePars20
 
 glauchePars20=glauchePars20%>%select(id:CessT,py:m,X0,Y0,Z0,Ymin,S2,S3,Ymax,U2,U3,lGap,lGap2,lGap3)
 glauchePars20=glauchePars20%>%select(-lGap,-lGap2)%>%as.data.frame
-glauchePars20
+(glauchePars20=glauchePars20%>%rename(az=a))
 
 save(glauchePars20,file="glauchePars20.rda")
 
