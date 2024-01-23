@@ -37,5 +37,5 @@ clapp15<-function(Time, State, Pars) {
     dY3 = a2*Y2         - d3*Y3                 -  mu*Y3*Z/(1+eps*Y3^2)
     dZ  = sz            - dz*Z                  + alf*Y3*Z/(1+eps*Y3^2)
     list(c(dY0,dY1,dY2,dY3,dZ),c(ratio=log10(100*beta*Y3/(Y3+2*x))))
-  }) 
+  })  
 }
