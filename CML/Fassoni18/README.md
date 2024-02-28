@@ -1,14 +1,12 @@
-## Reduced tyrosine kinase inhibitor dose is predicted to be as effective as standard dose in chronic myeloid leukemia: a simulation study based on phase III trial data. Fassoni et al, Haematologica (2018). 
+# Reduced tyrosine kinase inhibitor dose is predicted to be as effective as standard dose in chronic myeloid leukemia: a simulation study based on phase III trial data 
+### Artur Fassoni, Christoph Baldow, Ingo Roeder and Ingmar Glauche 
+### *Haematologica* (2018) 103(11):1825-1834
 
 
-The first goal is to reproduce the average patient full-dosing plot in Figure 1C using the population median rounded parameters
-q = 1, pXY = 0.05, pYX = 0.001, L0 = 100 and pY = 0.2 found in Section S3
-This code makes this plot.
+First we reproduce the plot in Figure 1C using population median parameter values.
 
 ```
-
 rm(list=ls())
-library(myelo)
 library(tidyverse)
 TY=1e6
 TX=1e6/50
@@ -22,27 +20,25 @@ fassoni<-function(Time, State, Pars) {
 }
 ic=c(X=TX,Y=TY)
 library(deSolve)
-d=ode(y = ic, times = seq(0,60,.1), func = fassoni, parms = c(pxy=0.05,pyx=0.001,q=1))
+d=ode(y = ic, times = seq(0,60,.1), func = fassoni, parms = c(pxy=0.05,pyx=0.001,q=1)) # see Section S3
 d=as_tibble(d)%>%mutate_all(as.numeric)
 names(d)<-c("Month","X","Y","Prct")
 tc=function(sz) theme_classic(base_size=sz)
-gy=ylab("BCR-ABL Percent")
+gy=ylab("BCR-ABL1 %")
 head(d)
-d%>%ggplot(aes(x=Month,y=Prct))+geom_line(size=1)+
-  gy+tc(14)+scale_y_log10()+theme(legend.position="top")
+gl=geom_line()
+d%>%ggplot(aes(x=Month,y=Prct))+gl+gy+tc(14)+scale_y_log10()
 ggsave("../docs/fasssoniF1C.png",width=6,height=6)
-
 ```
 
 ![](../../docs/fasssoniF1C.png)
 
 
-## Dose reduction
+## Dose reductions
 
-Our hope is that a typical patient on trial will respond to dose halvings as follows  
+Next we see what two dose halvings are expected to do to a typical patient.  
 
 ```
-
 fassoni_f<-function(Time, State, Pars) {
     with(as.list(c(Time, State, Pars)),{
     dX = -pxy*X + pyx*Y 
@@ -61,21 +57,17 @@ d=ode(y = ic, times = seq(0,60,.1), func = fassoni_f,
       parms = c(pxy=0.05,pyx=0.001,py=0.2,etki=1.2))
 d=as_tibble(d)%>%mutate_all(as.numeric)
 names(d)<-c("Month","X","Y","f","Prct")
-tc=function(sz) theme_classic(base_size=sz)
-gy=ylab("BCR-ABL Percent")
-head(d)
-head(d)
 y0=(d%>%filter(Month==18))[["Prct"]]
 y1=5*y0
-d%>%ggplot(aes(x=Month,y=Prct))+geom_line(size=1)+geom_hline(yintercept=c(y0,y1))+
-# d%>%ggplot(aes(x=Month,y=Prct))+geom_line(size=1)+
-  gy+tc(14)+scale_y_log10()+theme(legend.position="top")
+gh=geom_hline(yintercept=c(y0,y1))
+d%>%ggplot(aes(x=Month,y=Prct))+gl+gh+gy+tc(14)+scale_y_log10()
 ggsave("../docs/fasssoniF3C.png",width=6,height=6)
+dB=cbind(d,Scenario="Average") # save for later
 
 ```
 
 ![](../../docs/fasssoniF3C.png)
-Here the upper horixontal line is 5-fold higher than the cance burden at the time of the first dose reduction.
+The upper horizontal line is 5-fold higher than the cancer burden at the time of the first dose reduction.
 
 
 ## Borderline Cases
@@ -94,28 +86,23 @@ d=ode(y = ic, times = seq(0,60,.1), func = fassoni_f,
       parms = c(pxy=0.05,pyx=0.001,py=0.2,etki=1.2))
 d=as_tibble(d)%>%mutate_all(as.numeric)
 names(d)<-c("Month","X","Y","f","Prct")
-tc=function(sz) theme_classic(base_size=sz)
-gy=ylab("BCR-ABL Percent")
-head(d)
-y0=(d%>%filter(Month==18))[["Prct"]]
-y1=5*y0
-d%>%ggplot(aes(x=Month,y=Prct))+geom_line(size=1)+geom_hline(yintercept=c(y0,y1))+
-  gy+tc(14)+scale_y_log10()+theme(legend.position="top")
+d%>%ggplot(aes(x=Month,y=Prct))+gl+gh+gy+tc(14)+scale_y_log10()
 ggsave("../docs/fasssoniF2D.png",width=6,height=6)
+dC=cbind(d,Scenario="Borderline") # save for later
 
 ```
 
 ![](../../docs/fasssoniF2D.png)
 
-Comparing the last two plots, one sees that, in terms of transient perturbations that
-could trigger a return to a higher dose, it is better to halve doses in series rather than all at once. 
+Comparing the last two plots, to minimize transient perturbations, it is better to halve doses twice 
+than to reduce doses 4-fold all at once. 
 
 
 
 ## Failures
 
-And there will be some patients who must return to their previous dose. This is mimicked 
-here by reducing the dose to an average patient 10-fold.
+There will be some patients who must return to their previous dose. This is mimicked 
+here by reducing a typical patient's dose 10-fold.
 
 ```
 (eventdat=data.frame(var="f",
@@ -127,16 +114,24 @@ d=ode(y = ic, times = seq(0,60,.1), func = fassoni_f,
       parms = c(pxy=0.05,pyx=0.001,py=0.2,etki=1.2))
 d=as_tibble(d)%>%mutate_all(as.numeric)
 names(d)<-c("Month","X","Y","f","Prct")
-tc=function(sz) theme_classic(base_size=sz)
-gy=ylab("BCR-ABL Percent")
-head(d)
-y0=(d%>%filter(Month==18))[["Prct"]]
-y1=5*y0
-d%>%ggplot(aes(x=Month,y=Prct))+geom_line(size=1)+geom_hline(yintercept=c(y0,y1))+
-  gy+tc(14)+scale_y_log10()+theme(legend.position="top")
+d%>%ggplot(aes(x=Month,y=Prct))+gl+gh+gy+tc(14)+scale_y_log10()
 ggsave("../docs/fasssoniF2E.png",width=6,height=6)
-
+dF=cbind(d,Scenario="Failure")
 ```
 
 ![](../../docs/fasssoniF2E.png)
+
+
+
+## All in One Plot
+
+
+```
+D=bind_rows(dB,dC,dF)
+D%>%ggplot(aes(x=Month,y=Prct,col=Scenario))+gl+gh+gy+tc(14)+scale_y_log10()+theme(legend.position="top")
+ggsave("../docs/allInOne.png",width=6,height=6)
+```
+
+![](../../docs/allInOne.png)
+
 
