@@ -16,3 +16,4 @@ WS=1000*2 ## and watershed at MR3
 p0 <- c(pz=3000, Kz=500) #initial guess
 (f=fsolve(F, p0)) 
 cat("pz=",f$x[1],"Kz=",f$x[2]) #pz= 4373.462 Kz= 632.4555
+ 
