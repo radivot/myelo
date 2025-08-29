@@ -149,7 +149,15 @@ quantile(risks*100)
 
 ![](pngs/pt3.png)
   
-Their patient 3 was clearly unacceptable, as seen directly, and also from the extremely high estimate of the risk at 45%.
+Their fit to patient 3 data was too poor to use (upper plot), as evidenced by it unbelievably high risk estimate of 45%.
+The median risk across all 10 patients was 0.031%, thus supporting the notion that a 6-month square pulse to 0.1%IS is representative of a typical case.
+
+Two others of potential concern are patients 18 and 19.  In 18, the fit overshoots the data, so the risk estimate of 0.234% might be an over-estimate. 
+![](pngs/pt18.png)
+
+In 19, the fit lies well below the single datapoint of 35%IS 3 months after the TFR attempt, so the risk estimate of 0.305% might be an under-estimate. 
+![](pngs/pt19.png)
+An underlying assumption here is that the slow initial decline of %IS imples an equally slow decline after the TFR failure. It would be interesting to know if indeed returning to MR4 took 2.5 years for this patient from Munich (Table S1 in Hahnel et al.).  
 
 
 
