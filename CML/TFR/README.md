@@ -1,11 +1,11 @@
 ## A Model of Survival Times of CML Cases Diagnosed in 1975-1985 Yields Estimates of Death-by-Disease Risks of Treatment-Free Remission Attempt Failures 
 
-These are the scripts for this paper that I submitted to Leukemia Research on 08/24/2025.  
+The scripts listed above are for this paper that I submitted to Leukemia Research on 08/24/2025.  
 
-The first step is to generate a case-listing file for each of the three SEER databases using the software SEER*stat.  These files are merged into one in the Fig2A_mkSEER.R.  This is your starting point. Next run Fig2AB.R, then run the remaining Fig2 to Fig4 files. Figure 5 needs three preliminary steps before running Fig.5.R. The steps are: 1) run Fig5_1mkAges.R, which estimates the midpoint ages of 5-year age intervals of OC and HM mortality data from SEER; 2) Fig5_2mkMrts.R which organized the 5-year age interval SEER mortality data so that it is ready for surface spline fitting; and 3) surface spline fitting to interpolate 5-year age group mortalities to 1-year age group mortalities, i.e. to create the input mortality matrices expected by codes I wrote for SEERaBomb.  The remaining 2 files are setup.R, which simple contains some definitions used by more than one of the other scripts, and B_setpointWatershed.R, which hold codes for inverse mapping setpoints and watershed seen in the data by inspection to Hahnel model immune activation parameters $K_z$ and $p_z$. 
+The first step is to generate a case-listing file for each of the three SEER databases using the software SEER*stat.  These files are merged into one in the Fig2A_mkSEER.R.  Next run Fig2AB.R up to Fig4B.R. Finally, 3 preliminary steps are needed before running Fig.5.R. They are: 1) running Fig5_1mkAges.R, which estimates the midpoint ages of 5-year age intervals of OC and HM mortality data from SEER; 2) Fig5_2mkMrts.R which prepares 5-year age interval SEER mortality data for surface spline fitting; and 3) surface spline fitting to interpolate between 5-year age group mortalities and thus create input mortality matrices expected by downstream codes.  Two other files are setup.R, which contains definitions sourced into other scripts, and B_setpointWatershed.R, which inverse maps setpoints and watershed to Hahnel immune activation parameters $K_z$ and $p_z$. 
 
 
-In Figure 4A I provide a bespoke Poisson regression fit to data from Patient 3 in Hahnel et al (Cancer Res. 2020). The TFR attempt risk estimate was 0.11%.  In the code below I show what happens if one uses the fits given by Hahnel et al for the 10 (of 21) patients in their dataset with failed TFR attempts. 
+Fig4A.R provides a bespoke fit to Patient 3 in Hahnel et al (Cancer Res. 2020) that gives a TFR attempt risk estimate of 0.11%.  Code below shows what happens if instead one uses Hahnel's fit for this and 9 other patients who failed TFR attempts.
 
 ```
 ## using hahnel model parameters values to estimate TFR failure risks of death by CML
@@ -149,15 +149,18 @@ quantile(risks*100)
 
 ![](pngs/pt3.png)
   
-Their fit to patient 3 data was too poor to use (upper plot), as evidenced by it unbelievably high risk estimate of 45%.
-The median risk across all 10 patients was 0.031%, thus supporting the notion that a 6-month square pulse to 0.1%IS is representative of a typical case.
+Patient 3's fit is too poor to use: if one uses it anyway, the risk estimate is unbelievable at 45%.
 
-Two others of potential concern are patients 18 and 19.  In 18, the fit overshoots the data, so the risk estimate of 0.234% might be an over-estimate. 
+
+Out of 21 patients studied by Hahnel et al, 10 failed their TFR attempt.  Code above computes risks for all 10. 
+The median risk for all 10 patients was 0.031%, so a 6-month square pulse form 0.01%IS to 0.1%IS might indeed be representative of a typical case.
+
+The two highest risks are for Patients 18 and 19.  In 18, the fit overshoots the data, so 0.234% might be an over-estimate, so there are no worries. 
 ![](pngs/pt18.png)
 
-In 19, the fit lies well below the single datapoint of 35%IS 3 months after the TFR attempt, so the risk estimate of 0.305% might be an under-estimate. 
+In 19, the fit lies well below the single relapse point of 35%IS at 3 months after the TFR attempt, so a risk of 0.305% may be an under-estimate. 
 ![](pngs/pt19.png)
-An underlying assumption here is that the slow initial decline of %IS imples an equally slow decline after the TFR failure. It would be interesting to know if indeed returning to MR4 took 2.5 years for this patient from Munich (Table S1 in Hahnel et al.).  
+Assummed here is that a slow initial %IS decay implies an equally slow decay after a TFR failure. If so, and if the model fit went through the relapsed datapoint, this patient's risk per TFR attempt might be on the order of ~1%.  
 
 
 
