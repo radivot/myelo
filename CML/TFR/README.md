@@ -1,11 +1,11 @@
 ## A Model of Survival Times of CML Cases Diagnosed in 1975-1985 Yields Estimates of Death-by-Disease Risks of Treatment-Free Remission Attempt Failures 
 
-The scripts listed above are for this paper that I submitted to Leukemia Research on 08/24/2025.  
+The scripts above are for this paper that I submitted to Leukemia Research on 08/24/2025.  
 
-The first step is to generate a case-listing file for each of the three SEER databases using the software SEER*stat.  These files are merged into one in the Fig2A_mkSEER.R.  Next run Fig2AB.R up to Fig4B.R. Finally, 3 preliminary steps are needed before running Fig.5.R. They are: 1) running Fig5_1mkAges.R, which estimates the midpoint ages of 5-year age intervals of OC and HM mortality data from SEER; 2) Fig5_2mkMrts.R which prepares 5-year age interval SEER mortality data for surface spline fitting; and 3) surface spline fitting to interpolate between 5-year age group mortalities and thus create input mortality matrices expected by downstream codes.  Two other files are setup.R, which contains definitions sourced into other scripts, and B_setpointWatershed.R, which inverse maps setpoints and watershed to Hahnel immune activation parameters $K_z$ and $p_z$. 
+The first step is to generate a case-listing file for each of the three SEER databases using the software SEER*stat.  These files are merged into one in Fig2A_mkSEER.R.  Next run Fig2AB.R up to Fig4B.R. Finally, 3 preliminary steps are needed before running Fig.5.R. They are: 1) Fig5_1mkAges.R, which estimates the midpoint ages of 5-year age intervals; 2) Fig5_2mkMrts.R which prepares 5-year age-interval SEER mortality data for surface spline fitting; and 3) surface spline fitting to create single-year resolution mortality matrices used in Fig5.R.  Two other files are setup.R, which contains definitions sourced into other scripts, and B_setpointWatershed.R, which maps setpoints and watersheds into Hahnel model parameters $K_z$ and $p_z$. 
 
 
-Fig4A.R provides a bespoke fit to Patient 3 in Hahnel et al (Cancer Res. 2020) that gives a TFR attempt risk estimate of 0.11%.  Code below shows what happens if instead one uses Hahnel's fit for this and 9 other patients who failed TFR attempts.
+Fig4A.R provides a bespoke fit to Patient 3 in Hahnel et al (*Cancer Res.* **2020**, 80:2394–406). This fit yields a TFR attempt risk estimate of 0.11%.  Code below yields risks estimated using Hahnel's fit to this and 9 other patients who failed TFR attempts.
 
 ```
 ## using hahnel model parameters values to estimate TFR failure risks of death by CML
@@ -149,18 +149,17 @@ quantile(risks*100)
 
 ![](pngs/pt3.png)
   
-Patient 3's fit is too poor to use: if one uses it anyway, the risk estimate is unbelievable at 45%.
+Patient 3's fit is too poor to use, consistent with it yielding an unbelievably high risk estimate of 45%.
 
 
-Out of 21 patients studied by Hahnel et al, 10 failed their TFR attempt.  Code above computes risks for all 10. 
-The median risk for all 10 patients was 0.031%, so a 6-month square pulse form 0.01%IS to 0.1%IS might indeed be representative of a typical case.
+Of 21 patients in Hahnel et al, 10 failed their TFR attempt.  Code above computes risks for all 10.  The median was 0.031%.
 
-The two highest risks are for Patients 18 and 19.  In 18, the fit overshoots the data, so 0.234% might be an over-estimate, so there are no worries. 
+Excluding Patient 3, the highest risks were for Patients 18 and 19.  In 18, the fit overshoots the data, so 0.234% is an over-estimate. 
 ![](pngs/pt18.png)
 
-In 19, the fit lies well below the single relapse point of 35%IS at 3 months after the TFR attempt, so a risk of 0.305% may be an under-estimate. 
+In 19, the fit is well below the single relapse point, so 0.305% is an under-estimate. 
 ![](pngs/pt19.png)
-Assummed here is that a slow initial %IS decay implies an equally slow decay after a TFR failure. If so, and if the model fit went through the relapsed datapoint, this patient's risk per TFR attempt might be on the order of ~1%.  
+Assummed is that a slow initial *BCR::ABL1/ABL1* decay implies an equally slow decay after a TFR failure. If so, and if a refitted model that went through the relapse point was used instead of the fit shown here, perhaps this patient's risk per TFR attempt could be shown to be high enough to be a concern.  
 
 
 
