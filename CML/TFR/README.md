@@ -162,4 +162,8 @@ In 19, the fit is well below the single relapse point, so 0.305% is an under-est
 Assummed is that a slow initial *BCR::ABL1/ABL1* decay implies an equally slow decay after a TFR failure. If so, and if a refitted model that went through the relapse point was used instead of the fit shown here, perhaps this patient's risk per TFR attempt could be shown to be high enough to be a concern.  
 
 
+To see how much other cause (OC) excess mortality in Fig. 5 is due to COVID, Fig5restricted.R restricts survival times 
+to end at the end of 2019. The new Fig. 5 is then
+![](pngs/Fig5restricted.png)
+This figure shows that avoiding COVID years reduces excess OC mortality only slightly.
 
