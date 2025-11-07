@@ -1,4 +1,4 @@
-## Fig2AB.R
+## Fig1A2A.R
 graphics.off();rm(list=ls())#clear plots and environment 
 setwd("~/cml/TFR")
 library(tidyverse);library(SEERaBomb);library(ggsci)#load packages          
@@ -111,7 +111,7 @@ D2%>%ggplot(aes(x=t,y=h1))+gx+gyE+
   geom_point(aes(x=t,y=EAR),data=D,color="black")+ 
   geom_errorbar(aes(x=t,y=EAR,ymin=LL,ymax=UL),width=.2,data=D,color="black")+
   tc(14)
-ggsave("outs/Fig2A.pdf",width=4.5,height=3.5)
+ggsave("outs/Fig1A.pdf",width=4.5,height=3.5)
 
 tpars1=tpars
 tpars1$k1=0.01*tpars$k1  # L=0.01
@@ -133,4 +133,4 @@ D2%>%ggplot(aes(x=t,y=y2))+geom_line()+gx+ gyP+
   annotate("text",6.0,y=0.25, label ="100% Load")+ 
   annotate("text",x=25,y=0.13,label="1% Load",col="black")+ 
   tc(14)
-ggsave("outs/Fig2B.pdf",width=4.5,height=3.5)
+ggsave("outs/Fig2A.pdf",width=4.5,height=3.5)

@@ -1,4 +1,4 @@
-## Fig2A_mkSEER25.R   makes binaries of SEER CMLincidence data for Fig2A.R and Fig5.R 
+## Fig1A_mkSEER25.R   makes binaries of SEER CMLincidence data for Fig1A.R and Fig5.R 
 library(tidyverse)
 # Go into SEER*stat, and for SEER 8, 12 and 17, using plus, make these case-listing columns
 # Patient_ID
