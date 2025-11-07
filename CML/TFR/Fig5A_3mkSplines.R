@@ -1,4 +1,4 @@
-## Fig5_3mkSplines.R   Step 3 of 3 before running Fig5.R   
+## Fig5A_3mkSplines.R   Step 3 of 3 before running Fig5A.R   
 # make surface splines of SEER HM and OC mortality data made in Step 2
 setwd("~/ccf/CMLR/seer25")
 graphics.off();rm(list=ls())#clear plots and environment 
