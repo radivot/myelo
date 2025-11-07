@@ -1,4 +1,4 @@
-## Fig5_1mkAges.R        Step 1 of 3 before running Fig5.R  
+## Fig5A_1mkAges.R        Step 1 of 3 before running Fig5.R  
 # Use single age US mortality data to get mean ages of age groups 0 to 19 in SEER mortality
 setwd("~/ccf/CMLR/seer25")
 # SEERaBomb::mkMrtLocal() #converts HMD files in ~/data/hmd_countries/USA into ~/data/mrt/mrtUSA.RData

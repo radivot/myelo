@@ -1,11 +1,11 @@
-## Fig5_2Dto22.R  First run Fig1A_mkSEER25.R and all 3 Fig5_NmkXX.R scripts 
+## Fig5A_2Dto22.R  First run Fig1A_mkSEER25.R and all 3 Fig5_NmkXX.R scripts 
 graphics.off();rm(list=ls())
 setwd("~/cml/TFR")
 library(tidyverse)
 library(SEERaBomb)
 library(mgcv)
 source("setup.R")
-system.time(load("~/data/seer25/cml25.RData")) ### made by Fig2A_mkSEER.R  
+system.time(load("~/data/seer25/cml25.RData")) ### made by Fig1A_mkSEER.R  
 d=d%>%filter(agedx<90) # 29780 cases
 (d=d%>%filter(yrdx>=2005))# 18146 cases 
 yrs=1975:2022; ages=0.5:125.5
@@ -102,5 +102,5 @@ gh0=geom_hline(yintercept=0)
 D|>ggplot(aes(x=t,y=EAR,col = cause))+ghp01+geE+geom_point(size=0.7)+gyE +gl+ccE+
     scale_y_continuous(minor_breaks=NULL,breaks=EARbrks) +tc(13)+gh0+leg+gx+
    scale_color_manual(values = c("Other Cause" = "black", "Heme Malignancy" = "gray60"))
-ggsave(file=paste0("outs/Fig5_2Dto22.png"),height=3,width=4) 
+ggsave(file=paste0("outs/Fig5A_2Dto22.png"),height=3,width=4) 
 

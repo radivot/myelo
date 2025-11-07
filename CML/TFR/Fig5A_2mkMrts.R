@@ -1,4 +1,4 @@
-## Fig5_2mkMrts.R   Step 2 of 3 before running Fig5.R   
+## Fig5A_2mkMrts.R   Step 2 of 3 before running Fig5.R   
 # make SEER OC and HM mortality data objects used in Step 3
 setwd("~/ccf/CMLR/seer25")
 rm(list=ls())#clear environment 

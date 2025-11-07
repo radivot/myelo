@@ -1,4 +1,4 @@
-## remake Fig5 with OC mrt assumed to be equal to AC, i.e. with HM mort assumed to be zero. 
+# Fig5A.R    OC mrt assumed to be equal to AC, i.e. with HM mort assumed to be zero. 
 # The idea here is that for CML patient deaths by HM, O is 20-50 fold bigger than E, so EAR = (O-E)/PY is ~O/PY.
 # This avoids 2D surface fitting. Measured all-cause mortality rates can now be used directly across covid years,
 # so there is no longer any reason to clip survival time strips at the end of 2019. 
@@ -19,7 +19,7 @@ names(bh)[1:2]=c("age","year")
 bh=bh|>mutate(age=as.numeric(as.character(age))+0.5)|>filter(!is.na(age))
 bh  #background hazard as a long tibble
 
-load("~/data/seer25/cml25.RData") ### made by Fig2A_mkSEER.R  
+load("~/data/seer25/cml25.RData") ### made by Fig1A_mkSEER.R  
 d=d%>%filter(agedx<90) 
 (d=d%>%filter(yrdx>=2005)) 
 yrs=1975:2022; ages=0.5:125.5
@@ -114,4 +114,4 @@ gh0=geom_hline(yintercept=0)
 D|>ggplot(aes(x=t,y=EAR,col = cause))+ghp01+geE+geom_point(size=0.7)+gyE +gl+ccE+
   scale_y_continuous(minor_breaks=NULL,breaks=EARbrks) +tc(13)+gh0+leg+gx+
   scale_color_manual(values = c("Other Cause" = "black", "Heme Malignancy" = "gray60"))
-ggsave(file=paste0("outs/Fig5_OCequalsAC.png"),height=3,width=4) 
+ggsave(file=paste0("outs/Fig5A.png"),height=3,width=4) 

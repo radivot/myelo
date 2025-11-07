@@ -1,11 +1,11 @@
-## Fig5_2Dto19.R  PY and deaths only up to end of 2019 to make sure excess OC are not from COVID
+## Fig5A_2Dto19.R  PY and deaths only up to end of 2019 to make sure excess OC are not from COVID
 graphics.off();rm(list=ls())
 setwd("~/cml/TFR")
 library(tidyverse)
 library(SEERaBomb)
 library(mgcv)
 source("setup.R")
-system.time(load("~/data/seer25/cml25.RData")) ### made by Fig2A_mkSEER.R  33541
+system.time(load("~/data/seer25/cml25.RData")) ### made by Fig1A_mkSEER.R  33541
 (d=d%>%filter(agedx<90)) # 32807 cases
 (d=d%>%filter(yrdx>=2005))# 21149 cases 
 (d=d%>%filter(yrdx<2020))# 17203 cases 
@@ -137,5 +137,5 @@ gh0=geom_hline(yintercept=0)
 D|>ggplot(aes(x=t,y=EAR,col = cause))+ghp01+geE+geom_point(size=0.7)+gyE +gl+ccE+
     scale_y_continuous(minor_breaks=NULL,breaks=EARbrks) +tc(13)+gh0+leg+gx+
    scale_color_manual(values = c("Other Cause" = "black", "Heme Malignancy" = "gray60"))
-ggsave(file=paste0("outs/Fig5_2Dto19.png"),height=3,width=4) 
+ggsave(file=paste0("outs/Fig5A_2Dto19.png"),height=3,width=4) 
 
