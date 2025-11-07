@@ -5,17 +5,16 @@ The scripts above are for this paper.
 
 The first step is to generate a case-listing file for each of the three SEER databases using the software SEER*stat. 
 These files are merged into one in Fig1A_mkSEER.R.  Next run Fig1A2A.R up to Fig4B.R. 
-Finally, 3 preliminary steps are needed before running Fig.5.R. They are: 
-1) Fig5_1mkAges.R, which estimates the midpoint ages of 5-year age intervals; 
-2) Fig5_2mkMrts.R which prepares 5-year age-interval SEER mortality data for surface spline fitting; and 
-3) surface spline fitting to create single-year resolution mortality matrices used in Fig5.R.  
+Finally, 3 preliminary steps are needed before running Fig.5.R. They are: 1) Fig5_1mkAges.R, which estimates the midpoint ages of 5-year age intervals; 
+2) Fig5_2mkMrts.R which prepares 5-year age-interval SEER mortality data for surface spline fitting; and 3) surface spline fitting to create single-year resolution mortality matrices used in Fig5.R.  
+
 Two other files are setup.R, which contains definitions sourced into other scripts, 
 and B_setpointWatershed.R, which maps setpoints and watersheds into Hahnel model parameters $K_z$ and $p_z$. 
 
 
 Fig4A.R provides a bespoke fit to Patient 3 in Hahnel et al (*Cancer Res.* **2020**, 80:2394–406). 
-This fit yields a TFR attempt risk estimate of 0.11%.  
-Code below yields risks estimated using Hahnel's fit to this and 9 other patients who failed TFR attempts.
+This fit yields a TFR attempt risk estimate of 0.11%. Code below yields risks estimated using Hahnel's 
+fit to this and 9 other patients who failed TFR attempts.
 
 ```
 ## using hahnel model parameters values to estimate TFR failure risks of death by CML
